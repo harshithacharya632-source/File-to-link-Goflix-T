@@ -1,4 +1,4 @@
-# <div align="center">🚀 RexBots - Advanced File to Link Bot</div>
+# <div align="center">🚀 CantarellaBots - Advanced File to Link Bot</div>
 
 <div align="center">
 
