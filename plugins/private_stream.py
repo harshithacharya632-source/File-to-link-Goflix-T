@@ -37,7 +37,7 @@ async def private_receive_handler(c: Client, m: Message):
         return
 
     file_id = m.document or m.video or m.audio
-    file_name = file_id.file_name if file_id.file_name else f"RexBots_{int(time.time())}.mkv"
+    file_name = file_id.file_name if file_id.file_name else f"Goflix_{int(time.time())}.mkv"
     file_size = get_size(file_id.file_size)
 
     verified = await rx_verification(c, m)
