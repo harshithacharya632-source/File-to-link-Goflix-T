@@ -24,7 +24,7 @@ BIN_CHANNEL = int(environ.get("BIN_CHANNEL", ''))
 LOG_CHANNEL = int(environ.get("LOG_CHANNEL", '-'))
 PREMIUM_LOGS = int(environ.get("PREMIUM_LOGS", ''))
 VERIFIED_LOG = int(environ.get('VERIFIED_LOG', ''))
-SUPPORT_GROUP = int(environ.get("SUPPORT_GROUP", ""))
+SUPPORT_GROUP = int(environ.get("SUPPORT_GROUP", "https://t.me/Goflix_Disscussion"))
 
 # ✅ __Feature Toggles__
 VERIFY = False  # Enable user verification
