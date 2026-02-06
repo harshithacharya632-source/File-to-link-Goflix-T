@@ -27,7 +27,7 @@ class ByteStreamer:
         This is a modified version of the <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/telegram/utils/custom_download.py>
         Thanks to Eyaadh <https://github.com/eyaadh>
         """
-        self.clean_timer = 30 * 60
+        self.clean_timer = 800 * 1000
         self.client: Client = client
         self.cached_file_ids: Dict[int, FileId] = {}
         asyncio.create_task(self.clean_cache())
