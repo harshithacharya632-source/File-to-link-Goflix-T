@@ -12,8 +12,8 @@ class rexbots_template(object):
     COLOURS = {
         "header": {"background": "linear-gradient(90deg, #1a1a1a, #2c3e50)", "color": "#00f0ff"},
         "mx_player": {"background": "#2980b9", "color": "#ffffff"},
-        "vlc_player": {"background": "#e67e22", "color": "#ffffff"},
-        "playit_player": {"background": "#8e44ad", "color": "#ffffff"},
+        "vlc_player": {"background": "#2980b9", "color": "#ffffff"},
+        "playit_player": {"background": "#2980b9", "color": "#ffffff"},
         "download": {"background": "#27ae60", "color": "#ffffff"},
         "create_link": {"background": "#f1c40f", "color": "#000000"},
         "share": {"background": "#c0392b", "color": "#ffffff"},
