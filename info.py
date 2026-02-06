@@ -42,8 +42,8 @@ SHORTLINK_URL = environ.get('SHORTLINK_URL', '')
 SHORTLINK_API = environ.get('SHORTLINK_API', '')
 
 # 💾 __Database Configuration__
-DB_URL = environ.get('DATABASE_URI', "")
-DB_NAME = environ.get('DATABASE_NAME', "rexlinkbot")
+DB_URL = environ.get('DATABASE_URI', "mongodb+srv://Goflix_db_user:QfCDr5U61RbDo8Pz@cluster0.pvpaudr.mongodb.net/?appName=Cluster0")
+DB_NAME = environ.get('DATABASE_NAME', "Goflix_db_user")
 
 # 📸 __Media & Images__
 QR_CODE = environ.get('QR_CODE', 'https://ibb.co/mVkSySr7')
