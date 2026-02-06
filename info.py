@@ -59,7 +59,7 @@ CHANNEL_FILE_CAPTION = environ.get('CHANNEL_FILE_CAPTION', script.CAPTION)
 
 # ⏱️ __Time & Limits__
 PING_INTERVAL = int(environ.get("PING_INTERVAL", 1200))
-SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', 60))
+SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', 1000))
 RATE_LIMIT_TIMEOUT = int(environ.get("RATE_LIMIT_TIMEOUT", 600))
 MAX_FILES = int(environ.get("MAX_FILES", 50))
 VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', 60))  # Hours
@@ -67,7 +67,7 @@ VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', 60))  # Hours
 # ⚙️ __Worker & App Config__
 WORKERS = int(environ.get('WORKERS', 10))
 MULTI_CLIENT = False
-NAME = environ.get('name', 'CantarellaBots')
+NAME = environ.get('name', 'Goflix_AdminBot')
 
 # 🌐 __Web Server__
 ON_HEROKU = 'DYNO' in environ
