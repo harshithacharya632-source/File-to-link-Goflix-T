@@ -22,7 +22,7 @@ def get_peer_type_new(peer_id: int) -> str:
 
 # Apply the patch
 pyrogram.utils.get_peer_type = get_peer_type_new
-pyrogram.utils.MIN_CHANNEL_ID = -1002822095763  # Adjust for your needs
+pyrogram.utils.MIN_CHANNEL_ID = -1001887592232  # Adjust for your needs
 
 logging.basicConfig(
     level=logging.INFO,
