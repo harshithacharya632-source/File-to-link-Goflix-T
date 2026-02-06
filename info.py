@@ -49,8 +49,8 @@ DB_NAME = environ.get('DATABASE_NAME', "Goflix_db_user")
 QR_CODE = environ.get('QR_CODE', 'https://ibb.co/mVkSySr7')
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://ibb.co/mVkSySr7")
 AUTH_PICS = environ.get('AUTH_PICS', 'https://ibb.co/mVkSySr7')
-PICS = environ.get('PICS', 'https://ibb.co/mVkSySr7')
-FILE_PIC = environ.get('FILE_PIC', 'https://ibb.co/mVkSySr7')
+PICS = environ.get('PICS', 'https://ibb.co/0RQMzgyB')
+FILE_PIC = environ.get('FILE_PIC', 'https://ibb.co/0RQMzgyB')
 
 # 📝 __Captions__
 FILE_CAPTION = environ.get('FILE_CAPTION', script.CAPTION)
@@ -59,7 +59,7 @@ CHANNEL_FILE_CAPTION = environ.get('CHANNEL_FILE_CAPTION', script.CAPTION)
 
 # ⏱️ __Time & Limits__
 PING_INTERVAL = int(environ.get("PING_INTERVAL", 1200))
-SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', 1000))
+SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', 60))
 RATE_LIMIT_TIMEOUT = int(environ.get("RATE_LIMIT_TIMEOUT", 600))
 MAX_FILES = int(environ.get("MAX_FILES", 50))
 VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', 60))  # Hours
