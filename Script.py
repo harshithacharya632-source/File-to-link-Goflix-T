@@ -13,7 +13,7 @@ class script(object):
     
     LOG_TEXT = """<b>#NewUser {}\n    \nID - <code>{}</code>\nNᴀᴍᴇ - {}</b>"""
 
-    ABOUT_TXT = """<blockquote><b>╔══❰ {} ❱═════❍\n║╭━━━━━━━━━━━━━━━━━━➣\n║┣⪼🤖My Name : {}\n║┣⪼👦Developer : <a href='https://t.me/Goflix_AdminBot'>Owner</a>\n║┣⪼❣️Update : <a href=https://t.me/cantarellabots>Goflix Official</a>\n║┣⪼⏲️Bot Uptime :- {}\n║┣⪼📡Hosted On : Koyeb \n║┣⪼🗣️Language : Python \n║┣⪼📚Library : Pyrogram\n║┣⪼🗒️Version : {} [Stable]\n║╰━━━━━━━━━━━━━━━➣\n╚══════════════════❍ </b></blockquote>"""
+    ABOUT_TXT = """<blockquote><b>╔══❰ {} ❱═════❍\n║╭━━━━━━━━━━━━━━━━━━➣\n║┣⪼🤖My Name : {}\n║┣⪼👦Developer : <a href='https://t.me/Goflix_AdminBot'>Owner</a>\n║┣⪼❣️Update : <a href=https://t.me/trendi_Backup>Goflix Official</a>\n║┣⪼⏲️Bot Uptime :- {}\n║┣⪼📡Hosted On : Koyeb \n║┣⪼🗣️Language : Python \n║┣⪼📚Library : Pyrogram\n║┣⪼🗒️Version : {} [Stable]\n║╰━━━━━━━━━━━━━━━➣\n╚══════════════════❍ </b></blockquote>"""
 
     AUTH_TXT = """<i><b>Hᴇʏ {}! 👋\n\nTᴏ ᴄᴏɴᴛɪɴᴜᴇ ᴜsɪɴɢ ᴛʜɪs ʙᴏᴛ, ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇs ᴄʜᴀɴɴᴇʟ 💬\n\nSᴇʀᴠᴇʀ ʟᴏᴀᴅ ɪs ʜɪɡʜ, sᴏ ᴀᴄᴄᴇss ɪs ʟɪᴍɪᴛᴇᴅ ᴛᴏ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴍᴇᴍʙᴇʀs ᴏɴʟʏ 🚀</b></i>"""
 
