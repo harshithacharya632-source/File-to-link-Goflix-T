@@ -1,12 +1,12 @@
 class rexbots_template(object):
-    NAME = "RexBots Official"
+    NAME = "GOFLIX STREAM"
 
     DISCLAIMER = (
         "This platform provides high-speed streaming and download services. "
-        "Strictly for personal use. Report any copyright infringements or inappropriate content to our support team."
+        "Strictly for personal use. Report any copyright infringements or inappropriate content to our support GOFLIX team."
     )
 
-    REPORT_LINK = "https://t.me/cantarellabots"
+    REPORT_LINK = "https://t.me/Goflix_AdminBot"
 
     # Premium Color Palette (Dark Theme)
     COLOURS = {
