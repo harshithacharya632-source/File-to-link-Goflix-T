@@ -9,13 +9,13 @@ BOT_TOKEN = environ.get('BOT_TOKEN', '')
 
 # 👑 __Owner & Admins__
 ADMINS = [int(i) for i in environ.get('ADMINS', '').split()]
-AUTH_CHANNEL = [int(i) for i in environ.get("AUTH_CHANNEL", "").split()]
-OWNER_USERNAME = environ.get("OWNER_USERNAME", 'CantarellaBots')
-BOT_USERNAME = environ.get("BOT_USERNAME", 'CantarellaBots')
+AUTH_CHANNEL = [int(i) for i in environ.get("AUTH_CHANNEL", "-1001887592232").split()]
+OWNER_USERNAME = environ.get("OWNER_USERNAME", 'Goflix_AdminBot')
+BOT_USERNAME = environ.get("BOT_USERNAME", 'Goflix_AdminBot')
 
 # 🔗 __Channel & Support Links__
-CHANNEL = environ.get('CHANNEL', 'https://t.me/cantarellabots')
-SUPPORT = environ.get('SUPPORT', 'https://t.me/cantarellabots')
+CHANNEL = environ.get('CHANNEL', 'https://t.me/trendi_Backup')
+SUPPORT = environ.get('SUPPORT', 'https://t.me/Goflix_Disscussion')
 HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', 'https://t.me/cantarellabots')
 HOW_TO_OPEN = environ.get('HOW_TO_OPEN', 'https://t.me/cantarellabots')
 
@@ -24,7 +24,7 @@ BIN_CHANNEL = int(environ.get("BIN_CHANNEL", ''))
 LOG_CHANNEL = int(environ.get("LOG_CHANNEL", '-'))
 PREMIUM_LOGS = int(environ.get("PREMIUM_LOGS", ''))
 VERIFIED_LOG = int(environ.get('VERIFIED_LOG', ''))
-SUPPORT_GROUP = int(environ.get("SUPPORT_GROUP", "https://t.me/Goflix_Disscussion"))
+SUPPORT_GROUP = int(environ.get("SUPPORT_GROUP", ""))
 
 # ✅ __Feature Toggles__
 VERIFY = False  # Enable user verification
@@ -42,7 +42,7 @@ SHORTLINK_URL = environ.get('SHORTLINK_URL', '')
 SHORTLINK_API = environ.get('SHORTLINK_API', '')
 
 # 💾 __Database Configuration__
-DB_URL = environ.get('DATABASE_URI', "mongodb+srv://Goflix_db_user:QfCDr5U61RbDo8Pz@cluster0.pvpaudr.mongodb.net/?appName=Cluster0")
+DB_URL = environ.get('DATABASE_URI', "")
 DB_NAME = environ.get('DATABASE_NAME', "Goflix_db_user")
 
 # 📸 __Media & Images__
