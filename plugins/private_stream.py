@@ -37,7 +37,7 @@ async def private_receive_handler(c: Client, m: Message):
         return
 
     file_id = m.document or m.video or m.audio
-    file_name = file_id.file_name if file_id.file_name else f"Goflix_{int(time.time())}.mkv"
+    file_name = file_id.file_name if file_id.file_name else f"RexBots_{int(time.time())}.mkv"
     file_size = get_size(file_id.file_size)
 
     verified = await rx_verification(c, m)
@@ -47,7 +47,7 @@ async def private_receive_handler(c: Client, m: Message):
     try:
         forwarded = await m.forward(chat_id=BIN_CHANNEL)
         hash_str = get_hash(forwarded)
-        stream = f"{URL}watch/{forwarded.id}/Goflix_{int(time.time())}.mkv?hash={hash_str}"
+        stream = f"{URL}watch/{forwarded.id}/RexBots_{int(time.time())}.mkv?hash={hash_str}"
         download = f"{URL}{forwarded.id}?hash={hash_str}"
         file_link = f"https://t.me/{BOT_USERNAME}?start=file_{forwarded.id}"
         share_link = f"https://t.me/share/url?url={urllib.parse.quote(file_link)}"
