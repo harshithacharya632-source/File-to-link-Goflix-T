@@ -272,16 +272,25 @@
 
     <!-- File Info -->
     <div class="glass-card">
-      <div class="file-info-title"><i class="fa-solid fa-circle-info me-2"></i> File Details</div>
+      <div class="file-info-title">
+        <i class="fa-solid fa-circle-info me-2"></i> File Details
+      </div>
+    
       <div class="info-item">
         <span class="info-label">.</span>
-        <span class="info-value">{{file_name}}</span>
+        <span class="info-value" title="{{file_name}}">
+          {{file_name}}
+        </span>
       </div>
+    
       <div class="info-item">
         <span class="info-label">Size</span>
-        <span class="info-value">{{file_size}}</span>
+        <span class="info-value">
+          {{file_size}}
+        </span>
       </div>
     </div>
+
 
     <!-- Share -->
     <button onclick="shareButton()" class="btn btn-custom btn-share">
