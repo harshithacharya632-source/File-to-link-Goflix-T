@@ -175,6 +175,12 @@
     .info-value {
       color: #fff;
       font-family: monospace;
+    
+      /* 🔧 FIX for out-of-frame filename */
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     /* Footer */
