@@ -47,6 +47,29 @@
       border-radius: 4px;
     }
 
+        /* File title display */
+    .file-title-box {
+      padding: 10px 5px;
+    }
+    
+    .file-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    
+    .file-meta {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #9aa0a6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
     /* Header */
     .navbar {
       background: rgba(0, 0, 0, 0.6);
@@ -247,6 +270,16 @@
       <video id="myVideo" src="{{file_url}}" class="w-100" controls>
         Your browser does not support the video tag.
       </video>
+    </div>
+
+        <!-- File Title -->
+    <div class="file-title-box mt-3 mb-3 text-center">
+      <div class="file-title">
+        {{ file_name }}
+      </div>
+      <div class="file-meta">
+        <i class="fa-solid fa-hard-drive me-1"></i> {{ file_size }}
+      </div>
     </div>
 
     <!-- External Players -->
