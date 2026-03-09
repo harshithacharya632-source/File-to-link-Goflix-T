@@ -330,6 +330,161 @@
       </div>
     </div>
 
+    <!-- hhhhhhhhhh -->
+    <!DOCTYPE html>
+    <html lang="en" class="dark">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Explore Our Universe • GOFLIX</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                neon: {
+                  cyan: '#00f0ff',
+                  purple: '#a78bfa',
+                }
+              },
+              animation: {
+                'glow-pulse': 'glowPulse 2.5s ease-in-out infinite alternate',
+                'shine': 'shine 6s linear infinite',
+              },
+              keyframes: {
+                glowPulse: {
+                  '0%': { boxShadow: '0 0 10px #00f0ff33, 0 0 20px #00f0ff22' },
+                  '100%': { boxShadow: '0 0 25px #00f0ffaa, 0 0 45px #00f0ff66, 0 0 70px #a78bfa44' }
+                },
+                shine: {
+                  '0%': { backgroundPosition: '200% 0' },
+                  '100%': { backgroundPosition: '-200% 0' }
+                }
+              }
+            }
+          }
+        }
+      </script>
+      <style>
+        /* Optional extra futuristic touch */
+        .card-hover:hover {
+          transform: translateY(-8px) scale(1.03);
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .neon-btn {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.35s ease;
+        }
+        .neon-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, transparent, rgba(0,240,255,0.25), transparent);
+          transform: translateX(-100%);
+          transition: transform 0.6s ease;
+        }
+        .neon-btn:hover::before {
+          transform: translateX(100%);
+        }
+        .neon-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 15px 35px rgba(0,240,255,0.4), 0 5px 15px rgba(167,139,250,0.3) !important;
+        }
+      </style>
+    </head>
+    <body class="bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white min-h-screen">
+    
+      <div class="container max-w-7xl mx-auto px-5 py-16 md:py-24">
+        
+        <!-- Header -->
+        <div class="text-center mb-14 md:mb-20">
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 animate-pulse">
+            Explore Our Universe
+          </h2>
+          <p class="mt-4 text-lg md:text-xl text-gray-400 font-light">
+            Discover our channels and intelligent bots
+          </p>
+        </div>
+    
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+    
+          <!-- Main Card -->
+          <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl card-hover transition-all duration-500 group">
+    
+            <!-- Icon -->
+            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-900/50 to-purple-900/40 flex items-center justify-center mb-6 text-cyan-400 group-hover:scale-110 transition-transform duration-500">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+    
+            <h3 class="text-3xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
+              Our Bots
+            </h3>
+    
+            <p class="text-gray-300 mb-8 leading-relaxed text-base">
+              Intelligent bots for enhanced streaming and automated assistance — next-level experience awaits.
+            </p>
+    
+            <!-- Animated Neon Buttons -->
+            <div class="space-y-4">
+              <a href="https://t.me/trendi_Backup" class="neon-btn group flex items-center justify-between px-6 py-4 bg-gray-800/70 border border-cyan-500/30 rounded-xl text-white font-medium text-base shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400">
+                <span>GOFLIX BACK-UP</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+    
+              <a href="https://t.me/Goflix2_Bot" class="neon-btn group flex items-center justify-between px-6 py-4 bg-gray-800/70 border border-cyan-500/30 rounded-xl text-white font-medium text-base shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400">
+                <span>GOFLIX Bot</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+    
+              <a href="https://t.me/Goflix3bot" class="neon-btn group flex items-center justify-between px-6 py-4 bg-gray-800/70 border border-cyan-500/30 rounded-xl text-white font-medium text-base shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400">
+                <span>GOFLIX STREAM BOT</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+    
+              <a href="https://t.me/Joomoviebot" class="neon-btn group flex items-center justify-between px-6 py-4 bg-gray-800/70 border border-cyan-500/30 rounded-xl text-white font-medium text-base shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400">
+                <span>JOO GOFLIX BOT</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </div>
+    
+          </div>
+    
+          <!-- You can duplicate the card above and change content for more cards -->
+    
+        </div>
+    
+      </div>
+    
+      <!-- Optional contact bar -->
+      <div class="text-center py-10">
+        <div class="inline-block px-8 py-4 bg-gradient-to-r from-green-700 to-green-900 rounded-2xl text-lg font-semibold shadow-xl">
+          Broken links? Contact → 
+          <a href="https://t.me/Goflix_AdminBot" class="underline hover:text-cyan-300 transition-colors">Goflix Admin</a>
+        </div>
+      </div>
+    
+    </body>
+    </html>
+
 
     <!-- Share -->
     <button onclick="shareButton()" class="btn btn-custom btn-share">
