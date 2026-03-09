@@ -331,108 +331,203 @@
     </div>
 
     <!-- hhhhhhhhhh -->
-    <section id="explore" class="cards-section">
-        <div class="section-header">
-            <h2 class="section-title">Explore Our Universe</h2>
-            <p class="section-subtitle">
-                Discover our channels and intelligent bots
-            </p>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explore Our Universe • GOFLIX</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            neon: {
+              cyan: '#00f0ff',
+              purple: '#a78bfa',
+              indigo: '#6366f1',
+            }
+          },
+          animation: {
+            'glow-pulse': 'glowPulse 3s ease-in-out infinite alternate',
+            'shine': 'shine 5s linear infinite',
+          },
+          keyframes: {
+            glowPulse: {
+              '0%': { boxShadow: '0 0 10px #00f0ff33, 0 0 20px #00f0ff22, inset 0 0 15px #a78bfa22' },
+              '100%': { boxShadow: '0 0 30px #00f0ffaa, 0 0 60px #00f0ff66, inset 0 0 30px #a78bfa44' }
+            },
+            shine: {
+              '0%': { backgroundPosition: '200% 0' },
+              '100%': { backgroundPosition: '-200% 0' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .card-hover:hover {
+      transform: translateY(-10px) scale(1.03);
+      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .neon-link {
+      position: relative;
+      overflow: hidden;
+    }
+    .neon-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.25), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.7s ease;
+    }
+    .neon-link:hover::before {
+      transform: translateX(100%);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white min-h-screen font-sans">
+
+  <section id="explore" class="py-12 md:py-24">
+    <div class="container max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="text-center mb-10 md:mb-16">
+        <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-pulse">
+          Explore Our Universe
+        </h2>
+        <p class="mt-3 text-lg sm:text-xl text-gray-400 font-light">
+          Discover our channels and intelligent bots
+        </p>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+
+        <!-- Card 1: Our Channels -->
+        <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/60 backdrop-blur-xl border border-gray-700/60 rounded-2xl p-5 sm:p-8 shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,240,255,0.25)] card-hover hover:border-cyan-500/50">
+
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-transparent blur-2xl animate-glow-pulse"></div>
+          </div>
+
+          <div class="flex items-center gap-4 mb-5">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-cyan-900/60 to-purple-900/40 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform duration-500">
+              <svg width="26" height="26" class="sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
+              Our Channels
+            </h3>
+          </div>
+
+          <p class="text-gray-300 mb-6 leading-relaxed text-base">
+            Get exclusive content and real-time notifications from our premium channels
+          </p>
+
+          <div class="space-y-2.5 sm:space-y-3">
+            <a href="https://t.me/trendi_Backup" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-cyan-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>GOFLIX BACK-UP</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+
+            <a href="https://t.me/Goflix2_Bot" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-cyan-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>GOFLIX BOTs</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+
+            <a href="https://t.me/Goflix_Disscussion" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-cyan-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-cyan-500/30 hover:border-cyan-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>GOFLIX DISCUSSION</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
         </div>
 
-        <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </div>
-                <h3>Our Channels</h3>
-                <p>
-                    Get exclusive content and real-time notifications from our premium
-                    channels
-                </p>
-                <div class="card-links">
-                    <a href="https://t.me/trendi_Backup" class="card-link">
-                        <span>GOFLIX BACK-UP</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/Goflix2_Bot" class="card-link">
-                        <span>GOFLIX BOTs</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/Goflix_Disscussion" class="card-link">
-                        <span>GOFLIX DISCUSSION</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </div>
+        <!-- Card 2: Our Bots -->
+        <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/60 backdrop-blur-xl border border-gray-700/60 rounded-2xl p-5 sm:p-8 shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_40px_rgba(167,139,250,0.3)] card-hover hover:border-purple-500/50">
 
-            <div class="card">
-                <div class="card-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                </div>
-                <h3>Our Bots</h3>
-                <p>
-                    Intelligent bots for enhanced streaming and automated assistance
-                </p>
-                <div class="card-links">
-                    <a href="https://t.me/trendi_Backup" class="card-link">
-                        <span>GOFLIX BACK-UP</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/Goflix2_Bot" class="card-link">
-                        <span>GOFLIX Bot</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/Goflix3bot" class="card-link">
-                        <span>GOFLIX STREAM BOT</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/Joomoviebot" class="card-link">
-                        <span>JOO GOFLIX BOT</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent blur-2xl animate-glow-pulse"></div>
+          </div>
+
+          <div class="flex items-center gap-4 mb-5">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-purple-900/60 to-cyan-900/40 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-500">
+              <svg width="26" height="26" class="sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
             </div>
+            <h3 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+              Our Bots
+            </h3>
+          </div>
+
+          <p class="text-gray-300 mb-6 leading-relaxed text-base">
+            Intelligent bots for enhanced streaming and automated assistance — next-level experience awaits.
+          </p>
+
+          <div class="space-y-2.5 sm:space-y-3">
+            <a href="https://t.me/trendi_Backup" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-purple-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-purple-500/30 hover:border-purple-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>GOFLIX BACK-UP</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+
+            <a href="https://t.me/Goflix2_Bot" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-purple-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-purple-500/30 hover:border-purple-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>GOFLIX Bot</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+
+            <a href="https://t.me/Goflix3bot" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-purple-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-purple-500/30 hover:border-purple-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>GOFLIX STREAM BOT</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+
+            <a href="https://t.me/Joomoviebot" class="neon-link group/link flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gray-800/60 border border-purple-500/30 rounded-xl text-white font-medium shadow-lg hover:shadow-purple-500/30 hover:border-purple-400/60 transition-all duration-400 text-sm sm:text-base">
+              <span>JOO GOFLIX BOT</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/link:translate-x-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
         </div>
-    </section>
-</div>
+
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>
   <!-- END HERE   -->
     
       <!-- Optional contact bar -->
