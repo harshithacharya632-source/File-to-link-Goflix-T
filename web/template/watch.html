@@ -300,7 +300,7 @@
     
       <!-- 1DM Download -->
       <div class="col-md-4">
-        <a onclick="openIn1DM()"
+        <a href="javascript:void(0);" onclick="openIn1DM()"
            class="btn btn-custom btn-download w-100">
           <i class="fa-solid fa-download"></i> &nbsp; 1DM Download
         </a>
@@ -527,14 +527,13 @@
     }
     function streamDownload() {
       window.location.href = "{{ file_url }}";
-      
+    }
+    
     function openIn1DM() {
       let url = "{{ file_url }}";
-    
       let clean = url.replace(/^https?:\/\//, '');
     
       window.location.href = `intent://${clean}#Intent;scheme=https;package=idm.internet.download.manager;end`;
-    }      
     }
     function showLinkModal(url) {
       if (url) window.open(url, "_blank");
