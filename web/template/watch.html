@@ -531,10 +531,8 @@
     function openIn1DM() {
       let url = "{{ file_url }}";
     
-      // remove http/https for intent
       let clean = url.replace(/^https?:\/\//, '');
     
-      // open in 1DM
       window.location.href = `intent://${clean}#Intent;scheme=https;package=idm.internet.download.manager;end`;
     }      
     }
