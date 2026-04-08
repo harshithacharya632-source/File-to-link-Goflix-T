@@ -300,9 +300,13 @@
     
       <!-- 1DM Download -->
       <div class="col-md-4">
-        <a href="intent://{{ file_url.replace('https://', '').replace('http://', '') }}#Intent;scheme=https;package=idm.internet.download.manager;end"
+        <a href="{{ file_url }}"
+           target="_blank"
+           onclick="setTimeout(() => {
+             alert('If download not started, enable 1DM browser integration');
+           }, 2000);"
            class="btn btn-custom btn-download w-100">
-          <i class="fa-solid fa-download"></i> &nbsp; 1DM Download
+          Download
         </a>
       </div>
     
