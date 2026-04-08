@@ -300,16 +300,15 @@
     
       <!-- 1DM Download -->
       <div class="col-md-4">
-        <a href="{{ file_url }}"
+        <a href="{{ file_url.replace('/stream', '/download') }}"
            class="btn btn-custom btn-download w-100">
           <i class="fa-solid fa-download"></i> &nbsp; 1DM Download
         </a>
       </div>
     
       <!-- Direct Download -->
-      <div class="col-md-4">
-        <a href="{{ file_url }}" target="_blank"
-           class="btn btn-custom btn-download w-100">
+      <div class="col-md-6">
+        <a onclick="streamDownload()" class="btn btn-custom btn-download">
           <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
         </a>
       </div>
