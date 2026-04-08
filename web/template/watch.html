@@ -295,18 +295,33 @@
       </a>
     </div>
 
-    <!-- Actions -->
+<!-- Actions -->
     <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <a onclick="streamDownload()" class="btn btn-custom btn-download">
+    
+      <!-- 1DM Download -->
+      <div class="col-md-4">
+        <a href="intent://{{ file_link.replace('https://', '').replace('http://', '') }}#Intent;package=idm.internet.download.manager;end"
+           class="btn btn-custom btn-download w-100">
+          <i class="fa-solid fa-download"></i> &nbsp; 1DM Download
+        </a>
+      </div>
+    
+      <!-- Direct Download -->
+      <div class="col-md-4">
+        <a href="{{ file_link }}" target="_blank"
+           class="btn btn-custom btn-download w-100">
           <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
         </a>
       </div>
-      <div class="col-md-6">
-        <a onclick="showLinkModal('{{tg_button}}')" class="btn btn-custom btn-telegram">
-          <i class="fa-brands fa-telegram"></i> &nbsp; Get File in Telegram
+    
+      <!-- Telegram -->
+      <div class="col-md-4">
+        <a onclick="showLinkModal('{{ tg_button }}')"
+           class="btn btn-custom btn-telegram w-100">
+          <i class="fa-brands fa-telegram"></i> &nbsp; Get in Telegram
         </a>
       </div>
+    
     </div>
 
     <!-- File Info -->
@@ -531,7 +546,7 @@
       }
     }
   </script>
-  <div class="watermark">.</div>
+  <div class="watermark"></div>
 </body>
 
 </html>
