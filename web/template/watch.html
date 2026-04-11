@@ -25,7 +25,7 @@
     }
 
     body {
-      background: var(--bg-gradient);
+      background:#212529;
       color: #fff;
       font-family: 'Outfit', sans-serif;
       min-height: 100vh;
@@ -247,11 +247,13 @@
         Your browser does not support the video tag.
       </video>
     </div>
-    <div class="text-center mt-2" style="font-size: 0.8rem; color: #aaa;">
+    
+    <!-- ✅ Added more gap here (mt-4) -->
+    <div class="text-center mt-4" style="font-size: 0.8rem; color: #aaa;">
       ⚠️ Some video/audio formats may not play in web player.<br>
       For full support, use <b>VLC Player</b> (supports all video & audio formats).
     </div>
-
+    
     <!-- External Players -->
     <div class="d-flex flex-wrap gap-2 mb-3">
       <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill" title="MX Player">
