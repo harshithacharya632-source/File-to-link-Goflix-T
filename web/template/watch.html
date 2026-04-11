@@ -4,12 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>{{ template_ne }} | {{ file_name }}</title>
-  <link rel="icon" href="https://i.ibb.co/Z6F9WZL9/1000489714.png" type="image/x-icon">
+  <link rel="icon" href="https://telegra.ph/file/5a53e66bb148003666d62.jpg" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Fonts & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+
   <!-- Plyr & Bootstrap -->
   <link rel="stylesheet" href="https://cdn.plyr.io/3.6.12/plyr.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -17,57 +18,20 @@
   <style>
     :root {
       --primary-color: #00f0ff;
-      --secondary-color: #000000;
+      --secondary-color: #7000ff;
       --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       --glass-bg: rgba(255, 255, 255, 0.05);
       --glass-border: 1px solid rgba(255, 255, 255, 0.1);
       --card-radius: 16px;
     }
 
-     body {
-        background: #0b0b0b;   /* Dark grey */
-        color: #ffffff;
-        font-family: 'Outfit', sans-serif;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #0f0c29;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--secondary-color);
-      border-radius: 4px;
-    }
-
-        /* File title display */
-    .file-title-box {
-      padding: 10px 5px;
-    }
-    
-    .file-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #ffffff;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-    
-    .file-meta {
-      margin-top: 6px;
-      font-size: 0.85rem;
-      color: #9aa0a6;
+    body {
+      background: var(--bg-gradient);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
+      flex-direction: column;
     }
 
     /* Header */
@@ -78,99 +42,41 @@
     }
 
     .navbar-brand {
-      color: #ffffff !important;
+      color: var(--primary-color) !important;
       font-weight: 600;
-      letter-spacing: 1px;
     }
 
-    /* Video Player Container */
+    /* Player */
     .player-wrapper {
       background: #000;
       border-radius: var(--card-radius);
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       margin-top: 20px;
       border: var(--glass-border);
-    }
-
-    /* Plyr Customization */
-    .plyr--video .plyr__control--overlaid,
-    .plyr--video .plyr__control:hover {
-      background: var(--secondary-color);
-    }
-
-    .plyr--full-ui input[type=range] {
-      color: var(--primary-color);
     }
 
     /* Buttons */
     .btn-custom {
       border: none;
       border-radius: 12px;
-      padding: 12px 20px;
+      padding: 12px;
       font-weight: 500;
-      transition: all 0.3s ease;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       gap: 10px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
     }
 
-    .btn-custom:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      filter: brightness(1.2);
-    }
+    .btn-mx { background: linear-gradient(45deg, #2980b9, #2c3e50); color: white; }
+    .btn-vlc { background: linear-gradient(45deg, #e67e22, #d35400); color: white; }
+    .btn-playit { background: linear-gradient(45deg, #8e44ad, #9b59b6); color: white; }
 
-    .btn-mx {
-      background: linear-gradient(45deg, #1e293b);
-      color: white;
-    }
-
-    .btn-vlc {
-      background: linear-gradient(45deg, #1e293b);
-      color: white;
-    }
-
-    .btn-playit {
-      background: linear-gradient(45deg, #1e293b);
-      color: white;
-    }
-
-    .btn-download {
-      background: linear-gradient(45deg, #00b09b, #96c93d);
-      color: white;
-      font-weight: 600;
-      width: 100%;
-    }
-
-    .btn-telegram {
-      background: linear-gradient(45deg, #0088cc, #36aee2);
-      color: white;
-      width: 100%;
-    }
-
-    .btn-share {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #aaa;
-      width: 100%;
-    }
-
-    .btn-share:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-    }
+    .btn-download { background: linear-gradient(45deg, #00b09b, #96c93d); color: white; width: 100%; }
+    .btn-telegram { background: linear-gradient(45deg, #0088cc, #36aee2); color: white; width: 100%; }
 
     /* Cards */
     .glass-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(12px);
       border: var(--glass-border);
       border-radius: var(--card-radius);
       padding: 20px;
@@ -179,10 +85,7 @@
 
     .file-info-title {
       color: var(--primary-color);
-      font-size: 1.1rem;
       margin-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
     }
 
     .info-item {
@@ -191,368 +94,106 @@
       margin-bottom: 8px;
     }
 
-    .info-label {
-      color: #888;
-    }
+    .info-label { color: #888; }
 
+    /* ✅ FIX: filename inside box */
     .info-value {
-      color: #fff;
+      word-break: break-all;
+      white-space: normal;
+      max-width: 100%;
       font-family: monospace;
-    
-      /* 🔧 FIX for out-of-frame filename */
-      min-width: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
 
-    /* Footer */
     footer {
       margin-top: auto;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 15px;
       text-align: center;
-      font-size: 0.8rem;
+      padding: 10px;
       color: #666;
-    }
-
-    footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    main {
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    .watermark {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      opacity: 0.2;
-      color: #fff;
-      font-size: 3rem;
-      font-weight: 800;
-      z-index: 99999;
-      pointer-events: none;
-      user-select: none;
-      transform: rotate(-15deg);
     }
   </style>
 </head>
 
 <body>
-  <!-- Header -->
+
   <nav class="navbar navbar-dark">
     <div class="container">
-      <span class="navbar-brand mb-0 h1"><i class="fa-solid fa-robot me-2"></i>{{ template_ne }}</span>
+      <span class="navbar-brand">{{ template_ne }}</span>
     </div>
   </nav>
 
-  <!-- Main Content -->
   <main class="container py-4">
 
     <!-- Player -->
     <div class="player-wrapper mb-4">
-      <video id="myVideo" src="{{file_url}}" class="w-100" controls>
-        Your browser does not support the video tag.
-      </video>
+      <video id="myVideo" src="{{file_url}}" class="w-100" controls></video>
     </div>
 
-        <!-- File Title -->
-    <div class="file-title-box mt-3 mb-3 text-center">
-      <div class="file-title">
-        {{ file_name }}
-      </div>
-      <div class="file-meta">
-        <i class="fa-solid fa-hard-drive me-1"></i> {{ file_size }}
-      </div>
+    <!-- ✅ VLC INFO MESSAGE -->
+    <div class="text-center mt-2" style="font-size: 0.8rem; color: #aaa;">
+      ⚠️ Some video/audio formats may not play in web player.<br>
+      For full support, use <b>VLC Player</b> (supports all video & audio formats).
     </div>
 
-    <!-- External Players -->
-    <div class="d-flex flex-wrap gap-2 mb-3">
-      <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill" title="MX Player">
-        <i class="fa fa-play"></i> MX Player
-      </a>
-      <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill" title="VLC Player">
-        <i class="fa fa-play"></i> VLC Player
-      </a>
-      <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill" title="PlayIt">
-        <i class="fa fa-play"></i> PlayIt
-      </a>
+    <!-- Players -->
+    <div class="d-flex gap-2 my-3">
+      <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill">MX Player</a>
+      <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill">VLC Player</a>
+      <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill">PlayIt</a>
     </div>
 
-<!-- Actions -->
+    <!-- Actions -->
     <div class="row g-3 mb-3">
-    
-      <!-- 1DM Download -->
-      <div class="col-md-4">
-        <a href="javascript:void(0);" onclick="openIn1DM()"
-           class="btn btn-custom btn-download w-100">
-          <i class="fa-solid fa-download"></i> &nbsp; 1DM Download
-        </a>
-      </div>
-    
-      <!-- Direct Download -->
       <div class="col-md-6">
-        <a onclick="streamDownload()" class="btn btn-custom btn-download">
-          <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
-        </a>
+        <a onclick="streamDownload()" class="btn btn-custom btn-download">Download</a>
       </div>
-    
-      <!-- Telegram -->
-      <div class="col-md-4">
-        <a onclick="showLinkModal('{{ tg_button }}')"
-           class="btn btn-custom btn-telegram w-100">
-          <i class="fa-brands fa-telegram"></i> &nbsp; Get in Telegram
-        </a>
+      <div class="col-md-6">
+        <a onclick="showLinkModal('{{tg_button}}')" class="btn btn-custom btn-telegram">Telegram</a>
       </div>
-    
     </div>
 
     <!-- File Info -->
     <div class="glass-card">
-      <div class="file-info-title">
-        <i class="fa-solid fa-circle-info me-2"></i> File Details
-      </div>
-    
+      <div class="file-info-title">File Details</div>
       <div class="info-item">
-        <span class="info-label">.</span>
-        <span class="info-value" title="{{file_name}}">
-          {{file_name}}
-        </span>
+        <span class="info-label">Filename</span>
+        <span class="info-value">{{file_name}}</span>
       </div>
-    
       <div class="info-item">
         <span class="info-label">Size</span>
-        <span class="info-value">
-          {{file_size}}
-        </span>
+        <span class="info-value">{{file_size}}</span>
       </div>
-    </div>
-
-    <!-- hhhhhhhhhh -->
-  <!DOCTYPE html>
-  <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Explore Our Universe • GOFLIX</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            animation: {
-              shine: 'shine 4s linear infinite',
-            },
-            keyframes: {
-              shine: {
-                '0%': { backgroundPosition: '200% 0' },
-                '100%': { backgroundPosition: '-200% 0' }
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      .btn-shine {
-        position: relative;
-        overflow: hidden;
-      }
-      .btn-shine::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-        transition: left 0.7s ease;
-      }
-      .btn-shine:hover::before {
-        left: 150%;
-      }
-    </style>
-  </head>
-  <body class="bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white min-h-screen">
-  
-    <section class="py-8 md:py-16">
-      <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
-  
-        <div class="text-center mb-6 md:mb-12">
-          <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Explore Our Universe
-          </h2>
-          <p class="mt-2 text-sm sm:text-base md:text-lg text-gray-400">
-            Discover our channels and intelligent bots
-          </p>
-        </div>
-  
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 max-w-5xl mx-auto">
-  
-          <!-- Card 1: Channels -->
-          <div class="bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl p-5 md:p-7 shadow-lg">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-cyan-900/70 flex items-center justify-center text-cyan-400">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <h3 class="text-xl md:text-2xl font-bold text-cyan-300">Our Channels</h3>
-            </div>
-            <p class="text-gray-300 text-sm md:text-base mb-5">
-              Get exclusive content and real-time notifications from our premium channels
-            </p>
-            <div class="space-y-2.5">
-              <a href="https://t.me/trendi_Backup" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-cyan-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                GOFlix BACK-UP <span class="text-cyan-400">→</span>
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-300/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"></div>
-              </a>
-              <a href="https://t.me/Goflix2_Bot" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-cyan-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                GOFlix BOTs <span class="text-cyan-400">→</span>
-              </a>
-              <a href="https://t.me/Goflix_Disscussion" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-cyan-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                GOFlix DISCUSSION <span class="text-cyan-400">→</span>
-              </a>
-            </div>
-          </div>
-  
-          <!-- Card 2: Bots -->
-          <div class="bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl p-5 md:p-7 shadow-lg">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-purple-900/70 flex items-center justify-center text-purple-400">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-              </div>
-              <h3 class="text-xl md:text-2xl font-bold text-purple-300">Our Bots</h3>
-            </div>
-            <p class="text-gray-300 text-sm md:text-base mb-5">
-              Intelligent bots for enhanced streaming and automated assistance
-            </p>
-            <div class="space-y-2.5">
-              <a href="https://t.me/trendi_Backup" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-purple-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                GOFlix BACK-UP <span class="text-purple-400">→</span>
-              </a>
-              <a href="https://t.me/Goflix2_Bot" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-purple-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                GOFlix Bot <span class="text-purple-400">→</span>
-              </a>
-              <a href="https://t.me/Goflix3bot" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-purple-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                GOFlix STREAM BOT <span class="text-purple-400">→</span>
-              </a>
-              <a href="https://t.me/Joomoviebot" class="btn-shine flex items-center justify-between px-4 py-3 bg-gray-800 border border-purple-700/40 rounded-xl text-sm font-medium hover:bg-gray-700/80 hover:scale-[1.02] transition-all duration-300">
-                JOO GOFlix BOT <span class="text-purple-400">→</span>
-              </a>
-            </div>
-          </div>
-  
-        </div>
-      </div>
-    </section>
-  
-  </body>
-  </html>
-  <!-- END HERE   -->
-    
-      <!-- Optional contact bar -->
-      <div class="text-center py-10">
-        <div class="inline-block px-8 py-4 bg-gradient-to-r from-green-700 to-green-900 rounded-2xl text-lg font-semibold shadow-xl">
-          Broken links? Contact → 
-          <a href="https://t.me/Goflix_AdminBot" class="underline hover:text-cyan-300 transition-colors">Goflix Admin</a>
-        </div>
-      </div>
-    
-    </body>
-    </html>
-
-
-    <!-- Share -->
-    <button onclick="shareButton()" class="btn btn-custom btn-share">
-      <i class="fa-solid fa-share-nodes"></i> &nbsp; Share with Friends
-    </button>
-
-    <!-- Disclaimer usually hidden or subtle -->
-    <div class="mt-4 text-center" style="font-size: 0.75rem; color: #555;">
-      {{ disclaimer }} <br>
-      <a href="{{ report_link }}" style="color: #666;">Report Admin</a>
     </div>
 
   </main>
 
-  <!-- Footer -->
   <footer>
-    <p>&copy; 2026 {{ template_ne }}. All rights reserved.</p>
+    © 2025 {{ template_ne }}
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const player = new Plyr("#myVideo", {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-        settings: ['captions', 'quality', 'speed']
-      });
-    });
-
     function mx_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
-    }
-    function vlc_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
-    }
-    function playit_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
-    }
-    function streamDownload() {
-      window.location.href = "{{ file_url }}";
-    }
-    
-    function openIn1DM() {
       let url = "{{ file_url }}";
-      let clean = url.replace(/^https?:\/\//, '');
-    
-      window.location.href = `intent://${clean}#Intent;scheme=https;package=idm.internet.download.manager;end`;
+      window.location.href = `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;end`;
     }
+
+    function vlc_player() {
+      let url = "{{ file_url }}";
+      window.location.href = `intent:${url}#Intent;package=org.videolan.vlc;end`;
+    }
+
+    function playit_player() {
+      let url = "{{ file_url }}";
+      window.location.href = `intent:${url}#Intent;package=com.playit.videoplayer;end`;
+    }
+
+    function streamDownload() {
+      window.open("{{ file_url }}", "_blank");
+    }
+
     function showLinkModal(url) {
       if (url) window.open(url, "_blank");
     }
-    function shareButton() {
-      if (navigator.share) {
-        navigator.share({
-          title: '{{ file_name }}',
-          text: "Watch this video on {{ template_ne }}",
-          url: window.location.href,
-        });
-      } else {
-        // Fallback or copy to clipboard
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
-      }
-    }
   </script>
-  <div class="watermark"></div>
-</body>
 
+</body>
 </html>
