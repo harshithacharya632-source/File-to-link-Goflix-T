@@ -1,362 +1,438 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <title>{{ template_ne }} | {{ file_name }}</title>
-  <link rel="icon" href="https://i.ibb.co/Z6F9WZL9/1000489714.png" type="image/x-icon">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GoFlix | {{ file_name }}</title>
+<link rel="icon" href="https://i.ibb.co/Z6F9WZL9/1000489714.png" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;transition:background .3s,color .3s,border-color .3s}
+[data-theme="dark"]{
+--bg:#0a0a12;--surface:#13131e;--surface2:#1a1a28;--surface3:#222235;
+--text:#f0f0ff;--text2:#9090b0;
+--accent:#e50914;--accent2:#ff6b35;--accent3:#ff9500;
+--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+--glow:rgba(229,9,20,0.35);--card-shadow:0 4px 28px rgba(0,0,0,0.6);
+}
+[data-theme="light"]{
+--bg:#f4f4f8;--surface:#ffffff;--surface2:#f0f0f8;--surface3:#e8e8f4;
+--text:#0e0e1a;--text2:#5a5a7a;
+--accent:#cc0812;--accent2:#e55520;--accent3:#d47800;
+--border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
+--glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
 
-  <!-- Fonts & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-  <!-- Plyr & Bootstrap -->
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.6.12/plyr.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+/* NAVBAR */
+.navbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:11px 20px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);
+}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-logo{
+  display:flex;align-items:center;gap:2px;font-size:1.35rem;font-weight:900;letter-spacing:-1px;
+}
+.brand-go{color:var(--text)}
+.brand-flix{color:var(--accent)}
+.brand-dot{
+  width:8px;height:8px;background:var(--accent);border-radius:50%;
+  margin-left:3px;margin-bottom:12px;animation:pulsedot 2s infinite
+}
+@keyframes pulsedot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.7}}
+.nav-right{display:flex;align-items:center;gap:10px}
 
-  <style>
-    :root {
-      --primary-color: #00f0ff;
-      --secondary-color: #7000ff;
-      --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-      --card-radius: 16px;
-    }
+/* THEME TOGGLE */
+.theme-toggle{
+  display:flex;align-items:center;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:50px;padding:4px;cursor:pointer;gap:2px
+}
+.theme-btn{
+  width:30px;height:30px;border:none;border-radius:50px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  background:transparent;color:var(--text2);transition:all .25s
+}
+.theme-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--glow)}
 
-    body {
-      background:#212529;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+/* HERO BANNER */
+.hero-bar{
+  background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 60%,var(--accent3) 100%);
+  padding:8px 20px;font-size:12px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:8px;letter-spacing:.4px
+}
+.hero-bar i{font-size:11px}
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
+/* CONTAINER */
+.container{max-width:960px;margin:0 auto;padding:20px 16px}
 
-    ::-webkit-scrollbar-track {
-      background: #0f0c29;
-    }
+/* PLAYER CARD */
+.player-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;box-shadow:var(--card-shadow);margin-bottom:16px
+}
+.player-header{
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:var(--surface2)
+}
+.live-badge{
+  display:flex;align-items:center;gap:6px;background:rgba(229,9,20,0.12);
+  color:var(--accent);font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;
+  border:1px solid rgba(229,9,20,0.25);letter-spacing:.5px
+}
+.live-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+.hd-badge{
+  background:var(--accent);color:#fff;font-size:10px;font-weight:800;
+  padding:3px 9px;border-radius:5px;letter-spacing:.8px
+}
 
-    ::-webkit-scrollbar-thumb {
-      background: var(--secondary-color);
-      border-radius: 4px;
-    }
+.progress-bar-wrap{height:3px;background:var(--border)}
+.progress-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .15s}
 
-    /* Header */
-    .navbar {
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+.video-wrap{background:#000;aspect-ratio:16/9}
+.video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 
-    .navbar-brand {
-      color: var(--primary-color) !important;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
+.player-controls{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:var(--surface2);flex-wrap:wrap;gap:8px
+}
+.speed-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.speed-label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.spd{
+  background:var(--surface3);border:1px solid var(--border);border-radius:7px;
+  color:var(--text2);font-size:12px;padding:4px 10px;cursor:pointer;transition:all .2s;font-weight:600
+}
+.spd:hover,.spd.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.vol-row{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:12px}
+.vol-row input[type=range]{accent-color:var(--accent);width:80px;cursor:pointer}
+.vol-pct{min-width:32px;font-size:12px;color:var(--text2);font-weight:600}
 
-    /* Video Player Container */
-    .player-wrapper {
-      background: #000;
-      border-radius: var(--card-radius);
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      margin-top: 20px;
-      border: var(--glass-border);
-    }
+/* STATS */
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{
+  background:var(--surface);border:1px solid var(--border);border-radius:50px;
+  padding:5px 13px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px
+}
+.chip b{color:var(--text);font-weight:600}
 
-    /* Plyr Customization */
-    .plyr--video .plyr__control--overlaid,
-    .plyr--video .plyr__control:hover {
-      background: var(--secondary-color);
-    }
+/* BUTTONS */
+.btn{
+  border:none;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .22s;letter-spacing:.3px;text-transform:uppercase
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn:active{transform:scale(.97)}
 
-    .plyr--full-ui input[type=range] {
-      color: var(--primary-color);
-    }
+.app-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.btn-player{
+  background:var(--surface);color:var(--text);border:1px solid var(--border2);
+  flex:1;min-width:90px;font-size:12px;padding:10px 10px
+}
+.btn-player:hover{border-color:var(--accent);color:var(--accent)}
 
-    /* Buttons */
-    .btn-custom {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 20px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
-    }
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.btn-download{background:linear-gradient(135deg,#1dbf73,#16a560);color:#fff}
+.btn-telegram{background:linear-gradient(135deg,#0088cc,#229ed9);color:#fff}
 
-    .btn-custom:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      filter: brightness(1.2);
-    }
+.btn-share{
+  width:100%;background:var(--surface);color:var(--text2);
+  border:1px solid var(--border2);margin-bottom:16px;font-size:12px;padding:10px
+}
+.btn-share:hover{border-color:var(--accent);color:var(--accent)}
 
-    /* ✅ CHANGED TO DARK BLUE */
-    .btn-mx {
-      background: linear-gradient(45deg, #0a1f44, #003366);
-      color: white;
-    }
+/* INFO CARD */
+.info-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-bottom:14px;box-shadow:var(--card-shadow)
+}
+.info-head{
+  padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--accent);display:flex;align-items:center;gap:8px
+}
+.info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 16px;border-bottom:1px solid var(--border);gap:10px
+}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;min-width:70px}
+.info-val{color:var(--text);font-size:13px;word-break:break-all;text-align:right;font-family:monospace}
+.copy-btn{
+  background:var(--surface3);border:1px solid var(--border);border-radius:7px;
+  color:var(--text2);font-size:11px;padding:3px 9px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;margin-left:8px;font-weight:600
+}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-    .btn-vlc {
-      background: linear-gradient(45deg, #0a1f44, #003366);
-      color: white;
-    }
+/* TOAST */
+.toast{
+  position:fixed;bottom:28px;right:18px;background:var(--accent);color:#fff;
+  border-radius:12px;padding:11px 18px;font-size:13px;font-weight:700;
+  box-shadow:0 6px 28px var(--glow);display:flex;align-items:center;gap:8px;
+  z-index:9999;transform:translateY(80px);opacity:0;transition:all .32s ease
+}
+.toast.show{transform:translateY(0);opacity:1}
 
-    .btn-playit {
-      background: linear-gradient(45deg, #0a1f44, #003366);
-      color: white;
-    }
+/* DISCLAIMER */
+.disclaimer{text-align:center;color:var(--text2);font-size:12px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px}
+.disclaimer a{color:var(--accent);text-decoration:none}
 
-    .btn-download {
-      background: linear-gradient(45deg, #00b09b, #96c93d);
-      color: white;
-      font-weight: 600;
-      width: 100%;
-    }
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:14px 20px;text-align:center;color:var(--text2);font-size:12px;margin-top:20px}
+.footer-go{color:var(--text);font-weight:900}
+.footer-flix{color:var(--accent);font-weight:900}
 
-    .btn-telegram {
-      background: linear-gradient(45deg, #0088cc, #36aee2);
-      color: white;
-      width: 100%;
-    }
-
-    .btn-share {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #aaa;
-      width: 100%;
-    }
-
-    .btn-share:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-    }
-
-    /* Cards */
-    .glass-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border: var(--glass-border);
-      border-radius: var(--card-radius);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .file-info-title {
-      color: var(--primary-color);
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-    }
-
-    .info-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .info-label {
-      color: #888;
-    }
-
-    /* ✅ FIXED FILENAME INSIDE BOX */
-    .info-value {
-      color: #fff;
-      font-family: monospace;
-      word-break: break-all;
-      white-space: normal;
-      max-width: 100%;
-    }
-
-    /* Footer */
-    footer {
-      margin-top: auto;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 15px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #666;
-    }
-
-    footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    main {
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    .watermark {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      opacity: 0.2;
-      color: #fff;
-      font-size: 3rem;
-      font-weight: 800;
-      z-index: 99999;
-      pointer-events: none;
-      user-select: none;
-      transform: rotate(-15deg);
-    }
-  </style>
+@media(max-width:500px){
+  .cta-grid{grid-template-columns:1fr}
+  .vol-row input{width:60px}
+  .brand-logo{font-size:1.15rem}
+}
+</style>
 </head>
-
 <body>
-  <!-- Header -->
-  <nav class="navbar navbar-dark">
-    <div class="container">
-      <span class="navbar-brand mb-0 h1"><i class="fa-solid fa-robot me-2"></i>{{ template_ne }}</span>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fa fa-check-circle"></i><span id="toast-msg">Done!</span></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="brand">
+    <div class="brand-logo">
+      <span class="brand-go">Go</span><span class="brand-flix">Flix</span><div class="brand-dot"></div>
     </div>
-  </nav>
+  </div>
+  <div class="nav-right">
+    <div class="theme-toggle">
+      <button class="theme-btn" id="darkBtn" onclick="setTheme('dark')" title="Dark"><i class="fa fa-moon"></i></button>
+      <button class="theme-btn" id="lightBtn" onclick="setTheme('light')" title="Light"><i class="fa fa-sun"></i></button>
+    </div>
+  </div>
+</nav>
 
-  <!-- Main Content -->
-  <main class="container py-4">
+<!-- HERO BAR -->
+<div class="hero-bar">
+  <i class="fa fa-bolt"></i> GoFlix — Watch, Download &amp; Stream Instantly
+</div>
 
-    <!-- Player -->
-    <div class="player-wrapper mb-4">
-      <video id="myVideo" src="{{file_url}}" class="w-100" controls>
+<!-- MAIN -->
+<div class="container">
+
+  <!-- PLAYER CARD -->
+  <div class="player-card">
+    <div class="player-header">
+      <div class="live-badge"><div class="live-dot"></div> LIVE STREAM</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--text2)" id="resLabel">—</span>
+        <span class="hd-badge">HD</span>
+      </div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progBar"></div></div>
+    <div class="video-wrap">
+      <video id="myVideo" src="{{file_url}}" controls preload="metadata">
         Your browser does not support the video tag.
       </video>
     </div>
-    
-    <!-- ✅ Added more gap here (mt-4) -->
-    <div class="text-center mt-4" style="font-size: 0.8rem; color: #aaa;">
-      ⚠️ Some video/audio formats may not play in web player.<br>
-      For full support, use <b>VLC Player</b> (supports all video & audio formats).
+    <div class="player-controls">
+      <div class="speed-group">
+        <span class="speed-label">Speed</span>
+        <button class="spd" onclick="setSpeed(0.5)">0.5×</button>
+        <button class="spd active" onclick="setSpeed(1)">1×</button>
+        <button class="spd" onclick="setSpeed(1.5)">1.5×</button>
+        <button class="spd" onclick="setSpeed(2)">2×</button>
+      </div>
+      <div class="vol-row">
+        <i class="fa fa-volume-high"></i>
+        <input type="range" min="0" max="1" step="0.05" value="1" id="volSlider" oninput="setVolume(this.value)"/>
+        <span class="vol-pct" id="volPct">100%</span>
+      </div>
     </div>
-    
-    <!-- External Players -->
-    <div class="d-flex flex-wrap gap-2 mb-3">
-      <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill" title="MX Player">
-        <i class="fa fa-play"></i> MX Player
-      </a>
-      <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill" title="VLC Player">
-        <i class="fa fa-play"></i> VLC Player
-      </a>
-      <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill" title="PlayIt">
-        <i class="fa fa-play"></i> PlayIt
-      </a>
-    </div>
+  </div>
 
-    <!-- Actions -->
-    <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <a onclick="streamDownload()" class="btn btn-custom btn-download">
-          <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
-        </a>
-      </div>
-      <div class="col-md-6">
-        <a onclick="showLinkModal('{{tg_button}}')" class="btn btn-custom btn-telegram">
-          <i class="fa-brands fa-telegram"></i> &nbsp; Get File in Telegram
-        </a>
-      </div>
-    </div>
+  <!-- STATS CHIPS -->
+  <div class="stats-row">
+    <div class="chip"><i class="fa fa-clock" style="font-size:11px"></i> <b id="durChip">—</b></div>
+    <div class="chip"><i class="fa fa-film" style="font-size:11px"></i> <b id="fmtChip">—</b></div>
+    <div class="chip"><i class="fa fa-circle-play" style="font-size:11px"></i> <b id="playedChip">0%</b></div>
+    <div class="chip"><i class="fa fa-signal" style="font-size:11px"></i> <b id="statusChip">Ready</b></div>
+  </div>
 
-    <!-- File Info -->
-    <div class="glass-card">
-      <div class="file-info-title"><i class="fa-solid fa-circle-info me-2"></i> File Details</div>
-      <div class="info-item">
-        <span class="info-label">Filename</span>
-        <span class="info-value">{{file_name}}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Size</span>
-        <span class="info-value">{{file_size}}</span>
-      </div>
-    </div>
+  <!-- OPEN IN EXTERNAL PLAYERS -->
+  <div class="app-row">
+    <button class="btn btn-player" onclick="mx_player()"><i class="fa fa-play-circle"></i> MX Player</button>
+    <button class="btn btn-player" onclick="vlc_player()"><i class="fa fa-play-circle"></i> VLC</button>
+    <button class="btn btn-player" onclick="playit_player()"><i class="fa fa-play-circle"></i> PlayIt</button>
+  </div>
 
-    <!-- Share -->
-    <button onclick="shareButton()" class="btn btn-custom btn-share">
-      <i class="fa-solid fa-share-nodes"></i> &nbsp; Share with Friends
+  <!-- DOWNLOAD + TELEGRAM -->
+  <div class="cta-grid">
+    <button class="btn btn-download" onclick="streamDownload()">
+      <i class="fa fa-cloud-arrow-down"></i> Download
     </button>
+    <button class="btn btn-telegram" onclick="showLinkModal('{{tg_button}}')">
+      <i class="fa-brands fa-telegram"></i> Telegram
+    </button>
+  </div>
 
-    <!-- Disclaimer -->
-    <div class="mt-4 text-center" style="font-size: 0.75rem; color: #555;">
-      {{ disclaimer }} <br>
-      <a href="{{ report_link }}" style="color: #666;">Report Issue</a>
+  <!-- SHARE -->
+  <button class="btn btn-share" onclick="shareButton()">
+    <i class="fa fa-share-nodes"></i> &nbsp;Share with Friends
+  </button>
+
+  <!-- FILE INFO CARD -->
+  <div class="info-card">
+    <div class="info-head"><i class="fa fa-circle-info"></i> File Details</div>
+    <div class="info-row">
+      <span class="info-label">Filename</span>
+      <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
+        <span class="info-val" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{file_name}}</span>
+        <button class="copy-btn" onclick="copyText('{{file_name}}')">Copy</button>
+      </div>
     </div>
+    <div class="info-row">
+      <span class="info-label">Size</span>
+      <span class="info-val">{{file_size}}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Format</span>
+      <span class="info-val" id="fmtVal">Detecting…</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Link</span>
+      <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
+        <span class="info-val" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{file_url}}</span>
+        <button class="copy-btn" onclick="copyText('{{file_url}}')">Copy</button>
+      </div>
+    </div>
+  </div>
 
-  </main>
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    ⚠️ Some formats may not play in browser — use <b>VLC</b> for full support.<br>
+    {{ disclaimer }} &nbsp;·&nbsp; <a href="{{ report_link }}">Report Issue</a>
+  </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 {{ template_ne }}. All rights reserved.</p>
-  </footer>
+</div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const player = new Plyr("#myVideo", {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-        settings: ['captions', 'quality', 'speed']
-      });
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 <span class="footer-go">Go</span><span class="footer-flix">Flix</span>. All rights reserved.</p>
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+// ── THEME ──────────────────────────────────────────
+let currentTheme = 'dark';
+function setTheme(t) {
+  currentTheme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('darkBtn').classList.toggle('active', t === 'dark');
+  document.getElementById('lightBtn').classList.toggle('active', t === 'light');
+}
+// Auto-detect system preference on load
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+  setTheme('light');
+} else {
+  setTheme('dark');
+}
+
+// ── VIDEO PLAYER ───────────────────────────────────
+const vid = document.getElementById('myVideo');
+
+vid.addEventListener('loadedmetadata', () => {
+  const d = vid.duration;
+  if (d && isFinite(d)) {
+    const m = Math.floor(d / 60), s = String(Math.floor(d % 60)).padStart(2, '0');
+    document.getElementById('durChip').textContent = m + 'm ' + s + 's';
+  }
+  const src = vid.currentSrc || '{{file_url}}';
+  const ext = src.split('.').pop().split('?')[0].toUpperCase();
+  document.getElementById('fmtVal').textContent = ext || 'Video';
+  document.getElementById('fmtChip').textContent = ext || 'Video';
+  if (vid.videoWidth) {
+    document.getElementById('resLabel').textContent = vid.videoWidth + '×' + vid.videoHeight;
+  }
+});
+
+vid.addEventListener('timeupdate', () => {
+  if (vid.duration && isFinite(vid.duration)) {
+    const pct = (vid.currentTime / vid.duration) * 100;
+    document.getElementById('progBar').style.width = pct + '%';
+    document.getElementById('playedChip').textContent = Math.round(pct) + '%';
+  }
+});
+
+vid.addEventListener('playing', () => document.getElementById('statusChip').textContent = 'Playing');
+vid.addEventListener('pause',   () => document.getElementById('statusChip').textContent = 'Paused');
+vid.addEventListener('waiting', () => document.getElementById('statusChip').textContent = 'Buffering…');
+vid.addEventListener('ended',   () => document.getElementById('statusChip').textContent = 'Ended');
+
+// ── SPEED ──────────────────────────────────────────
+function setSpeed(s) {
+  vid.playbackRate = s;
+  document.querySelectorAll('.spd').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.textContent) === s);
+  });
+}
+
+// ── VOLUME ─────────────────────────────────────────
+function setVolume(v) {
+  vid.volume = v;
+  document.getElementById('volPct').textContent = Math.round(v * 100) + '%';
+}
+
+// ── TOAST ──────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ── COPY ───────────────────────────────────────────
+function copyText(txt) {
+  navigator.clipboard.writeText(txt).then(() => showToast('Copied to clipboard!'));
+}
+
+// ── EXTERNAL PLAYERS ───────────────────────────────
+function mx_player() {
+  let c = "{{file_url}}".replace(/^https?:\/\//, '');
+  window.location.href = `intent://${c}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+}
+function vlc_player() {
+  let c = "{{file_url}}".replace(/^https?:\/\//, '');
+  window.location.href = `intent://${c}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
+}
+function playit_player() {
+  let c = "{{file_url}}".replace(/^https?:\/\//, '');
+  window.location.href = `intent://${c}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
+}
+
+// ── DOWNLOAD ───────────────────────────────────────
+function streamDownload() {
+  window.location.href = "{{file_url}}";
+}
+
+// ── TELEGRAM ───────────────────────────────────────
+function showLinkModal(url) {
+  if (url) window.open(url, '_blank');
+}
+
+// ── SHARE ──────────────────────────────────────────
+function shareButton() {
+  if (navigator.share) {
+    navigator.share({
+      title: '{{file_name}}',
+      text: 'Watch on GoFlix',
+      url: window.location.href
     });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    showToast('Link copied to clipboard!');
+  }
+}
+</script>
 
-    function mx_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
-    }
-    function vlc_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
-    }
-    function playit_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
-    }
-    function streamDownload() {
-      window.location.href = "{{ file_url }}";
-    }
-    function showLinkModal(url) {
-      if (url) window.open(url, "_blank");
-    }
-    function shareButton() {
-      if (navigator.share) {
-        navigator.share({
-          title: '{{ file_name }}',
-          text: "Watch this video on {{ template_ne }}",
-          url: window.location.href,
-        });
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
-      }
-    }
-  </script>
-  <div class="watermark"></div>
 </body>
-
 </html>
