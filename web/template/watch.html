@@ -515,13 +515,6 @@ footer{
         </div>
       </div>
 
-      <!-- Spacer -->
-      <div style="flex:1"></div>
-
-      <!-- Download -->
-      <button class="abtn abtn-dl" onclick="startDownload()" style="padding:9px 16px;font-size:12px">
-        <i class="fa fa-cloud-arrow-down"></i> Download
-      </button>
     </div>
 
   </div><!-- /player-wrapper -->
@@ -612,132 +605,141 @@ document.addEventListener('DOMContentLoaded', () => {
   initAudioPanel();
   initSubPanel();
   updateVolSlider(1);
-
-  // Close panels when clicking outside
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.panel-wrap')) closeAllPanels();
   });
 });
 
 // ══════════════════════════════════════════════════════════
-//  AUDIO PANEL INIT
+//  AUDIO PANEL
+//  Browser CANNOT switch embedded audio tracks from a
+//  Telegram stream URL. So we show available languages
+//  as info and let user open VLC/MX with the right track.
 // ══════════════════════════════════════════════════════════
 function initAudioPanel() {
   const items = document.querySelectorAll('#audioList .dp-item');
-  items.forEach((el, i) => {
-    el.onclick = (e) => { e.stopPropagation(); selectAudio(i, el); };
-  });
 
-  // Set initial label
+  // Set badge and first label
+  document.getElementById('audioBadge').textContent = Math.max(items.length, 1);
   if (items.length > 0) {
     const lbl = items[0].querySelector('.dp-name')?.textContent || 'Default';
     document.getElementById('audioActiveLabel').textContent = lbl;
-    document.getElementById('audioBadge').textContent = Math.max(items.length, 1);
-  } else {
-    document.getElementById('audioActiveLabel').textContent = 'Default';
-    document.getElementById('audioBadge').textContent = '1';
+    items[0].classList.add('active');
   }
 
-  // Try native AudioTrackList (works in Chrome/Edge with some MKV files)
-  if (vid.audioTracks && vid.audioTracks.length > 0) {
-    rebuildAudioFromNative();
-  }
-  vid.addEventListener('loadedmetadata', () => {
-    if (vid.audioTracks && vid.audioTracks.length > 0) {
-      rebuildAudioFromNative();
-    }
+  // Wire click — show selected + open VLC/MX with track index
+  items.forEach((el, i) => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      // Mark active
+      items.forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      const lbl = el.querySelector('.dp-name')?.textContent || ('Track ' + (i+1));
+      document.getElementById('audioActiveLabel').textContent = lbl;
+
+      // Get stream index from AUDIO_TRACKS data
+      const trackData = AUDIO_TRACKS[i];
+      const trackIdx  = trackData ? trackData.index : i;
+
+      // Show popup with VLC/MX options
+      showAudioOptions(lbl, trackIdx);
+      closeAllPanels();
+    };
   });
 }
 
-// If browser exposes AudioTrackList, rebuild panel from it
-function rebuildAudioFromNative() {
-  const tracks = vid.audioTracks;
-  if (!tracks || tracks.length <= 1) return; // nothing extra to show
+function showAudioOptions(label, trackIdx) {
+  // Remove old popup if exists
+  document.getElementById('audioPopup')?.remove();
 
-  const list = document.getElementById('audioList');
-  list.innerHTML = '';
-
-  for (let i = 0; i < tracks.length; i++) {
-    const t     = tracks[i];
-    const enrich = AUDIO_TRACKS[i] || {};
-    const flag  = enrich.flag  || '🎵';
-    const name  = t.label || enrich.label || ('Track ' + (i + 1));
-    const lang  = t.language || enrich.lang || '';
-    const sub   = enrich.codec ? `${enrich.codec} · ${enrich.channels || ''}` : 'Audio Track';
-
-    const el = makeDpItem(flag, name, sub, i === 0);
-    const ci = i;
-    el.onclick = (e) => {
-      e.stopPropagation();
-      // Switch native audio track
-      for (let j = 0; j < tracks.length; j++) tracks[j].enabled = (j === ci);
-      selectAudio(ci, el);
-    };
-    list.appendChild(el);
-  }
-
-  document.getElementById('audioBadge').textContent = tracks.length;
+  const popup = document.createElement('div');
+  popup.id = 'audioPopup';
+  popup.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  `;
+  popup.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;
+      padding:24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.8)">
+      <div style="font-size:14px;font-weight:800;color:var(--red);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">
+        <i class="fa fa-headphones"></i> Audio: ${label}
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6">
+        Browser cannot switch embedded audio tracks.<br>
+        Open in <b>VLC</b> or <b>MX Player</b> to hear <b>${label}</b>.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button onclick="openVLCWithTrack(${trackIdx})" style="
+          background:linear-gradient(135deg,#e50914,#cc0000);color:#fff;border:none;
+          border-radius:10px;padding:12px 16px;font-size:13px;font-weight:700;
+          cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;
+          font-family:inherit;
+        "><i class="fa fa-play-circle"></i> Open in VLC (${label})</button>
+        <button onclick="openMXWithTrack(${trackIdx})" style="
+          background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;border:1px solid var(--border2);
+          border-radius:10px;padding:12px 16px;font-size:13px;font-weight:700;
+          cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;
+          font-family:inherit;
+        "><i class="fa fa-play-circle"></i> Open in MX Player (${label})</button>
+        <button onclick="document.getElementById('audioPopup').remove()" style="
+          background:transparent;color:var(--text2);border:1px solid var(--border);
+          border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;
+          cursor:pointer;font-family:inherit;
+        ">Cancel</button>
+      </div>
+    </div>`;
+  popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
+  document.body.appendChild(popup);
 }
 
-function selectAudio(idx, el) {
-  selectedAudioIdx = idx;
-  document.querySelectorAll('#audioList .dp-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  const lbl = el.querySelector('.dp-name')?.textContent || ('Track ' + (idx + 1));
-  document.getElementById('audioActiveLabel').textContent = lbl;
-  showToast('🎵 Audio: ' + lbl);
-  closeAllPanels();
+function openVLCWithTrack(idx) {
+  document.getElementById('audioPopup')?.remove();
+  const url = FILE_URL.replace(/^https?:\/\//, '');
+  window.location.href = `intent://${url}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;S.audio_track=${idx};end`;
+}
+function openMXWithTrack(idx) {
+  document.getElementById('audioPopup')?.remove();
+  const url = FILE_URL.replace(/^https?:\/\//, '');
+  window.location.href = `intent://${url}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;i.subs_idx=${idx};end`;
 }
 
 // ══════════════════════════════════════════════════════════
-//  SUBTITLE PANEL INIT
+//  SUBTITLE PANEL
+//  Embedded subs from MKV don't work in browser.
+//  ONLY uploaded SRT/VTT files work 100%.
 // ══════════════════════════════════════════════════════════
 function initSubPanel() {
   // Off button
   document.getElementById('subOffItem').onclick = (e) => {
     e.stopPropagation();
-    selectSubOff();
+    turnOffSubs();
   };
 
-  // Subtitle track items from server
-  const items = document.querySelectorAll('#subList .dp-item:not(#subOffItem)');
+  // Hide any existing embedded text tracks immediately
+  vid.addEventListener('loadedmetadata', () => {
+    for (let t of vid.textTracks) t.mode = 'hidden';
+  });
+
+  // Embedded sub items — show info that upload is needed
+  const items = document.querySelectorAll('#subList .dp-item:not(#subOffItem):not([data-upl])');
   items.forEach((el, i) => {
     el.onclick = (e) => {
       e.stopPropagation();
-      activateTextTrack(i, el);
+      const lbl = el.querySelector('.dp-name')?.textContent || 'Subtitle';
+      showToast('📤 Upload a .srt file for "' + lbl + '" to show in browser');
+      closeAllPanels();
     };
   });
 
-  document.getElementById('subBadge').textContent = Math.max(items.length, 0);
-
-  // Try native text tracks
-  vid.addEventListener('loadedmetadata', () => {
-    if (vid.textTracks && vid.textTracks.length > 0) {
-      // Hide all by default
-      for (let t of vid.textTracks) t.mode = 'hidden';
-    }
-  });
+  document.getElementById('subBadge').textContent = items.length;
 }
 
-function selectSubOff() {
+function turnOffSubs() {
   document.querySelectorAll('#subList .dp-item').forEach(i => i.classList.remove('active'));
   document.getElementById('subOffItem').classList.add('active');
   document.getElementById('subActiveLabel').textContent = 'Off';
   for (let t of vid.textTracks) t.mode = 'hidden';
   showToast('💬 Subtitles Off');
-  closeAllPanels();
-}
-
-function activateTextTrack(idx, el) {
-  document.querySelectorAll('#subList .dp-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  const lbl = el.querySelector('.dp-name')?.textContent || ('Subtitle ' + (idx + 1));
-  document.getElementById('subActiveLabel').textContent = lbl;
-  // Try to show native text track
-  for (let i = 0; i < vid.textTracks.length; i++) {
-    vid.textTracks[i].mode = (i === idx) ? 'showing' : 'hidden';
-  }
-  showToast('💬 Subtitles: ' + lbl);
   closeAllPanels();
 }
 
