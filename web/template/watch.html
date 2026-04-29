@@ -28,7 +28,52 @@
   --player-bg:#000;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;
+  cursor:none; /* hide default cursor on PC */
+}
+
+/* ══════════════════════════════════════════
+   CUSTOM CURSOR — movie spotlight style (PC only)
+══════════════════════════════════════════ */
+/* Outer glow ring — always visible */
+.cursor-ring {
+  width:40px;height:40px;
+  border:2px solid rgba(229,9,20,0.7);
+  border-radius:50%;
+  position:fixed;pointer-events:none;z-index:99997;
+  left:0;top:0;
+  transition:border-color .2s, transform .08s, opacity .2s;
+  opacity:.7;
+}
+/* Inner dot */
+.cursor-dot {
+  width:8px;height:8px;
+  background:var(--red);border-radius:50%;
+  position:fixed;pointer-events:none;z-index:99999;
+  left:0;top:0;
+  box-shadow:0 0 10px var(--red),0 0 20px rgba(229,9,20,0.5);
+}
+/* Crosshair lines — movie/filmstrip vibe */
+.cursor-cross {
+  position:fixed;pointer-events:none;z-index:99998;
+  left:0;top:0;width:0;height:0;
+}
+.cursor-cross::before,
+.cursor-cross::after {
+  content:'';position:absolute;background:rgba(229,9,20,0.35);
+  transition:opacity .2s;
+}
+.cursor-cross::before{width:18px;height:1px;top:0;left:-9px}
+.cursor-cross::after {width:1px;height:18px;top:-9px;left:0}
+
+/* States */
+.cursor-ring.hover{border-color:#fff;transform:scale(1.5);opacity:1}
+.cursor-dot.hover {background:#fff;box-shadow:0 0 12px #fff}
+.cursor-dot.click {transform:scale(.5)}
+.cursor-ring.click{transform:scale(2);opacity:0}
 
 /* ══════════════════════════════════════════
    NAVBAR
@@ -37,34 +82,51 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
   background:var(--bg2);
   border-bottom:1px solid var(--border);
   padding:0 24px;
-  height:56px;
+  height:64px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   position:sticky;top:0;z-index:500;
   backdrop-filter:blur(20px);
 }
-.brand {
-  display:flex;align-items:center;gap:4px;
-  font-size:1.6rem;font-weight:900;letter-spacing:-2px;
-  text-decoration:none;
+
+/* ══ GOFLIX LOGO ══ */
+.brand{display:flex;align-items:center;text-decoration:none;user-select:none}
+.brand-wrap{display:flex;flex-direction:column;align-items:flex-start}
+.brand-letters{display:flex;align-items:center;position:relative;overflow:hidden}
+/* Shimmer sweep - only visual animation, no movement */
+.brand-letters::after{
+  content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);
+  animation:shimmer 3.5s ease-in-out infinite;pointer-events:none;
 }
-[data-theme="dark"] .brand-text { color:#ffffff }
-[data-theme="light"] .brand-text { color:#111111 }
-.brand-flix { color:var(--red) }
+@keyframes shimmer{0%{left:-120%}60%,100%{left:160%}}
+.brand-letter{font-size:1.5rem;font-weight:900;letter-spacing:0;line-height:1}
+/* Go = theme text color (white dark / black light), Flix = red — same as original */
+.go-letter  {color:var(--text)}
+.flix-letter{color:var(--red)}
+/* thin pulsing underline */
+.brand-bar{
+  width:100%;height:2px;margin-top:2px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  animation:barPulse 2.5s ease-in-out infinite;
+}
+@keyframes barPulse{0%,100%{opacity:.3}50%{opacity:1}}
+
 .brand-dot {
   width:9px;height:9px;background:var(--red);border-radius:50%;
-  margin-left:2px;margin-bottom:14px;
-  animation:blink 2s ease-in-out infinite;
+  margin-left:3px;margin-bottom:28px;align-self:flex-start;
+  animation:blink 1.5s ease-in-out infinite;
+  box-shadow:0 0 8px var(--red);
 }
-@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.6)}}
 
 .theme-toggle {
   display:flex;background:var(--bg3);border:1px solid var(--border2);
   border-radius:50px;padding:3px;gap:2px;
 }
 .tbtn {
-  width:32px;height:32px;border:none;border-radius:50px;cursor:pointer;
+  width:32px;height:32px;border:none;border-radius:50px;cursor:none;
   display:flex;align-items:center;justify-content:center;font-size:14px;
   background:transparent;color:var(--text2);transition:all .25s;
 }
@@ -96,7 +158,6 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
   margin-bottom:16px;
 }
 
-/* Player top bar */
 .player-topbar {
   display:flex;align-items:center;justify-content:space-between;
   padding:10px 16px;
@@ -122,7 +183,6 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
   padding:2px 8px;border-radius:4px;letter-spacing:1px;
 }
 
-/* Progress bar */
 .seek-bar-wrap{height:3px;background:var(--border);cursor:pointer}
 .seek-bar-fill{height:3px;background:linear-gradient(90deg,var(--red),var(--red2));width:0%;transition:width .15s;pointer-events:none}
 
@@ -131,10 +191,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
   background:#000;
   aspect-ratio:16/9;
   position:relative;
-  cursor:pointer;
 }
 .video-container video {
   width:100%;height:100%;object-fit:contain;display:block;
+  transition:filter .2s ease;
 }
 video::cue {
   background:rgba(0,0,0,0.85);color:#fff;
@@ -142,7 +202,6 @@ video::cue {
   border-radius:4px;padding:3px 10px;
 }
 
-/* BUFFERING SPINNER */
 .buf-spin {
   position:absolute;inset:0;display:none;
   align-items:center;justify-content:center;
@@ -161,7 +220,7 @@ video::cue {
 .buf-text{color:#fff;font-size:13px;font-weight:600;opacity:.8}
 
 /* ══════════════════════════════════════════
-   CUSTOM CONTROLS BAR
+   CONTROLS BAR — Speed + Volume + Brightness
 ══════════════════════════════════════════ */
 .controls-bar {
   display:flex;align-items:center;
@@ -171,8 +230,6 @@ video::cue {
   gap:10px;
   flex-wrap:wrap;
 }
-
-/* Speed buttons */
 .ctrl-section {
   display:flex;align-items:center;gap:6px;
 }
@@ -183,30 +240,44 @@ video::cue {
 .spd-btn {
   background:var(--bg4);border:1px solid var(--border);border-radius:7px;
   color:var(--text2);font-size:12px;padding:5px 11px;
-  cursor:pointer;transition:all .2s;font-weight:600;
+  cursor:none;transition:all .2s;font-weight:600;
 }
 .spd-btn:hover,.spd-btn.on{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 0 10px var(--glow)}
 
-/* Volume */
+/* BRIGHTNESS CONTROL */
+.brightness-section {
+  display:flex;align-items:center;gap:8px;
+}
+.bright-icon{color:var(--text2);font-size:14px}
+.bright-slider {
+  -webkit-appearance:none;appearance:none;
+  width:80px;height:4px;border-radius:4px;outline:none;cursor:none;
+  background:linear-gradient(to right, #ffcc00 0%, #ffcc00 100%, var(--border) 100%);
+}
+.bright-slider::-webkit-slider-thumb {
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:#ffcc00;cursor:none;box-shadow:0 0 6px rgba(255,204,0,0.6);
+}
+.bright-pct{font-size:11px;color:var(--text2);font-weight:600;min-width:34px}
+
 .vol-section {
   display:flex;align-items:center;gap:8px;
   margin-left:auto;
 }
-.vol-icon{color:var(--text2);font-size:14px;cursor:pointer}
+.vol-icon{color:var(--text2);font-size:14px;cursor:none}
 .vol-slider {
   -webkit-appearance:none;appearance:none;
-  width:90px;height:4px;border-radius:4px;outline:none;cursor:pointer;
+  width:90px;height:4px;border-radius:4px;outline:none;cursor:none;
   background:linear-gradient(to right, var(--red) 0%, var(--red) 100%, var(--border) 100%);
 }
 .vol-slider::-webkit-slider-thumb {
   -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
-  background:var(--red);cursor:pointer;box-shadow:0 0 6px var(--glow);
+  background:var(--red);cursor:none;box-shadow:0 0 6px var(--glow);
 }
 .vol-pct{font-size:11px;color:var(--text2);font-weight:600;min-width:34px}
 
 /* ══════════════════════════════════════════
-   NETFLIX-STYLE BOTTOM CONTROL ROW
-   Audio | Subtitle | Download buttons
+   MEDIA CONTROLS ROW
 ══════════════════════════════════════════ */
 .media-controls-row {
   display:flex;align-items:center;gap:8px;
@@ -215,12 +286,11 @@ video::cue {
   border-top:1px solid var(--border);
   flex-wrap:wrap;
 }
-
 .media-btn {
   display:flex;align-items:center;gap:7px;
   background:var(--bg3);border:1px solid var(--border2);
   border-radius:10px;padding:9px 16px;
-  cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);
+  cursor:none;font-size:13px;font-weight:600;color:var(--text2);
   transition:all .22s;position:relative;
   font-family:inherit;
 }
@@ -238,12 +308,8 @@ video::cue {
   text-overflow:ellipsis;white-space:nowrap;
 }
 
-/* ══════════════════════════════════════════
-   DROPDOWN PANELS (Audio / Subtitle)
-══════════════════════════════════════════ */
-.panel-wrap {
-  position:relative;
-}
+/* DROPDOWN PANELS */
+.panel-wrap { position:relative; }
 .dropdown-panel {
   position:absolute;bottom:calc(100% + 10px);left:0;
   background:var(--bg2);border:1px solid var(--border2);
@@ -261,14 +327,12 @@ video::cue {
   text-transform:uppercase;letter-spacing:.8px;
   display:flex;align-items:center;gap:8px;
 }
-.dp-list {
-  max-height:260px;overflow-y:auto;padding:4px 0;
-}
+.dp-list { max-height:260px;overflow-y:auto;padding:4px 0; }
 .dp-list::-webkit-scrollbar{width:4px}
 .dp-list::-webkit-scrollbar-thumb{background:var(--red);border-radius:4px}
 .dp-item {
   display:flex;align-items:center;gap:12px;
-  padding:11px 16px;cursor:pointer;
+  padding:11px 16px;cursor:none;
   transition:background .15s;
   border-left:3px solid transparent;
 }
@@ -280,13 +344,11 @@ video::cue {
 .dp-sub{font-size:11px;color:var(--text2)}
 .dp-check{color:var(--red);font-size:13px;opacity:0;transition:opacity .15s;flex-shrink:0}
 .dp-item.active .dp-check{opacity:1}
-.dp-empty{padding:20px 16px;text-align:center;color:var(--text2);font-size:12px;line-height:1.6}
 
-/* Upload SRT row */
 .dp-upload {
   display:flex;align-items:center;gap:8px;padding:10px 16px;
   border-top:1px solid var(--border);font-size:12px;
-  color:var(--text2);cursor:pointer;background:transparent;
+  color:var(--text2);cursor:none;background:transparent;
   border-left:none;border-right:none;border-bottom:none;
   width:100%;text-align:left;font-family:inherit;font-weight:600;
   transition:all .2s;
@@ -294,9 +356,7 @@ video::cue {
 .dp-upload:hover{background:var(--bg3);color:var(--red)}
 #subInput{display:none}
 
-/* ══════════════════════════════════════════
-   STATS ROW
-══════════════════════════════════════════ */
+/* STATS */
 .stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .stat-chip {
   background:var(--bg2);border:1px solid var(--border);border-radius:50px;
@@ -305,13 +365,11 @@ video::cue {
 }
 .stat-chip b{color:var(--text);font-weight:700}
 
-/* ══════════════════════════════════════════
-   ACTION BUTTONS
-══════════════════════════════════════════ */
+/* ACTION BUTTONS */
 .action-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .abtn {
   border:none;border-radius:12px;padding:12px 16px;font-size:13px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  cursor:none;display:flex;align-items:center;justify-content:center;gap:8px;
   transition:all .22s;letter-spacing:.3px;font-family:inherit;
 }
 .abtn:hover{transform:translateY(-2px);filter:brightness(1.1)}
@@ -324,9 +382,7 @@ video::cue {
 .abtn-share{width:100%;background:var(--bg2);color:var(--text2);border:1px solid var(--border2);margin-bottom:16px}
 .abtn-share:hover{border-color:var(--red);color:var(--red)}
 
-/* ══════════════════════════════════════════
-   INFO CARD
-══════════════════════════════════════════ */
+/* INFO CARD */
 .info-card{
   background:var(--bg2);border:1px solid var(--border);
   border-radius:16px;overflow:hidden;margin-bottom:16px;
@@ -346,14 +402,12 @@ video::cue {
 .info-val{color:var(--text);font-size:13px;word-break:break-all;text-align:right;font-family:'Courier New',monospace}
 .copy-btn{
   background:var(--bg3);border:1px solid var(--border);border-radius:7px;
-  color:var(--text2);font-size:11px;padding:3px 10px;cursor:pointer;
+  color:var(--text2);font-size:11px;padding:3px 10px;cursor:none;
   transition:all .2s;white-space:nowrap;margin-left:8px;font-weight:600;
 }
 .copy-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
 
-/* ══════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════ */
+/* TOAST */
 .toast{
   position:fixed;bottom:30px;right:20px;background:var(--red);color:#fff;
   border-radius:12px;padding:12px 20px;font-size:13px;font-weight:700;
@@ -363,9 +417,6 @@ video::cue {
 }
 .toast.show{transform:translateY(0);opacity:1}
 
-/* ══════════════════════════════════════════
-   FOOTER
-══════════════════════════════════════════ */
 .disclaimer{
   text-align:center;color:var(--text3);font-size:12px;
   padding:12px 0 4px;border-top:1px solid var(--border);
@@ -379,21 +430,28 @@ footer{
 [data-theme="light"] .footer-go{color:#111;font-weight:900}
 .footer-flix{color:var(--red);font-weight:900}
 
-/* ══════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════ */
 @media(max-width:560px){
   .cta-row{grid-template-columns:1fr}
-  .vol-slider{width:70px}
+  .vol-slider{width:60px}
+  .bright-slider{width:60px}
   .controls-bar{gap:6px}
   .media-controls-row{gap:6px}
   .media-btn{padding:8px 12px;font-size:12px}
   .dropdown-panel{width:200px}
   .page{padding:16px 10px}
+  /* Hide custom cursor on touch devices */
+  .cursor-dot,.cursor-ring{display:none}
+  body{cursor:auto}
+  .abtn,.tbtn,.spd-btn,.media-btn,.dp-item,.dp-upload,.copy-btn,.vol-icon,.vol-slider,.bright-slider{cursor:auto}
 }
 </style>
 </head>
 <body>
+
+<!-- CUSTOM CURSOR (PC only) -->
+<div class="cursor-ring"  id="cursorRing"></div>
+<div class="cursor-cross" id="cursorCross"></div>
+<div class="cursor-dot"   id="cursorDot"></div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="fa fa-check-circle"></i><span id="toastMsg"></span></div>
@@ -401,13 +459,44 @@ footer{
 <!-- NAVBAR -->
 <nav class="navbar">
   <a class="brand" href="/">
-    <span class="brand-text">Go</span><span class="brand-flix">Flix</span><div class="brand-dot"></div>
+    <div class="brand-wrap">
+      <div style="display:flex;align-items:center;gap:1px">
+        <div class="brand-letters">
+          <span class="brand-letter go-letter">G</span>
+          <span class="brand-letter go-letter">O</span>
+          <span class="brand-letter flix-letter">F</span>
+          <span class="brand-letter flix-letter">L</span>
+          <span class="brand-letter flix-letter" id="xLetter">I</span>
+          <span class="brand-letter flix-letter">X</span>
+        </div>
+        <div class="brand-dot"></div>
+      </div>
+      <div class="brand-bar"></div>
+    </div>
   </a>
-  <div class="theme-toggle">
+  <div class="theme-toggle" id="themeToggle">
     <button class="tbtn" id="darkBtn" onclick="setTheme('dark')" title="Dark mode"><i class="fa fa-moon"></i></button>
     <button class="tbtn" id="lightBtn" onclick="setTheme('light')" title="Light mode"><i class="fa fa-sun"></i></button>
   </div>
 </nav>
+
+<!-- WALKING X — runs from theme toggle to logo on theme switch -->
+<div id="walkingX" style="
+  position:fixed;top:20px;z-index:9000;display:none;
+  font-size:1rem;font-weight:900;color:var(--red);
+  pointer-events:none;user-select:none;
+  filter:drop-shadow(0 0 6px var(--red));
+">
+  <!-- Body of X -->
+  <svg width="22" height="28" viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- X letter -->
+    <text x="0" y="18" font-family="Arial Black,sans-serif" font-size="18" font-weight="900" fill="#e50914">X</text>
+    <!-- Left leg -->
+    <line id="legL" x1="4" y1="22" x2="2" y2="28" stroke="#e50914" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Right leg -->
+    <line id="legR" x1="14" y1="22" x2="16" y2="28" stroke="#e50914" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</div>
 
 <!-- HERO -->
 <div class="hero-strip"><i class="fa fa-film"></i> GoFlix — Multi-Language Web Player</div>
@@ -415,10 +504,9 @@ footer{
 <!-- PAGE -->
 <div class="page">
 
-  <!-- ══ PLAYER ══ -->
+  <!-- PLAYER -->
   <div class="player-wrapper">
 
-    <!-- Top bar -->
     <div class="player-topbar">
       <div class="streaming-badge"><div class="dot-pulse"></div> STREAMING</div>
       <div class="quality-info">
@@ -427,12 +515,10 @@ footer{
       </div>
     </div>
 
-    <!-- Seek progress bar -->
     <div class="seek-bar-wrap" id="seekWrap" onclick="seekVideo(event)">
       <div class="seek-bar-fill" id="seekFill"></div>
     </div>
 
-    <!-- Video -->
     <div class="video-container" id="videoContainer">
       <video id="vid"
         src="{{ file_url }}"
@@ -447,8 +533,9 @@ footer{
       </div>
     </div>
 
-    <!-- Speed + Volume controls -->
+    <!-- Speed + Brightness + Volume -->
     <div class="controls-bar">
+      <!-- Speed -->
       <div class="ctrl-section">
         <span class="ctrl-label">Speed</span>
         <button class="spd-btn" onclick="setSpeed(0.5,this)">0.5×</button>
@@ -456,6 +543,17 @@ footer{
         <button class="spd-btn" onclick="setSpeed(1.5,this)">1.5×</button>
         <button class="spd-btn" onclick="setSpeed(2,this)">2×</button>
       </div>
+
+      <!-- Brightness -->
+      <div class="brightness-section">
+        <i class="fa fa-sun bright-icon"></i>
+        <input type="range" class="bright-slider" id="brightSlider"
+          min="50" max="150" step="5" value="100"
+          oninput="setBrightness(this.value)"/>
+        <span class="bright-pct" id="brightPct">100%</span>
+      </div>
+
+      <!-- Volume -->
       <div class="vol-section">
         <i class="fa fa-volume-high vol-icon" id="volIcon" onclick="toggleMute()"></i>
         <input type="range" class="vol-slider" id="volSlider"
@@ -465,10 +563,9 @@ footer{
       </div>
     </div>
 
-    <!-- ★ NETFLIX-STYLE AUDIO + SUBTITLE BUTTONS ★ -->
+    <!-- AUDIO + SUBTITLE BUTTONS -->
     <div class="media-controls-row">
 
-      <!-- AUDIO BUTTON + DROPDOWN -->
       <div class="panel-wrap">
         <button class="media-btn" id="audioBtn" onclick="togglePanel('audioPanel','audioBtn')">
           <i class="fa fa-headphones"></i>
@@ -485,7 +582,6 @@ footer{
         </div>
       </div>
 
-      <!-- SUBTITLE BUTTON + DROPDOWN -->
       <div class="panel-wrap">
         <button class="media-btn" id="subBtn" onclick="togglePanel('subPanel','subBtn')">
           <i class="fa fa-closed-captioning"></i>
@@ -497,7 +593,6 @@ footer{
         <div class="dropdown-panel" id="subPanel">
           <div class="dp-header"><i class="fa fa-closed-captioning"></i> Select Subtitle</div>
           <div class="dp-list" id="subList">
-            <!-- Off option always first -->
             <div class="dp-item active" id="subOffItem">
               <div class="dp-flag">🚫</div>
               <div class="dp-info">
@@ -516,7 +611,6 @@ footer{
       </div>
 
     </div>
-
   </div><!-- /player-wrapper -->
 
   <!-- STATS -->
@@ -580,7 +674,7 @@ footer{
 </div><!-- /page -->
 
 <footer>
-  <p>&copy; 2025 <span class="footer-go">Go</span><span class="footer-flix">Flix</span>. All rights reserved.</p>
+  <p>&copy; 2026 <span class="footer-go">Go</span><span class="footer-flix">Flix</span>. All rights reserved.</p>
 </footer>
 
 <script>
@@ -599,139 +693,273 @@ let uploadedSubURL   = null;
 let activePanel      = null;
 
 // ══════════════════════════════════════════════════════════
+//  CUSTOM CURSOR (PC only — hidden on mobile via CSS)
+// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  CUSTOM CURSOR — movie spotlight (PC only, hidden on mobile via CSS)
+// ══════════════════════════════════════════════════════════
+const dot   = document.getElementById('cursorDot');
+const ring  = document.getElementById('cursorRing');
+const cross = document.getElementById('cursorCross');
+
+let mx = -200, my = -200;   // mouse position
+let rx = -200, ry = -200;   // ring lag position
+
+// Move dot instantly, ring lags behind in RAF loop
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left  = mx + 'px';
+  dot.style.top   = my + 'px';
+  cross.style.left = mx + 'px';
+  cross.style.top  = my + 'px';
+});
+
+(function lagLoop() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(lagLoop);
+})();
+
+document.addEventListener('mousedown', () => {
+  dot.classList.add('click'); ring.classList.add('click');
+});
+document.addEventListener('mouseup', () => {
+  dot.classList.remove('click'); ring.classList.remove('click');
+});
+
+// Hover: ring grows + turns white on buttons/links
+document.querySelectorAll('button,a,input[type=range],.dp-item').forEach(el => {
+  el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+});
+
+// ══════════════════════════════════════════════════════════
+//  WALKING X ANIMATION — runs from theme toggle to logo
+// ══════════════════════════════════════════════════════════
+function runWalkingX() {
+  const wx    = document.getElementById('walkingX');
+  const toggle= document.getElementById('themeToggle');
+  const logo  = document.getElementById('xLetter');
+  if (!wx || !toggle || !logo) return;
+
+  const tRect = toggle.getBoundingClientRect();
+  const lRect = logo.getBoundingClientRect();
+
+  // Start position = right side of theme toggle
+  const startX = tRect.right - 10;
+  const endX   = lRect.left + 2;
+  const y      = tRect.top + 8;
+
+  wx.style.display = 'block';
+  wx.style.top     = y + 'px';
+  wx.style.left    = startX + 'px';
+  wx.style.opacity = '1';
+
+  let posX  = startX;
+  let frame = 0;
+  let legUp = false;
+
+  function step() {
+    // Walk toward logo
+    const dist = endX - posX;
+    const speed = Math.max(2, Math.abs(dist) * 0.08);
+    posX += (posX < endX ? 1 : -1) * speed;
+    frame++;
+
+    // Leg animation — alternate legs every 6 frames
+    const legL = wx.querySelector('#legL');
+    const legR = wx.querySelector('#legR');
+    if (legL && legR) {
+      if (frame % 6 < 3) {
+        legL.setAttribute('x2', '0');  legL.setAttribute('y2', '28');
+        legR.setAttribute('x2', '18'); legR.setAttribute('y2', '24');
+      } else {
+        legL.setAttribute('x2', '2');  legL.setAttribute('y2', '24');
+        legR.setAttribute('x2', '16'); legR.setAttribute('y2', '28');
+      }
+    }
+
+    wx.style.left = posX + 'px';
+
+    // Stop when reached logo
+    if (Math.abs(posX - endX) < 3) {
+      wx.style.opacity = '0';
+      setTimeout(() => { wx.style.display = 'none'; wx.style.opacity = '1'; }, 250);
+      return;
+    }
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   initAudioPanel();
   initSubPanel();
   updateVolSlider(1);
+  updateBrightSlider(100);
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.panel-wrap')) closeAllPanels();
   });
 });
 
 // ══════════════════════════════════════════════════════════
+//  BRIGHTNESS
+// ══════════════════════════════════════════════════════════
+function setBrightness(val) {
+  const v = parseInt(val);
+  document.getElementById('vid').style.filter = `brightness(${v}%)`;
+  updateBrightSlider(v);
+}
+function updateBrightSlider(v) {
+  document.getElementById('brightPct').textContent = v + '%';
+  const slider = document.getElementById('brightSlider');
+  slider.value = v;
+  const pct = ((v - 50) / 100) * 100; // map 50-150 → 0-100%
+  slider.style.background = `linear-gradient(to right, #ffcc00 0%, #ffcc00 ${pct}%, var(--border2) ${pct}%)`;
+}
+
+// ══════════════════════════════════════════════════════════
 //  AUDIO PANEL
-//  Browser CANNOT switch embedded audio tracks from a
-//  Telegram stream URL. So we show available languages
-//  as info and let user open VLC/MX with the right track.
 // ══════════════════════════════════════════════════════════
 function initAudioPanel() {
   const items = document.querySelectorAll('#audioList .dp-item');
-
-  // Set badge and first label
   document.getElementById('audioBadge').textContent = Math.max(items.length, 1);
+
   if (items.length > 0) {
-    const lbl = items[0].querySelector('.dp-name')?.textContent || 'Default';
-    document.getElementById('audioActiveLabel').textContent = lbl;
     items[0].classList.add('active');
+    document.getElementById('audioActiveLabel').textContent =
+      items[0].querySelector('.dp-name')?.textContent || 'Default';
   }
 
-  // Wire click — show selected + open VLC/MX with track index
   items.forEach((el, i) => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
     el.onclick = (e) => {
       e.stopPropagation();
-      // Mark active
       items.forEach(x => x.classList.remove('active'));
       el.classList.add('active');
-      const lbl = el.querySelector('.dp-name')?.textContent || ('Track ' + (i+1));
+      const lbl      = el.querySelector('.dp-name')?.textContent || ('Track ' + (i+1));
+      const trackIdx = AUDIO_TRACKS[i]?.index ?? i;
       document.getElementById('audioActiveLabel').textContent = lbl;
-
-      // Get stream index from AUDIO_TRACKS data
-      const trackData = AUDIO_TRACKS[i];
-      const trackIdx  = trackData ? trackData.index : i;
-
-      // Show popup with VLC/MX options
-      showAudioOptions(lbl, trackIdx);
       closeAllPanels();
+      showAudioPopup(lbl, trackIdx);
     };
   });
 }
 
-function showAudioOptions(label, trackIdx) {
-  // Remove old popup if exists
-  document.getElementById('audioPopup')?.remove();
-
-  const popup = document.createElement('div');
-  popup.id = 'audioPopup';
-  popup.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;
-    display:flex;align-items:center;justify-content:center;padding:20px;
-  `;
-  popup.innerHTML = `
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;
-      padding:24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.8)">
-      <div style="font-size:14px;font-weight:800;color:var(--red);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">
-        <i class="fa fa-headphones"></i> Audio: ${label}
+function showAudioPopup(label, trackIdx) {
+  closePopup();
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  showPopup(`
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:10px">🎵</div>
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px">${label}</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;background:var(--bg3);
+        border-radius:10px;padding:10px 14px;border:1px solid var(--border)">
+        ⚠️ Web browsers cannot switch embedded audio tracks.<br>
+        Open in an external player to hear <b style="color:var(--red)">${label}</b>.
       </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6">
-        Browser cannot switch embedded audio tracks.<br>
-        Open in <b>VLC</b> or <b>MX Player</b> to hear <b>${label}</b>.
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <button onclick="openVLCWithTrack(${trackIdx})" style="
-          background:linear-gradient(135deg,#e50914,#cc0000);color:#fff;border:none;
-          border-radius:10px;padding:12px 16px;font-size:13px;font-weight:700;
-          cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;
-          font-family:inherit;
-        "><i class="fa fa-play-circle"></i> Open in VLC (${label})</button>
-        <button onclick="openMXWithTrack(${trackIdx})" style="
-          background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;border:1px solid var(--border2);
-          border-radius:10px;padding:12px 16px;font-size:13px;font-weight:700;
-          cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;
-          font-family:inherit;
-        "><i class="fa fa-play-circle"></i> Open in MX Player (${label})</button>
-        <button onclick="document.getElementById('audioPopup').remove()" style="
-          background:transparent;color:var(--text2);border:1px solid var(--border);
-          border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;
-          cursor:pointer;font-family:inherit;
-        ">Cancel</button>
-      </div>
-    </div>`;
-  popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
-  document.body.appendChild(popup);
+    </div>
+    ${isMobile
+      ? popBtn('fa-play-circle', 'Open in VLC Player', 'linear-gradient(135deg,#e50914,#aa0000)', `openExtAudio('vlc',${trackIdx})`)
+        + popBtn('fa-play-circle', 'Open in MX Player', 'linear-gradient(135deg,#222,#111)', `openExtAudio('mx',${trackIdx})`)
+      : popBtn('fa-copy', 'Copy Link — Paste in VLC', 'linear-gradient(135deg,#e50914,#aa0000)', `copyForVLC()`)
+        + `<p style="font-size:11px;color:var(--text2);text-align:center;margin:-4px 0 10px">
+             In VLC → Media → Open Network Stream → Paste</p>`
+    }
+    <button onclick="closePopup()" style="
+      background:transparent;color:var(--text2);border:1px solid var(--border2);
+      border-radius:10px;padding:11px;font-size:13px;font-weight:600;
+      cursor:pointer;width:100%;font-family:inherit;
+    ">✕ Cancel</button>
+  `);
 }
 
-function openVLCWithTrack(idx) {
-  document.getElementById('audioPopup')?.remove();
-  const url = FILE_URL.replace(/^https?:\/\//, '');
-  window.location.href = `intent://${url}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;S.audio_track=${idx};end`;
+function openExtAudio(player, idx) {
+  closePopup();
+  const u = FILE_URL.replace(/^https?:\/\//, '');
+  if (player === 'vlc')
+    window.location.href = `intent://${u}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;S.audio_track=${idx};end`;
+  else
+    window.location.href = `intent://${u}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;i.subs_idx=${idx};end`;
 }
-function openMXWithTrack(idx) {
-  document.getElementById('audioPopup')?.remove();
-  const url = FILE_URL.replace(/^https?:\/\//, '');
-  window.location.href = `intent://${url}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;i.subs_idx=${idx};end`;
+
+function copyForVLC() {
+  navigator.clipboard.writeText(FILE_URL).then(() => {
+    closePopup();
+    showToast('🔗 Link copied! Paste in VLC → Open Network Stream');
+  });
 }
 
 // ══════════════════════════════════════════════════════════
 //  SUBTITLE PANEL
-//  Embedded subs from MKV don't work in browser.
-//  ONLY uploaded SRT/VTT files work 100%.
 // ══════════════════════════════════════════════════════════
 function initSubPanel() {
-  // Off button
   document.getElementById('subOffItem').onclick = (e) => {
-    e.stopPropagation();
-    turnOffSubs();
+    e.stopPropagation(); turnOffSubs();
   };
-
-  // Hide any existing embedded text tracks immediately
   vid.addEventListener('loadedmetadata', () => {
     for (let t of vid.textTracks) t.mode = 'hidden';
   });
-
-  // Embedded sub items — show info that upload is needed
   const items = document.querySelectorAll('#subList .dp-item:not(#subOffItem):not([data-upl])');
   items.forEach((el, i) => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
     el.onclick = (e) => {
       e.stopPropagation();
-      const lbl = el.querySelector('.dp-name')?.textContent || 'Subtitle';
-      showToast('📤 Upload a .srt file for "' + lbl + '" to show in browser');
+      const lbl      = el.querySelector('.dp-name')?.textContent || 'Subtitle';
+      const trackIdx = SUB_TRACKS[i]?.index ?? i;
       closeAllPanels();
+      showSubPopup(lbl, trackIdx);
     };
   });
-
   document.getElementById('subBadge').textContent = items.length;
+}
+
+function showSubPopup(label, trackIdx) {
+  closePopup();
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  showPopup(`
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:10px">💬</div>
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px">${label}</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;background:var(--bg3);
+        border-radius:10px;padding:10px 14px;border:1px solid var(--border)">
+        ⚠️ Embedded subtitles from MKV cannot display in browser.<br>
+        Upload a <b style="color:var(--red)">.srt file</b> to show in web player.
+      </div>
+    </div>
+    <button onclick="closePopup();document.getElementById('subInput').click()" style="
+      background:linear-gradient(135deg,#1dbf73,#16a560);color:#fff;border:none;
+      border-radius:10px;padding:13px;font-size:13px;font-weight:700;
+      cursor:pointer;width:100%;font-family:inherit;margin-bottom:8px;
+      display:flex;align-items:center;gap:9px;justify-content:center;
+    "><i class="fa fa-upload"></i> Upload .srt / .vtt (shows in browser)</button>
+    ${isMobile
+      ? popBtn('fa-play-circle', 'Open in VLC Player', 'linear-gradient(135deg,#e50914,#aa0000)', `openExtSub('vlc',${trackIdx})`)
+        + popBtn('fa-play-circle', 'Open in MX Player', 'linear-gradient(135deg,#222,#111)', `openExtSub('mx',${trackIdx})`)
+      : popBtn('fa-copy', 'Copy Link — Paste in VLC', 'linear-gradient(135deg,#e50914,#aa0000)', `copyForVLC()`)
+    }
+    <button onclick="closePopup()" style="
+      background:transparent;color:var(--text2);border:1px solid var(--border2);
+      border-radius:10px;padding:11px;font-size:13px;font-weight:600;
+      cursor:pointer;width:100%;font-family:inherit;margin-top:4px;
+    ">✕ Cancel</button>
+  `);
+}
+
+function openExtSub(player, idx) {
+  closePopup();
+  const u = FILE_URL.replace(/^https?:\/\//, '');
+  if (player === 'vlc')
+    window.location.href = `intent://${u}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;S.audio_track=${idx};end`;
+  else
+    window.location.href = `intent://${u}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;i.subs_idx=${idx};end`;
 }
 
 function turnOffSubs() {
@@ -744,7 +972,7 @@ function turnOffSubs() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  SUBTITLE UPLOAD — SRT / VTT — works 100% in browser
+//  SUBTITLE UPLOAD — SRT / VTT
 // ══════════════════════════════════════════════════════════
 function uploadSub(input) {
   const file = input.files[0];
@@ -752,37 +980,28 @@ function uploadSub(input) {
   const name = file.name;
   const ext  = name.split('.').pop().toLowerCase();
   const reader = new FileReader();
-
   reader.onload = (e) => {
     let content = e.target.result;
     if (ext === 'srt') {
-      // Convert SRT → WebVTT
       content = 'WEBVTT\n\n' + content
-        .replace(/\r\n/g, '\n')
-        .replace(/\r/g, '\n')
+        .replace(/\r\n/g, '\n').replace(/\r/g, '\n')
         .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2');
     }
-
     if (uploadedSubURL) URL.revokeObjectURL(uploadedSubURL);
-    const blob = new Blob([content], { type: 'text/vtt' });
+    const blob = new Blob([content], { type:'text/vtt' });
     uploadedSubURL = URL.createObjectURL(blob);
-    const label   = name.replace(/\.(srt|vtt)$/i, '');
+    const label = name.replace(/\.(srt|vtt)$/i, '');
 
-    // Remove old uploaded item
     document.querySelector('[data-upl]')?.remove();
     document.querySelectorAll('#vid track[data-upl]').forEach(t => t.remove());
     for (let t of vid.textTracks) t.mode = 'hidden';
 
-    // Add <track> to video element
     const trackEl = document.createElement('track');
-    trackEl.kind    = 'subtitles';
-    trackEl.label   = label;
-    trackEl.src     = uploadedSubURL;
-    trackEl.default = false;
+    trackEl.kind = 'subtitles'; trackEl.label = label;
+    trackEl.src  = uploadedSubURL; trackEl.default = false;
     trackEl.setAttribute('data-upl', '1');
     vid.appendChild(trackEl);
 
-    // Add to subtitle panel
     const el = makeDpItem('📤', label, 'Uploaded subtitle', false);
     el.setAttribute('data-upl', '1');
     const tIdx = vid.textTracks.length - 1;
@@ -793,12 +1012,10 @@ function uploadSub(input) {
       for (let t of vid.textTracks) t.mode = 'hidden';
       if (vid.textTracks[tIdx]) vid.textTracks[tIdx].mode = 'showing';
       document.getElementById('subActiveLabel').textContent = label;
-      showToast('💬 ' + label);
-      closeAllPanels();
+      showToast('💬 ' + label); closeAllPanels();
     };
     document.getElementById('subList').appendChild(el);
 
-    // Auto activate
     trackEl.addEventListener('load', () => {
       document.querySelectorAll('#subList .dp-item').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
@@ -806,15 +1023,29 @@ function uploadSub(input) {
       if (vid.textTracks[tIdx]) vid.textTracks[tIdx].mode = 'showing';
       document.getElementById('subActiveLabel').textContent = label;
     });
-
-    // Update badge
     const b = document.getElementById('subBadge');
     b.textContent = parseInt(b.textContent || 0) + 1;
     showToast('✅ Subtitle loaded: ' + label);
   };
-
   reader.readAsText(file);
   input.value = '';
+}
+
+// ══════════════════════════════════════════════════════════
+//  POPUP HELPERS
+// ══════════════════════════════════════════════════════════
+function showPopup(html) {
+  closePopup();
+  const overlay = document.createElement('div');
+  overlay.id = 'gfPopup';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:28px 24px;max-width:360px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.9)">${html}</div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) closePopup(); };
+  document.body.appendChild(overlay);
+}
+function closePopup() { document.getElementById('gfPopup')?.remove(); }
+function popBtn(icon, label, bg, fn) {
+  return `<button onclick="${fn}" style="background:${bg};color:#fff;border:none;border-radius:10px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;margin-bottom:8px;display:flex;align-items:center;gap:9px;justify-content:center"><i class="fa ${icon}"></i>${label}</button>`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -826,11 +1057,7 @@ function togglePanel(panelId, btnId) {
   const btn   = document.getElementById(btnId);
   const isOpen = panel.classList.contains('show');
   closeAllPanels();
-  if (!isOpen) {
-    panel.classList.add('show');
-    btn.classList.add('open');
-    activePanel = panelId;
-  }
+  if (!isOpen) { panel.classList.add('show'); btn.classList.add('open'); activePanel = panelId; }
 }
 function closeAllPanels() {
   document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('show'));
@@ -864,9 +1091,8 @@ vid.addEventListener('pause',    () => { setStatus('Paused');     document.getEl
 vid.addEventListener('ended',    () => { setStatus('Ended'); });
 vid.addEventListener('canplay',  () => { document.getElementById('bufSpin').classList.remove('show'); });
 vid.addEventListener('error',    () => { setStatus('Error'); });
-function setStatus(s){ document.getElementById('statusChip').textContent = s; }
+function setStatus(s) { document.getElementById('statusChip').textContent = s; }
 
-// Seek
 function seekVideo(e) {
   const wrap = document.getElementById('seekWrap');
   const rect  = wrap.getBoundingClientRect();
@@ -883,9 +1109,7 @@ function setSpeed(s, btn) {
   if (btn) btn.classList.add('on');
 }
 function setVol(v) {
-  vid.volume = parseFloat(v);
-  isMuted    = v == 0;
-  updateVolSlider(v);
+  vid.volume = parseFloat(v); isMuted = v == 0; updateVolSlider(v);
 }
 function updateVolSlider(v) {
   const pct = Math.round(v * 100);
@@ -895,13 +1119,10 @@ function updateVolSlider(v) {
   slider.style.background = `linear-gradient(to right, var(--red) 0%, var(--red) ${pct}%, var(--border2) ${pct}%)`;
   document.getElementById('volIcon').className = v == 0
     ? 'fa fa-volume-xmark vol-icon'
-    : v < 0.5
-    ? 'fa fa-volume-low vol-icon'
-    : 'fa fa-volume-high vol-icon';
+    : v < 0.5 ? 'fa fa-volume-low vol-icon' : 'fa fa-volume-high vol-icon';
 }
 function toggleMute() {
-  isMuted = !isMuted;
-  vid.muted = isMuted;
+  isMuted = !isMuted; vid.muted = isMuted;
   updateVolSlider(isMuted ? 0 : parseFloat(document.getElementById('volSlider').value));
 }
 
@@ -911,13 +1132,7 @@ function toggleMute() {
 function makeDpItem(flag, name, sub, isActive) {
   const el = document.createElement('div');
   el.className = 'dp-item' + (isActive ? ' active' : '');
-  el.innerHTML = `
-    <div class="dp-flag">${flag}</div>
-    <div class="dp-info">
-      <div class="dp-name">${name}</div>
-      <div class="dp-sub">${sub}</div>
-    </div>
-    <i class="fa fa-check dp-check"></i>`;
+  el.innerHTML = `<div class="dp-flag">${flag}</div><div class="dp-info"><div class="dp-name">${name}</div><div class="dp-sub">${sub}</div></div><i class="fa fa-check dp-check"></i>`;
   return el;
 }
 function showToast(msg) {
@@ -930,7 +1145,21 @@ function copyTxt(txt) {
   navigator.clipboard.writeText(txt).then(() => showToast('✅ Copied to clipboard!'));
 }
 
-// ── External players ──────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+//  DIRECT DOWNLOAD — forces download, no redirect to player
+// ══════════════════════════════════════════════════════════
+function startDownload() {
+  // Create hidden <a> with download attribute — forces browser download dialog
+  const a = document.createElement('a');
+  a.href     = FILE_URL;
+  a.download = '{{ file_name }}' || 'GoFlix_video';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('⬇️ Download started!');
+}
+
 function mxPlayer() {
   window.location.href = `intent://${FILE_URL.replace(/^https?:\/\//,'')}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
 }
@@ -940,7 +1169,6 @@ function vlcPlayer() {
 function playItPlayer() {
   window.location.href = `intent://${FILE_URL.replace(/^https?:\/\//,'')}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
 }
-function startDownload() { window.location.href = FILE_URL; }
 function openTg() { if (TG_BUTTON) window.open(TG_BUTTON, '_blank'); }
 function shareLink() {
   if (navigator.share) {
@@ -951,21 +1179,21 @@ function shareLink() {
   }
 }
 
-// ── THEME ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════════════════════
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   document.getElementById('darkBtn').classList.toggle('active', t === 'dark');
   document.getElementById('lightBtn').classList.toggle('active', t === 'light');
   localStorage.setItem('gf-theme', t);
+  // Walking X runs to join logo on every theme switch
+  runWalkingX();
 }
 const saved = localStorage.getItem('gf-theme');
-if (saved) {
-  setTheme(saved);
-} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-  setTheme('light');
-} else {
-  setTheme('dark');
-}
+if (saved) { setTheme(saved); }
+else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) { setTheme('light'); }
+else { setTheme('dark'); }
 </script>
 </body>
 </html>
