@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ file_name }} | {{ template_ne }}</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
   <style>
     :root {
       --primary-color: #00f0ff;
@@ -19,7 +16,6 @@
       --glass-border: 1px solid rgba(255, 255, 255, 0.1);
       --card-radius: 16px;
     }
-
     body {
       background: var(--bg-gradient);
       color: #fff;
@@ -32,7 +28,6 @@
       margin: 0;
       padding: 20px;
     }
-
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
@@ -44,25 +39,21 @@
       text-align: center;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-
     h1 {
       font-size: 1.5rem;
       color: var(--primary-color);
       margin-bottom: 20px;
       word-break: break-all;
     }
-
     .info-row {
       margin: 10px 0;
       font-size: 0.95rem;
       color: #ccc;
     }
-
     .info-value {
       color: #fff;
       font-weight: 600;
     }
-
     .btn-download {
       display: inline-block;
       margin-top: 30px;
@@ -75,12 +66,53 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
     }
-
     .btn-download:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 20px rgba(150, 201, 61, 0.4);
       color: #fff;
+    }
+    .btn-download:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      display: none;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .progress-label {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .progress-bar-bg {
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #00f0ff, #7000ff);
+      transition: width 0.2s ease;
+    }
+    .speed-info {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 6px;
+      text-align: right;
     }
 
     footer {
@@ -89,12 +121,10 @@
       color: #666;
       text-align: center;
     }
-
     footer a {
       color: var(--primary-color);
       text-decoration: none;
     }
-
     .icon-large {
       font-size: 4rem;
       margin-bottom: 20px;
@@ -102,7 +132,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .watermark {
       position: fixed;
       bottom: 20px;
@@ -118,13 +147,10 @@
     }
   </style>
 </head>
-
 <body>
-
   <div class="glass-card">
     <i class="fa-solid fa-file-arrow-down icon-large"></i>
     <h1>{{ file_name }}</h1>
-
     <div class="info-row">
       <span>File Size:</span> <span class="info-value">{{ file_size }}</span>
     </div>
@@ -132,17 +158,150 @@
       <span>Unique ID:</span> <span class="info-value">{{ file_unique_id }}</span>
     </div>
 
-    <a class="btn-download" href="{{ file_url }}" download>
-      <i class="fa-solid fa-download me-2"></i> Download Now
-    </a>
+    <button class="btn-download" id="dlBtn" onclick="startDownload()">
+      <i class="fa-solid fa-download"></i> &nbsp;Download Now
+    </button>
+
+    <!-- Progress UI -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span id="progressText">Downloading...</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <div class="speed-info" id="speedInfo">Calculating speed...</div>
+    </div>
   </div>
 
   <footer>
     <p>{{ disclaimer }}</p>
     <p>&copy; 2025 {{ template_ne }}. <a href="{{ report_link }}">Support</a></p>
   </footer>
-
   <div class="watermark">GOFLIX</div>
-</body>
 
+  <script>
+    async function startDownload() {
+      const fileUrl  = "{{ file_url }}";
+      const fileName = "{{ file_name }}";
+      const btn      = document.getElementById('dlBtn');
+      const wrap     = document.getElementById('progressWrap');
+      const fill     = document.getElementById('progressFill');
+      const pct      = document.getElementById('progressPct');
+      const txt      = document.getElementById('progressText');
+      const spd      = document.getElementById('speedInfo');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Starting...';
+      wrap.style.display = 'block';
+
+      try {
+        const response = await fetch(fileUrl);
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        // Try to get total size from Content-Length header
+        const contentLength = response.headers.get('Content-Length');
+        const total = contentLength ? parseInt(contentLength, 10) : null;
+
+        const reader   = response.body.getReader();
+        const chunks   = [];
+        let received   = 0;
+        let startTime  = Date.now();
+        let lastTime   = startTime;
+        let lastBytes  = 0;
+
+        btn.innerHTML = '<i class="fa-solid fa-download fa-bounce"></i> &nbsp;Downloading...';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          chunks.push(value);
+          received += value.length;
+
+          // Speed calculation (every chunk)
+          const now      = Date.now();
+          const elapsed  = (now - lastTime) / 1000;
+          if (elapsed >= 0.5) {
+            const bytesPerSec = (received - lastBytes) / elapsed;
+            spd.textContent   = formatSpeed(bytesPerSec);
+            lastTime  = now;
+            lastBytes = received;
+          }
+
+          // Progress bar
+          if (total) {
+            const percent = Math.round((received / total) * 100);
+            fill.style.width = percent + '%';
+            pct.textContent  = percent + '%';
+            txt.textContent  = formatBytes(received) + ' / ' + formatBytes(total);
+          } else {
+            // Unknown total — show received bytes only
+            txt.textContent = 'Downloaded: ' + formatBytes(received);
+            pct.textContent = '';
+            // Animate bar as indeterminate
+            fill.style.width = '60%';
+          }
+        }
+
+        // Merge all chunks into a Blob
+        const blob    = new Blob(chunks);
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Force download via hidden <a>
+        const a    = document.createElement('a');
+        a.href     = blobUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Cleanup
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+
+        // Final UI
+        fill.style.width   = '100%';
+        pct.textContent    = '100%';
+        txt.textContent    = 'Download Complete!';
+        spd.textContent    = 'Total: ' + formatBytes(received);
+        btn.disabled       = false;
+        btn.innerHTML      = '<i class="fa-solid fa-circle-check"></i> &nbsp;Downloaded!';
+        btn.style.background = 'linear-gradient(45deg, #00c853, #64dd17)';
+
+      } catch (err) {
+        console.error(err);
+        // Fallback: direct link if fetch fails (e.g. CORS)
+        txt.textContent  = 'Direct download started...';
+        spd.textContent  = '';
+        fill.style.width = '100%';
+
+        const a    = document.createElement('a');
+        a.href     = "{{ file_url }}";
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        btn.disabled  = false;
+        btn.innerHTML = '<i class="fa-solid fa-download"></i> &nbsp;Download Now';
+      }
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024)       return bytes + ' B';
+      if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
+      if (bytes < 1073741824) return (bytes / 1048576).toFixed(2) + ' MB';
+      return (bytes / 1073741824).toFixed(2) + ' GB';
+    }
+
+    function formatSpeed(bps) {
+      if (bps < 1024)       return bps.toFixed(0) + ' B/s';
+      if (bps < 1048576)    return (bps / 1024).toFixed(1) + ' KB/s';
+      if (bps < 1073741824) return (bps / 1048576).toFixed(2) + ' MB/s';
+      return (bps / 1073741824).toFixed(2) + ' GB/s';
+    }
+  </script>
+</body>
 </html>
