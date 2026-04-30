@@ -16,6 +16,7 @@
       --glass-border: 1px solid rgba(255, 255, 255, 0.1);
       --card-radius: 16px;
     }
+    * { box-sizing: border-box; }
     body {
       background: var(--bg-gradient);
       color: #fff;
@@ -28,16 +29,18 @@
       margin: 0;
       padding: 20px;
     }
+
+    /* ── MAIN CARD ── */
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
       border: var(--glass-border);
       border-radius: var(--card-radius);
       padding: 40px;
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     h1 {
       font-size: 1.5rem;
@@ -50,39 +53,57 @@
       font-size: 0.95rem;
       color: #ccc;
     }
-    .info-value {
-      color: #fff;
-      font-weight: 600;
-    }
-    .btn-download {
-      display: inline-block;
-      margin-top: 30px;
-      background: linear-gradient(45deg, #00b09b, #96c93d);
-      color: #fff;
-      text-decoration: none;
-      padding: 15px 30px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-      border: none;
-      font-family: 'Outfit', sans-serif;
-      font-size: 1rem;
-    }
-    .btn-download:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 20px rgba(150, 201, 61, 0.4);
-      color: #fff;
-    }
-    .btn-download:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
+    .info-value { color: #fff; font-weight: 600; }
+    .icon-large {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      background: -webkit-linear-gradient(#00f0ff, #7000ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* Progress bar */
+    /* ── BUTTON ROW ── */
+    .btn-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover { transform: translateY(-3px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-watch {
+      background: linear-gradient(45deg, #7000ff, #00f0ff);
+      color: #fff;
+    }
+    .btn-watch:hover { box-shadow: 0 5px 20px rgba(0,240,255,0.35); }
+
+    .btn-download {
+      background: linear-gradient(45deg, #00b09b, #96c93d);
+      color: #fff;
+    }
+    .btn-download:hover { box-shadow: 0 5px 20px rgba(150,201,61,0.4); }
+
+    /* ── PROGRESS BAR ── */
     .progress-wrap {
       display: none;
       margin-top: 20px;
@@ -115,23 +136,75 @@
       text-align: right;
     }
 
+    /* ── VIDEO MODAL (Watch) ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 860px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,0,0,0.5); }
+    .modal-title {
+      font-size: 1rem;
+      color: var(--primary-color);
+      margin-bottom: 14px;
+      padding-right: 40px;
+      word-break: break-all;
+    }
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .video-wrap video {
+      width: 100%;
+      display: block;
+      max-height: 75vh;
+      background: #000;
+    }
+
+    /* ── FOOTER ── */
     footer {
       margin-top: 40px;
       font-size: 0.8rem;
       color: #666;
       text-align: center;
     }
-    footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-    .icon-large {
-      font-size: 4rem;
-      margin-bottom: 20px;
-      background: -webkit-linear-gradient(#00f0ff, #7000ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    footer a { color: var(--primary-color); text-decoration: none; }
     .watermark {
       position: fixed;
       bottom: 20px;
@@ -148,6 +221,8 @@
   </style>
 </head>
 <body>
+
+  <!-- MAIN CARD -->
   <div class="glass-card">
     <i class="fa-solid fa-file-arrow-down icon-large"></i>
     <h1>{{ file_name }}</h1>
@@ -158,11 +233,17 @@
       <span>Unique ID:</span> <span class="info-value">{{ file_unique_id }}</span>
     </div>
 
-    <button class="btn-download" id="dlBtn" onclick="startDownload()">
-      <i class="fa-solid fa-download"></i> &nbsp;Download Now
-    </button>
+    <!-- TWO BUTTONS -->
+    <div class="btn-row">
+      <button class="btn btn-watch" onclick="openPlayer()">
+        <i class="fa-solid fa-circle-play"></i> Watch
+      </button>
+      <button class="btn btn-download" id="dlBtn" onclick="startDownload()">
+        <i class="fa-solid fa-download"></i> Download
+      </button>
+    </div>
 
-    <!-- Progress UI -->
+    <!-- DOWNLOAD PROGRESS -->
     <div class="progress-wrap" id="progressWrap">
       <div class="progress-label">
         <span id="progressText">Downloading...</span>
@@ -181,7 +262,45 @@
   </footer>
   <div class="watermark">GOFLIX</div>
 
+  <!-- WATCH MODAL -->
+  <div class="modal-overlay" id="watchModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closePlayer()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-title">{{ file_name }}</div>
+      <div class="video-wrap">
+        <video id="videoPlayer" controls autoplay controlsList="nodownload" oncontextmenu="return false;">
+          <source src="{{ file_url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+
   <script>
+    /* ── WATCH PLAYER ── */
+    function openPlayer() {
+      document.getElementById('watchModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePlayer() {
+      const modal = document.getElementById('watchModal');
+      const video = document.getElementById('videoPlayer');
+      video.pause();
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    // Close modal clicking outside
+    document.getElementById('watchModal').addEventListener('click', function(e) {
+      if (e.target === this) closePlayer();
+    });
+    // ESC key closes modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closePlayer();
+    });
+
+    /* ── DIRECT DOWNLOAD (Fetch + Blob) ── */
     async function startDownload() {
       const fileUrl  = "{{ file_url }}";
       const fileName = "{{ file_name }}";
@@ -193,114 +312,99 @@
       const spd      = document.getElementById('speedInfo');
 
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Starting...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Starting...';
       wrap.style.display = 'block';
 
       try {
         const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error('Fetch failed');
 
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        // Try to get total size from Content-Length header
         const contentLength = response.headers.get('Content-Length');
         const total = contentLength ? parseInt(contentLength, 10) : null;
 
-        const reader   = response.body.getReader();
-        const chunks   = [];
-        let received   = 0;
-        let startTime  = Date.now();
-        let lastTime   = startTime;
-        let lastBytes  = 0;
+        const reader  = response.body.getReader();
+        const chunks  = [];
+        let received  = 0;
+        let lastTime  = Date.now();
+        let lastBytes = 0;
 
-        btn.innerHTML = '<i class="fa-solid fa-download fa-bounce"></i> &nbsp;Downloading...';
+        btn.innerHTML = '<i class="fa-solid fa-download fa-bounce"></i> Downloading...';
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-
           chunks.push(value);
           received += value.length;
 
-          // Speed calculation (every chunk)
-          const now      = Date.now();
-          const elapsed  = (now - lastTime) / 1000;
+          const now     = Date.now();
+          const elapsed = (now - lastTime) / 1000;
           if (elapsed >= 0.5) {
-            const bytesPerSec = (received - lastBytes) / elapsed;
-            spd.textContent   = formatSpeed(bytesPerSec);
+            spd.textContent = formatSpeed((received - lastBytes) / elapsed);
             lastTime  = now;
             lastBytes = received;
           }
 
-          // Progress bar
           if (total) {
-            const percent = Math.round((received / total) * 100);
-            fill.style.width = percent + '%';
-            pct.textContent  = percent + '%';
+            const p = Math.round((received / total) * 100);
+            fill.style.width = p + '%';
+            pct.textContent  = p + '%';
             txt.textContent  = formatBytes(received) + ' / ' + formatBytes(total);
           } else {
-            // Unknown total — show received bytes only
-            txt.textContent = 'Downloaded: ' + formatBytes(received);
-            pct.textContent = '';
-            // Animate bar as indeterminate
+            txt.textContent  = 'Downloaded: ' + formatBytes(received);
+            pct.textContent  = '';
             fill.style.width = '60%';
           }
         }
 
-        // Merge all chunks into a Blob
+        // Force-download via Blob URL
         const blob    = new Blob(chunks);
         const blobUrl = URL.createObjectURL(blob);
-
-        // Force download via hidden <a>
-        const a    = document.createElement('a');
-        a.href     = blobUrl;
-        a.download = fileName;
+        const a       = document.createElement('a');
+        a.href        = blobUrl;
+        a.download    = fileName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-
-        // Cleanup
         setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
 
-        // Final UI
-        fill.style.width   = '100%';
-        pct.textContent    = '100%';
-        txt.textContent    = 'Download Complete!';
-        spd.textContent    = 'Total: ' + formatBytes(received);
-        btn.disabled       = false;
-        btn.innerHTML      = '<i class="fa-solid fa-circle-check"></i> &nbsp;Downloaded!';
-        btn.style.background = 'linear-gradient(45deg, #00c853, #64dd17)';
+        fill.style.width  = '100%';
+        pct.textContent   = '100%';
+        txt.textContent   = 'Download Complete!';
+        spd.textContent   = 'Total: ' + formatBytes(received);
+        btn.disabled      = false;
+        btn.innerHTML     = '<i class="fa-solid fa-circle-check"></i> Downloaded!';
+        btn.style.background = 'linear-gradient(45deg,#00c853,#64dd17)';
 
       } catch (err) {
-        console.error(err);
-        // Fallback: direct link if fetch fails (e.g. CORS)
-        txt.textContent  = 'Direct download started...';
+        // CORS fallback — still forces download via <a download>
+        txt.textContent  = 'Starting download...';
         spd.textContent  = '';
         fill.style.width = '100%';
+        pct.textContent  = '';
 
         const a    = document.createElement('a');
         a.href     = "{{ file_url }}";
-        a.download = fileName;
+        a.download = "{{ file_name }}";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
         btn.disabled  = false;
-        btn.innerHTML = '<i class="fa-solid fa-download"></i> &nbsp;Download Now';
+        btn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
       }
     }
 
-    function formatBytes(bytes) {
-      if (bytes < 1024)       return bytes + ' B';
-      if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
-      if (bytes < 1073741824) return (bytes / 1048576).toFixed(2) + ' MB';
-      return (bytes / 1073741824).toFixed(2) + ' GB';
+    function formatBytes(b) {
+      if (b < 1024)       return b + ' B';
+      if (b < 1048576)    return (b/1024).toFixed(1) + ' KB';
+      if (b < 1073741824) return (b/1048576).toFixed(2) + ' MB';
+      return (b/1073741824).toFixed(2) + ' GB';
     }
-
     function formatSpeed(bps) {
       if (bps < 1024)       return bps.toFixed(0) + ' B/s';
-      if (bps < 1048576)    return (bps / 1024).toFixed(1) + ' KB/s';
-      if (bps < 1073741824) return (bps / 1048576).toFixed(2) + ' MB/s';
-      return (bps / 1073741824).toFixed(2) + ' GB/s';
+      if (bps < 1048576)    return (bps/1024).toFixed(1) + ' KB/s';
+      if (bps < 1073741824) return (bps/1048576).toFixed(2) + ' MB/s';
+      return (bps/1073741824).toFixed(2) + ' GB/s';
     }
   </script>
 </body>
