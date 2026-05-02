@@ -3,480 +3,436 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>GoFlix | Cinematic Stream</title>
+<title>GoFlix | {{ file_name }}</title>
 <link rel="icon" href="https://i.ibb.co/Z6F9WZL9/1000489714.png" type="image/x-icon">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 <style>
-:root{--red:#e50914;--red2:#ff4d4d}
+*{box-sizing:border-box;margin:0;padding:0;transition:background .3s,color .3s,border-color .3s}
 [data-theme="dark"]{
-  --bg:#0d0d0d;--bg2:#161616;--bg3:#1f1f1f;--bg4:#2a2a2a;
-  --text:#fff;--text2:#aaa;--text3:#555;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
-  --glow:rgba(229,9,20,0.5);--shadow:0 8px 40px rgba(0,0,0,0.8);
+--bg:#0a0a12;--surface:#13131e;--surface2:#1a1a28;--surface3:#222235;
+--text:#f0f0ff;--text2:#9090b0;
+--accent:#e50914;--accent2:#ff6b35;--accent3:#ff9500;
+--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+--glow:rgba(229,9,20,0.35);--card-shadow:0 4px 28px rgba(0,0,0,0.6);
 }
 [data-theme="light"]{
-  --bg:#f0f0f0;--bg2:#fff;--bg3:#e8e8e8;--bg4:#d0d0d0;
-  --text:#111;--text2:#555;--text3:#999;
-  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
-  --glow:rgba(229,9,20,0.3);--shadow:0 8px 40px rgba(0,0,0,0.15);
+--bg:#f4f4f8;--surface:#ffffff;--surface2:#f0f0f8;--surface3:#e8e8f4;
+--text:#0e0e1a;--text2:#5a5a7a;
+--accent:#cc0812;--accent2:#e55520;--accent3:#d47800;
+--border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
+--glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
 
-/* ===== REFINED CURSOR: small dot + gentle zoom on interactive ===== */
-@media(hover:hover) and (pointer:fine){
-  body{cursor:none}
-}
-#magicDot {
-  position:fixed;
-  top:0;
-  left:0;
-  width:8px;
-  height:8px;
-  background:var(--red);
-  border-radius:50%;
-  pointer-events:none;
-  z-index:99999;
-  box-shadow:0 0 6px rgba(229,9,20,0.7);
-  transition:transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
-  transform:translate(-50%, -50%);
-}
-body.hoverZoom #magicDot {
-  transform:translate(-50%, -50%) scale(2.2);
-  background:#fff;
-  box-shadow:0 0 12px #e50914;
-}
-
-/* ── NAVBAR: logo bigger, walking X perfect width align ── */
+/* NAVBAR */
 .navbar{
-  background:var(--bg2);
-  border-bottom:1px solid var(--border);
-  padding:0 24px;
-  height:68px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:500;
-  backdrop-filter:blur(20px);
-  overflow:visible;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:11px 20px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);
 }
-
-/* Enhanced GoFlix logo — larger & stylish */
-.brand{
-  display:flex;
-  flex-direction:column;
-  text-decoration:none;
-  user-select:none;
-  position:relative;
-  z-index:12;
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-logo{
+  display:flex;align-items:center;gap:2px;font-size:1.35rem;font-weight:900;letter-spacing:-1px;
 }
-.brand-row{
-  display:flex;
-  align-items:baseline;
-  gap:0px;
-}
-.gl{
-  font-size:2rem;
-  font-weight:900;
-  letter-spacing:-1px;
-  display:inline-block;
-  opacity:0;
-  transform:translateY(12px);
-  animation:glIn .4s ease forwards;
-}
-.gl.go{color:var(--text)}
-.gl.fx{color:var(--red)}
-.gl:nth-child(1){animation-delay:.04s}
-.gl:nth-child(2){animation-delay:.10s}
-.gl:nth-child(3){animation-delay:.16s}
-.gl:nth-child(4){animation-delay:.22s}
-.gl:nth-child(5){animation-delay:.28s}
-.gl:nth-child(6){animation-delay:.34s}
-@keyframes glIn{to{opacity:1;transform:translateY(0)}}
+.brand-go{color:var(--text)}
+.brand-flix{color:var(--accent)}
 .brand-dot{
-  width:10px;
-  height:10px;
-  background:var(--red);
-  border-radius:50%;
-  margin-left:4px;
-  margin-bottom:18px;
-  box-shadow:0 0 8px var(--red);
-  animation:bdot 1.6s ease-in-out infinite;
+  width:8px;height:8px;background:var(--accent);border-radius:50%;
+  margin-left:3px;margin-bottom:12px;animation:pulsedot 2s infinite
 }
-@keyframes bdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.6)}}
-.brand-bar{
-  height:3px;
-  width:100%;
-  border-radius:3px;
-  margin-top:2px;
-  background:linear-gradient(90deg,transparent,var(--red),transparent);
-  animation:bbar 2.2s ease-in-out infinite;
-}
-@keyframes bbar{0%,100%{opacity:.4;transform:scaleX(.5)}50%{opacity:1;transform:scaleX(1)}}
+@keyframes pulsedot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.7}}
+.nav-right{display:flex;align-items:center;gap:10px}
 
-/* WALKING X: path from theme button area → logo left side, width full alignment */
-.xwalker{
-  position:absolute;
-  top:50%;
-  left:auto;
-  right:0;
-  transform:translateY(-50%);
-  font-size:1.4rem;
-  font-weight:900;
-  color:var(--red);
-  pointer-events:none;
-  z-index:15;
-  line-height:1;
-  filter:drop-shadow(0 0 6px var(--red));
-  width:auto;
-  animation:xwalkFull 5.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-  white-space:nowrap;
-}
-/* legs animation */
-.xwalker::before,.xwalker::after{
-  content:'';position:absolute;
-  width:2.5px;height:11px;background:var(--red);
-  border-radius:1px;bottom:-12px;
-  transform-origin:top center;
-}
-.xwalker::before{left:2px;animation:legL 0.35s ease-in-out infinite alternate}
-.xwalker::after{right:2px;animation:legR 0.35s ease-in-out infinite alternate}
-@keyframes legL{from{transform:rotate(-32deg)}to{transform:rotate(22deg)}}
-@keyframes legR{from{transform:rotate(22deg)}to{transform:rotate(-32deg)}}
-/* full horizontal walk: start from toggle zone to logo */
-@keyframes xwalkFull{
-  0%{right:0%;transform:translateY(-50%) translateX(20px);opacity:0}
-  3%{opacity:1}
-  15%{right:30%;transform:translateY(calc(-50% - 2px)) translateX(0)}
-  28%{right:55%;transform:translateY(calc(-50% + 2px)) translateX(0)}
-  42%{right:70%;transform:translateY(calc(-50% - 2px))}
-  55%{right:82%;transform:translateY(calc(-50% + 2px))}
-  /* arrive at logo left edge */
-  68%{right:91%;transform:translateY(calc(-50% - 3px));opacity:1}
-  76%{right:94%;transform:translateY(calc(-50% + 2px));opacity:0.9}
-  85%{right:96%;opacity:0;transform:translateY(-50%)}
-  100%{right:0%;opacity:0;transform:translateY(-50%) translateX(20px)}
-}
-
-/* Theme toggle modern */
+/* THEME TOGGLE */
 .theme-toggle{
-  display:flex;
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:60px;
-  padding:4px;
-  gap:4px;
-  z-index:20;
+  display:flex;align-items:center;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:50px;padding:4px;cursor:pointer;gap:2px
 }
-.tbtn{
-  width:34px;
-  height:34px;
-  border:none;
-  border-radius:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px;
-  background:transparent;
-  color:var(--text2);
-  transition:all 0.2s;
-  cursor:pointer;
+.theme-btn{
+  width:30px;height:30px;border:none;border-radius:50px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  background:transparent;color:var(--text2);transition:all .25s
 }
-.tbtn.active{
-  background:var(--red);
-  color:#fff;
-  box-shadow:0 0 14px var(--glow);
+.theme-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--glow)}
+
+/* HERO BANNER */
+.hero-bar{
+  background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 60%,var(--accent3) 100%);
+  padding:8px 20px;font-size:12px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:8px;letter-spacing:.4px
+}
+.hero-bar i{font-size:11px}
+
+/* CONTAINER */
+.container{max-width:960px;margin:0 auto;padding:20px 16px}
+
+/* PLAYER CARD */
+.player-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;box-shadow:var(--card-shadow);margin-bottom:16px
+}
+.player-header{
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:var(--surface2)
+}
+.live-badge{
+  display:flex;align-items:center;gap:6px;background:rgba(229,9,20,0.12);
+  color:var(--accent);font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;
+  border:1px solid rgba(229,9,20,0.25);letter-spacing:.5px
+}
+.live-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+.hd-badge{
+  background:var(--accent);color:#fff;font-size:10px;font-weight:800;
+  padding:3px 9px;border-radius:5px;letter-spacing:.8px
 }
 
-/* ===== ALL CONTROLS FULLY RESPONSIVE & WORKING ===== */
-/* video container */
-.vc{background:#000;position:relative;width:100%}
-.vc::before{content:'';display:block;padding-top:56.25%}
-.vc video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
-.pw{background:var(--bg2);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:18px}
-.ptop{padding:9px 18px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
-.seek-wrap{height:4px;background:var(--border);cursor:pointer;transition:height 0.1s}
-.seek-wrap:hover{height:6px}
-.seek-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--red2));width:0%}
+.progress-bar-wrap{height:3px;background:var(--border)}
+.progress-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .15s}
 
-/* control bars all functional */
-.cbar, .mrow{display:flex;align-items:center;flex-wrap:wrap;padding:12px 18px;gap:14px;background:var(--bg3);border-top:1px solid var(--border)}
-.mrow{background:var(--bg2);border-top:1px solid var(--border)}
-.spdbtn,.mbtn,.abtn,.cbtn,.dpupl{
-  cursor:pointer;
-  transition:all 0.2s;
+.video-wrap{background:#000;aspect-ratio:16/9}
+.video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
+
+.player-controls{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:var(--surface2);flex-wrap:wrap;gap:8px
 }
-.spdbtn{
-  background:var(--bg4);
-  border:1px solid var(--border);
-  border-radius:10px;
-  color:var(--text2);
-  font-size:13px;
-  padding:6px 12px;
-  font-weight:600;
+.speed-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.speed-label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.spd{
+  background:var(--surface3);border:1px solid var(--border);border-radius:7px;
+  color:var(--text2);font-size:12px;padding:4px 10px;cursor:pointer;transition:all .2s;font-weight:600
 }
-.spdbtn.on,.spdbtn:hover{background:var(--red);color:#fff;border-color:var(--red)}
-.bsec,.vsec{display:flex;align-items:center;gap:8px}
-.bri-sl,.vol-sl{
-  -webkit-appearance:none;
-  width:100px;
-  height:5px;
-  border-radius:5px;
-  outline:none;
-  cursor:pointer;
+.spd:hover,.spd.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.vol-row{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:12px}
+.vol-row input[type=range]{accent-color:var(--accent);width:80px;cursor:pointer}
+.vol-pct{min-width:32px;font-size:12px;color:var(--text2);font-weight:600}
+
+/* STATS */
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{
+  background:var(--surface);border:1px solid var(--border);border-radius:50px;
+  padding:5px 13px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px
 }
-.bri-sl::-webkit-slider-thumb,.vol-sl::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;cursor:pointer}
-.bri-sl::-webkit-slider-thumb{background:#ffcc00;box-shadow:0 0 5px #ffcc00}
-.vol-sl::-webkit-slider-thumb{background:var(--red);box-shadow:0 0 5px var(--glow)}
-.mbtn{
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:32px;
-  padding:8px 18px;
-  font-size:13px;
-  font-weight:600;
-  color:var(--text2);
-  gap:8px;
+.chip b{color:var(--text);font-weight:600}
+
+/* BUTTONS */
+.btn{
+  border:none;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .22s;letter-spacing:.3px;text-transform:uppercase
 }
-.mbtn:hover,.mbtn.open{background:rgba(229,9,20,0.12);border-color:var(--red);color:var(--red);transform:scale(0.98)}
-.dpanel{
-  position:absolute;
-  bottom:calc(100% + 12px);
-  left:0;
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  border-radius:18px;
-  width:250px;
-  z-index:300;
-  box-shadow:0 20px 32px rgba(0,0,0,0.5);
-  display:none;
+.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn:active{transform:scale(.97)}
+
+.app-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.btn-player{
+  background:var(--surface);color:var(--text);border:1px solid var(--border2);
+  flex:1;min-width:90px;font-size:12px;padding:10px 10px
 }
-.dpanel.show{display:block}
-.dpi{display:flex;gap:12px;padding:10px 16px;cursor:pointer;align-items:center}
-.dpi.active{background:rgba(229,9,20,0.15);border-left:3px solid var(--red)}
-.dpchk{color:var(--red);margin-left:auto}
-.bufspin{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:25}
-.bufspin.show{display:flex}
-.spin{width:44px;height:44px;border:4px solid rgba(255,255,255,0.2);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite}
-/* fullscreen overlay (fs) */
-.fs-ov{position:absolute;bottom:60px;right:16px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);border-radius:16px;padding:10px 12px;display:none;flex-direction:column;gap:8px;z-index:40}
-.fs-ov.show{display:flex}
-.fssl{width:100px}
-/* stat chips */
-.srow{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.chip{background:var(--bg2);border:1px solid var(--border);border-radius:60px;padding:6px 16px;font-size:12px}
-.abtn{border-radius:14px;padding:12px 14px;font-weight:700;display:flex;align-items:center;gap:8px;justify-content:center}
-.abtn:hover{transform:translateY(-2px);filter:brightness(1.03)}
-.aext{background:var(--bg2);border:1px solid var(--border2)}
-.adl{background:linear-gradient(135deg,#1dbf73,#16a560);color:#fff}
-.atg{background:linear-gradient(135deg,#0088cc,#229ed9);color:#fff}
-.icard{background:var(--bg2);border-radius:20px;overflow:hidden;margin:16px 0}
-.ihead{padding:12px 18px;background:var(--bg3);border-bottom:1px solid var(--border);font-weight:800}
-.irow{display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
-.cbtn{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 12px;margin-left:12px;cursor:pointer}
-.toast{position:fixed;bottom:24px;right:20px;background:var(--red);color:#fff;border-radius:40px;padding:10px 20px;z-index:99990;transform:translateY(80px);opacity:0;transition:0.25s ease}
+.btn-player:hover{border-color:var(--accent);color:var(--accent)}
+
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.btn-download{background:linear-gradient(135deg,#1dbf73,#16a560);color:#fff}
+.btn-telegram{background:linear-gradient(135deg,#0088cc,#229ed9);color:#fff}
+
+.btn-share{
+  width:100%;background:var(--surface);color:var(--text2);
+  border:1px solid var(--border2);margin-bottom:16px;font-size:12px;padding:10px
+}
+.btn-share:hover{border-color:var(--accent);color:var(--accent)}
+
+/* INFO CARD */
+.info-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-bottom:14px;box-shadow:var(--card-shadow)
+}
+.info-head{
+  padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--accent);display:flex;align-items:center;gap:8px
+}
+.info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 16px;border-bottom:1px solid var(--border);gap:10px
+}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;min-width:70px}
+.info-val{color:var(--text);font-size:13px;word-break:break-all;text-align:right;font-family:monospace}
+.copy-btn{
+  background:var(--surface3);border:1px solid var(--border);border-radius:7px;
+  color:var(--text2);font-size:11px;padding:3px 9px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;margin-left:8px;font-weight:600
+}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:28px;right:18px;background:var(--accent);color:#fff;
+  border-radius:12px;padding:11px 18px;font-size:13px;font-weight:700;
+  box-shadow:0 6px 28px var(--glow);display:flex;align-items:center;gap:8px;
+  z-index:9999;transform:translateY(80px);opacity:0;transition:all .32s ease
+}
 .toast.show{transform:translateY(0);opacity:1}
+
+/* DISCLAIMER */
+.disclaimer{text-align:center;color:var(--text2);font-size:12px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px}
+.disclaimer a{color:var(--accent);text-decoration:none}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:14px 20px;text-align:center;color:var(--text2);font-size:12px;margin-top:20px}
+.footer-go{color:var(--text);font-weight:900}
+.footer-flix{color:var(--accent);font-weight:900}
+
+@media(max-width:500px){
+  .cta-grid{grid-template-columns:1fr}
+  .vol-row input{width:60px}
+  .brand-logo{font-size:1.15rem}
+}
 </style>
 </head>
 <body>
 
-<!-- refined cursor: only a glowing small dot + zoom -->
-<div id="magicDot"></div>
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fa fa-check-circle"></i><span id="toast-msg">Done!</span></div>
 
-<div class="toast" id="toast"><i class="fa fa-check-circle"></i> <span id="toastMsg"></span></div>
-
+<!-- NAVBAR -->
 <nav class="navbar">
-  <a class="brand" href="/">
-    <div class="brand-row">
-      <span class="gl go">G</span><span class="gl go">o</span>
-      <span class="gl fx">F</span><span class="gl fx">l</span>
-      <span class="gl fx">i</span><span class="gl fx">x</span>
-      <div class="brand-dot"></div>
+  <div class="brand">
+    <div class="brand-logo">
+      <span class="brand-go">Go</span><span class="brand-flix">Flix</span><div class="brand-dot"></div>
     </div>
-    <div class="brand-bar"></div>
-  </a>
-  <!-- walking X now goes exactly from theme button area to logo -->
-  <div class="xwalker">✕</div>
-  <div class="theme-toggle">
-    <button class="tbtn" id="darkBtn" onclick="setTheme('dark')"><i class="fa fa-moon"></i></button>
-    <button class="tbtn" id="lightBtn" onclick="setTheme('light')"><i class="fa fa-sun"></i></button>
+  </div>
+  <div class="nav-right">
+    <div class="theme-toggle">
+      <button class="theme-btn" id="darkBtn" onclick="setTheme('dark')" title="Dark"><i class="fa fa-moon"></i></button>
+      <button class="theme-btn" id="lightBtn" onclick="setTheme('light')" title="Light"><i class="fa fa-sun"></i></button>
+    </div>
   </div>
 </nav>
 
-<div class="hero-strip" style="background:linear-gradient(90deg,var(--red),#aa0000);padding:6px 20px;font-size:11px;color:#fff;display:flex;gap:8px;"><i class="fa fa-film"></i> GoFlix — Ultimate Web Player</div>
+<!-- HERO BAR -->
+<div class="hero-bar">
+  <i class="fa fa-bolt"></i> GoFlix — Watch, Download &amp; Stream Instantly
+</div>
 
-<div class="page" style="max-width:1000px;margin:0 auto;padding:20px 16px">
+<!-- MAIN -->
+<div class="container">
 
-  <div class="pw">
-    <div class="ptop"><div class="sbadge" style="display:flex;gap:6px"><i class="fa fa-circle" style="color:var(--red);font-size:10px"></i> STREAMING</div><div><span id="resLabel">HD</span></div></div>
-    <div class="seek-wrap" onclick="seekVid(event)"><div class="seek-fill" id="seekFill"></div></div>
-    <div class="vc" id="vc">
-      <video id="vid" src="{{ file_url }}" controls preload="metadata" playsinline crossorigin="anonymous"></video>
-      <div class="bufspin" id="bufspin"><div class="spin"></div><div class="buftxt" style="color:#fff">Buffering...</div></div>
-      <div class="fs-ov" id="fsOv">
-        <div class="fsrow"><span>🔆</span><input type="range" class="fssl bsl" id="fsBriSl" min="50" max="150" value="100" oninput="syncBri(this.value)"><span id="fsBriVal">100%</span></div>
-        <div class="fsrow"><span>🔊</span><input type="range" class="fssl vsl" id="fsVolSl" min="0" max="1" step="0.02" value="1" oninput="syncVol(this.value)"><span id="fsVolVal">100%</span></div>
+  <!-- PLAYER CARD -->
+  <div class="player-card">
+    <div class="player-header">
+      <div class="live-badge"><div class="live-dot"></div> LIVE STREAM</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--text2)" id="resLabel">—</span>
+        <span class="hd-badge">HD</span>
       </div>
     </div>
-    <div class="cbar">
-      <div class="csec" style="display:flex;gap:6px;align-items:center"><span class="clbl">Speed</span>
-        <button class="spdbtn" onclick="setSpeed(0.5,this)">0.5x</button><button class="spdbtn on" onclick="setSpeed(1,this)">1x</button>
-        <button class="spdbtn" onclick="setSpeed(1.5,this)">1.5x</button><button class="spdbtn" onclick="setSpeed(2,this)">2x</button>
-      </div>
-      <div class="bsec"><i class="fa fa-sun" style="color:#ffcc00"></i><input type="range" class="bri-sl" id="briSl" min="50" max="150" value="100" oninput="syncBri(this.value)"><span class="bpct" id="briPct">100%</span></div>
-      <div class="vsec"><i class="fa fa-volume-high vico" id="volIco" onclick="toggleMute()"></i><input type="range" class="vol-sl" id="volSl" min="0" max="1" step="0.02" value="1" oninput="syncVol(this.value)"><span class="vpct" id="volPct">100%</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progBar"></div></div>
+    <div class="video-wrap">
+      <video id="myVideo" src="{{file_url}}" controls preload="metadata">
+        Your browser does not support the video tag.
+      </video>
     </div>
-    <div class="mrow">
-      <div class="pwrap"><button class="mbtn" id="audioBtn" onclick="togglePanel('audioPanel','audioBtn',event)"><i class="fa fa-headphones"></i> Audio <span class="mbadge" id="audioBadge">{{ audio_count }}</span> <span class="mact" id="audioLbl">Default</span></button>
-      <div class="dpanel" id="audioPanel"><div class="dph">🎧 Audio Tracks</div><div class="dpl" id="audioList">{{ audio_items_html }}</div></div></div>
-      <div class="pwrap"><button class="mbtn" id="subBtn" onclick="togglePanel('subPanel','subBtn',event)"><i class="fa fa-closed-captioning"></i> Subtitles <span class="mbadge" id="subBadge">{{ subtitle_count }}</span> <span class="mact" id="subLbl">Off</span></button>
-      <div class="dpanel" id="subPanel"><div class="dph">📄 Subtitles</div><div class="dpl" id="subList"><div class="dpi active" id="subOff"><div class="dpflag">🚫</div><div class="dpinfo"><div class="dpname">Off</div></div><i class="fa fa-check dpchk"></i></div>{{ subtitle_items_html }}</div><button class="dpupl" onclick="document.getElementById('subInput').click()"><i class="fa fa-upload"></i> Upload .srt/.vtt<input type="file" id="subInput" accept=".srt,.vtt" style="display:none" onchange="uploadSub(this)"/></button></div></div>
+    <div class="player-controls">
+      <div class="speed-group">
+        <span class="speed-label">Speed</span>
+        <button class="spd" onclick="setSpeed(0.5)">0.5×</button>
+        <button class="spd active" onclick="setSpeed(1)">1×</button>
+        <button class="spd" onclick="setSpeed(1.5)">1.5×</button>
+        <button class="spd" onclick="setSpeed(2)">2×</button>
+      </div>
+      <div class="vol-row">
+        <i class="fa fa-volume-high"></i>
+        <input type="range" min="0" max="1" step="0.05" value="1" id="volSlider" oninput="setVolume(this.value)"/>
+        <span class="vol-pct" id="volPct">100%</span>
+      </div>
     </div>
   </div>
 
-  <div class="srow"><div class="chip"><i class="fa fa-clock"></i> <b id="durChip">—</b></div><div class="chip"><i class="fa fa-film"></i> <b id="fmtChip">—</b></div><div class="chip"><i class="fa fa-percent"></i> <b id="pctChip">0%</b></div><div class="chip"><i class="fa fa-signal"></i> <b id="stChip">Ready</b></div></div>
-  <div class="arow" style="display:flex;gap:12px;flex-wrap:wrap"><button class="abtn aext" onclick="mxP()"><i class="fa fa-play-circle"></i> MX Player</button><button class="abtn aext" onclick="vlcP()"><i class="fa fa-play-circle"></i> VLC</button><button class="abtn aext" onclick="pitP()"><i class="fa fa-play-circle"></i> PlayIt</button></div>
-  <div class="crow" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0"><button class="abtn adl" onclick="dlFile()"><i class="fa fa-download"></i> Download</button><button class="abtn atg" onclick="openTg()"><i class="fa-brands fa-telegram"></i> Telegram</button></div>
-  <button class="abtn ash" style="width:100%;background:var(--bg2);margin-bottom:12px" onclick="shareLink()"><i class="fa fa-share-alt"></i> Share</button>
-  <div class="icard"><div class="ihead"><i class="fa fa-info-circle"></i> File Details</div><div class="irow"><span>Filename</span><div><span id="fnSpan">{{ file_name }}</span><button class="cbtn" onclick="cp('{{ file_name }}')">Copy</button></div></div><div class="irow"><span>Size</span><span>{{ file_size }}</span></div><div class="irow"><span>Audio Tracks</span><span>{{ audio_count }}</span></div><div class="irow"><span>Subtitles</span><span>{{ subtitle_count }}</span></div><div class="irow"><span>Stream URL</span><div><span style="max-width:180px;display:inline-block;overflow:hidden">{{ file_url }}</span><button class="cbtn" onclick="cp('{{ file_url }}')">Copy</button></div></div></div>
-  <div class="disc" style="text-align:center;font-size:11px;color:var(--text3)">⚠️ For full audio tracks use VLC/MX Player. {{ disclaimer }} · <a href="{{ report_link }}" style="color:var(--red)">Report Issue</a></div>
+  <!-- STATS CHIPS -->
+  <div class="stats-row">
+    <div class="chip"><i class="fa fa-clock" style="font-size:11px"></i> <b id="durChip">—</b></div>
+    <div class="chip"><i class="fa fa-film" style="font-size:11px"></i> <b id="fmtChip">—</b></div>
+    <div class="chip"><i class="fa fa-circle-play" style="font-size:11px"></i> <b id="playedChip">0%</b></div>
+    <div class="chip"><i class="fa fa-signal" style="font-size:11px"></i> <b id="statusChip">Ready</b></div>
+  </div>
+
+  <!-- OPEN IN EXTERNAL PLAYERS -->
+  <div class="app-row">
+    <button class="btn btn-player" onclick="mx_player()"><i class="fa fa-play-circle"></i> MX Player</button>
+    <button class="btn btn-player" onclick="vlc_player()"><i class="fa fa-play-circle"></i> VLC</button>
+    <button class="btn btn-player" onclick="playit_player()"><i class="fa fa-play-circle"></i> PlayIt</button>
+  </div>
+
+  <!-- DOWNLOAD + TELEGRAM -->
+  <div class="cta-grid">
+    <button class="btn btn-download" onclick="streamDownload()">
+      <i class="fa fa-cloud-arrow-down"></i> Download
+    </button>
+    <button class="btn btn-telegram" onclick="showLinkModal('{{tg_button}}')">
+      <i class="fa-brands fa-telegram"></i> Telegram
+    </button>
+  </div>
+
+  <!-- SHARE -->
+  <button class="btn btn-share" onclick="shareButton()">
+    <i class="fa fa-share-nodes"></i> &nbsp;Share with Friends
+  </button>
+
+  <!-- FILE INFO CARD -->
+  <div class="info-card">
+    <div class="info-head"><i class="fa fa-circle-info"></i> File Details</div>
+    <div class="info-row">
+      <span class="info-label">Filename</span>
+      <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
+        <span class="info-val" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{file_name}}</span>
+        <button class="copy-btn" onclick="copyText('{{file_name}}')">Copy</button>
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Size</span>
+      <span class="info-val">{{file_size}}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Format</span>
+      <span class="info-val" id="fmtVal">Detecting…</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Link</span>
+      <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
+        <span class="info-val" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{file_url}}</span>
+        <button class="copy-btn" onclick="copyText('{{file_url}}')">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    ⚠️ Some formats may not play in browser — use <b>VLC</b> for full support.<br>
+    {{ disclaimer }} &nbsp;·&nbsp; <a href="{{ report_link }}">Report Issue</a>
+  </div>
+
 </div>
-<footer style="text-align:center;padding:18px;border-top:1px solid var(--border);margin-top:20px">© 2026 <strong>GoFlix</strong> — immersive cinema</footer>
 
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 <span class="footer-go">Go</span><span class="footer-flix">Flix</span>. All rights reserved.</p>
+</footer>
+
+<!-- SCRIPTS -->
 <script>
-// ---- GLOBALS ----
-const FILE_URL = "{{ file_url }}";
-const TG_BUTTON = "{{ tg_button }}";
-const AUDIO_TRACKS = {{ audio_tracks_json }};
-const SUB_TRACKS = {{ subtitle_tracks_json }};
-const vid = document.getElementById('vid');
-let uploadedSubURL = null;
-
-// ========== REFINED CURSOR: ZOOM + SMALL DOT ==========
-(function(){
-  let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-  const dot = document.getElementById('magicDot');
-  function moveDot(x,y){ dot.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`; }
-  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; moveDot(mouseX, mouseY); });
-  const interactiveSel = 'button, .mbtn, .spdbtn, .abtn, .cbtn, .dpi, .tbtn, .dpupl, a, .seek-wrap, input, label';
-  document.addEventListener('mouseover', (e) => { if(e.target.closest(interactiveSel)) document.body.classList.add('hoverZoom'); });
-  document.addEventListener('mouseout', (e) => { if(e.target.closest(interactiveSel)) document.body.classList.remove('hoverZoom'); });
-})();
-
-// ----- fullscreen overlay manager -----
-function handleFullscreenChange(){
-  const fsActive = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  document.getElementById('fsOv').classList.toggle('show', fsActive);
+// ── THEME ──────────────────────────────────────────
+let currentTheme = 'dark';
+function setTheme(t) {
+  currentTheme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('darkBtn').classList.toggle('active', t === 'dark');
+  document.getElementById('lightBtn').classList.toggle('active', t === 'light');
 }
-document.addEventListener('fullscreenchange', handleFullscreenChange);
-document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+// Auto-detect system preference on load
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+  setTheme('light');
+} else {
+  setTheme('dark');
+}
 
-// ----- video event handlers -----
-function setSt(txt){ document.getElementById('stChip').innerText = txt; }
-vid.addEventListener('loadedmetadata',()=>{
-  let dur = vid.duration;
-  if(dur && isFinite(dur)){ let m=Math.floor(dur/60), s=Math.floor(dur%60).toString().padStart(2,'0'); document.getElementById('durChip').innerText=`${m}m ${s}s`; }
-  let ext = FILE_URL.split('.').pop().split('?')[0].toUpperCase(); document.getElementById('fmtChip').innerText=ext||'VID';
-  if(vid.videoWidth) document.getElementById('resLabel').innerText=vid.videoWidth+'x'+vid.videoHeight;
+// ── VIDEO PLAYER ───────────────────────────────────
+const vid = document.getElementById('myVideo');
+
+vid.addEventListener('loadedmetadata', () => {
+  const d = vid.duration;
+  if (d && isFinite(d)) {
+    const m = Math.floor(d / 60), s = String(Math.floor(d % 60)).padStart(2, '0');
+    document.getElementById('durChip').textContent = m + 'm ' + s + 's';
+  }
+  const src = vid.currentSrc || '{{file_url}}';
+  const ext = src.split('.').pop().split('?')[0].toUpperCase();
+  document.getElementById('fmtVal').textContent = ext || 'Video';
+  document.getElementById('fmtChip').textContent = ext || 'Video';
+  if (vid.videoWidth) {
+    document.getElementById('resLabel').textContent = vid.videoWidth + '×' + vid.videoHeight;
+  }
 });
-vid.addEventListener('timeupdate',()=>{ if(vid.duration){ let p = (vid.currentTime/vid.duration)*100; document.getElementById('seekFill').style.width=p+'%'; document.getElementById('pctChip').innerText=Math.round(p)+'%'; } });
-vid.addEventListener('waiting',()=>{ setSt('Buffering...'); document.getElementById('bufspin').classList.add('show'); });
-vid.addEventListener('playing',()=>{ setSt('Playing'); document.getElementById('bufspin').classList.remove('show'); });
-vid.addEventListener('pause',()=>{ setSt('Paused'); document.getElementById('bufspin').classList.remove('show'); });
-vid.addEventListener('ended',()=>setSt('Ended'));
-vid.addEventListener('canplay',()=>document.getElementById('bufspin').classList.remove('show'));
-function seekVid(e){ let wrap = document.querySelector('.seek-wrap'); let rect = wrap.getBoundingClientRect(); let percent = Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width)); if(vid.duration) vid.currentTime = percent*vid.duration; }
 
-// ---- speed ----
-function setSpeed(spd, btn){
-  vid.playbackRate = spd;
-  document.querySelectorAll('.spdbtn').forEach(b=>b.classList.remove('on'));
-  if(btn) btn.classList.add('on');
-}
+vid.addEventListener('timeupdate', () => {
+  if (vid.duration && isFinite(vid.duration)) {
+    const pct = (vid.currentTime / vid.duration) * 100;
+    document.getElementById('progBar').style.width = pct + '%';
+    document.getElementById('playedChip').textContent = Math.round(pct) + '%';
+  }
+});
 
-// ---- brightness & volume (double sync) ----
-function syncBri(val){
-  let v = parseInt(val);
-  vid.style.filter = `brightness(${v}%)`;
-  document.getElementById('briSl').value = v;
-  document.getElementById('fsBriSl').value = v;
-  document.getElementById('briPct').innerHTML = v+'%';
-  document.getElementById('fsBriVal').innerHTML = v+'%';
-}
-function syncVol(val){
-  let vol = parseFloat(val);
-  vid.volume = vol;
-  document.getElementById('volSl').value = vol;
-  document.getElementById('fsVolSl').value = vol;
-  let pct = Math.round(vol*100);
-  document.getElementById('volPct').innerHTML = pct+'%';
-  document.getElementById('fsVolVal').innerHTML = pct+'%';
-  let icon = vol==0 ? 'fa-volume-xmark' : (vol<0.5 ? 'fa-volume-low' : 'fa-volume-high');
-  document.getElementById('volIco').className = `vico fa ${icon}`;
-}
-function toggleMute(){ let newVol = vid.volume === 0 ? (localStorage.getItem('lastVol')? parseFloat(localStorage.getItem('lastVol')) : 1) : 0; if(newVol!==0) localStorage.setItem('lastVol', vid.volume); syncVol(newVol); }
-// Set initial volume/brightness
-syncBri(100); syncVol(1);
-window.syncBri = syncBri; window.syncVol = syncVol; window.setSpeed = setSpeed;
+vid.addEventListener('playing', () => document.getElementById('statusChip').textContent = 'Playing');
+vid.addEventListener('pause',   () => document.getElementById('statusChip').textContent = 'Paused');
+vid.addEventListener('waiting', () => document.getElementById('statusChip').textContent = 'Buffering…');
+vid.addEventListener('ended',   () => document.getElementById('statusChip').textContent = 'Ended');
 
-// ---- audio panel interaction ----
-function initAudio(){
-  let items = document.querySelectorAll('#audioList .dpi');
-  document.getElementById('audioBadge').innerText = Math.max(items.length,1);
-  if(items.length){ items[0].classList.add('active'); document.getElementById('audioLbl').innerText = items[0].querySelector('.dpname')?.innerText||'Track'; }
-  items.forEach((el,idx)=>{
-    el.onclick = (e) => { e.stopPropagation(); items.forEach(x=>x.classList.remove('active')); el.classList.add('active'); let lbl = el.querySelector('.dpname')?.innerText||`Track ${idx+1}`; document.getElementById('audioLbl').innerText = lbl; closePanels(); showMsg(`🎵 Audio: ${lbl} (open external player to use)`); };
+// ── SPEED ──────────────────────────────────────────
+function setSpeed(s) {
+  vid.playbackRate = s;
+  document.querySelectorAll('.spd').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.textContent) === s);
   });
 }
-function showMsg(msg){ toast(msg); }
 
-// ---- subtitle panel ----
-function initSub(){
-  const subOff = document.getElementById('subOff');
-  subOff.onclick = (e) => { e.stopPropagation(); for(let t of vid.textTracks) t.mode='hidden'; document.querySelectorAll('#subList .dpi').forEach(x=>x.classList.remove('active')); subOff.classList.add('active'); document.getElementById('subLbl').innerText='Off'; closePanels(); toast('Subtitles off'); };
-  let subItems = document.querySelectorAll('#subList .dpi:not(#subOff):not([data-upl])');
-  document.getElementById('subBadge').innerText = subItems.length;
-  subItems.forEach((el,i)=>{
-    el.onclick = (e) => { e.stopPropagation(); let lbl = el.querySelector('.dpname')?.innerText||'Sub'; showMsg(`📺 Embedded subtitle "${lbl}" cannot be displayed in browser. Upload .srt for on-screen subs.`); };
-  });
-  vid.innerHTML = vid.innerHTML; // preserve tracks
+// ── VOLUME ─────────────────────────────────────────
+function setVolume(v) {
+  vid.volume = v;
+  document.getElementById('volPct').textContent = Math.round(v * 100) + '%';
 }
-let uploadIdx=0;
-function uploadSub(input){
-  let file = input.files[0]; if(!file) return;
-  let reader = new FileReader();
-  reader.onload = (e) => {
-    let content = e.target.result;
-    let ext = file.name.split('.').pop().toLowerCase();
-    if(ext==='srt') content = 'WEBVTT\n\n'+content.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g,'$1.$2');
-    let blob = new Blob([content], {type:'text/vtt'});
-    if(uploadedSubURL) URL.revokeObjectURL(uploadedSubURL);
-    uploadedSubURL = URL.createObjectURL(blob);
-    let track = document.createElement('track');
-    track.kind='subtitles'; track.label=file.name.replace(/\.(srt|vtt)$/i,''); track.src=uploadedSubURL; track.default=false;
-    track.setAttribute('data-upl','1');
-    vid.appendChild(track);
-    let tidx = vid.textTracks.length-1;
-    let newSubDiv = document.createElement('div'); newSubDiv.className='dpi'; newSubDiv.setAttribute('data-upl','1');
-    newSubDiv.innerHTML = `<div class="dpflag">📎</div><div class="dpinfo"><div class="dpname">${track.label}</div></div><i class="fa fa-check dpchk"></i>`;
-    newSubDiv.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('#subList .dpi').forEach(x=>x.classList.remove('active')); newSubDiv.classList.add('active'); for(let t of vid.textTracks) t.mode='hidden'; if(vid.textTracks[tidx]) vid.textTracks[tidx].mode='showing'; document.getElementById('subLbl').innerText = track.label; closePanels(); toast(`Subtitle: ${track.label}`); };
-    document.getElementById('subList').appendChild(newSubDiv);
-    document.getElementById('subBadge').innerText = parseInt(document.getElementById('subBadge').innerText)+1;
-    toast(`✅ Subtitle "${track.label}" loaded`);
-  };
-  reader.readAsText(file);
-  input.value='';
+
+// ── TOAST ──────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
 }
-function togglePanel(panelId,btnId,e){ if(e) e.stopPropagation(); let panel = document.getElementById(panelId); let btn = document.getElementById(btnId); let isOpen=panel.classList.contains('show'); closePanels(); if(!isOpen){ panel.classList.add('show'); btn.classList.add('open'); } }
-function closePanels(){ document.querySelectorAll('.dpanel').forEach(p=>p.classList.remove('show')); document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('open')); }
-document.addEventListener('click',(e)=>{ if(!e.target.closest('.pwrap')) closePanels(); });
 
-// ---- toast ----
-function toast(msg){ let t=document.getElementById('toast'); document.getElementById('toastMsg').innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
-function cp(txt){ navigator.clipboard.writeText(txt); toast('Copied!'); }
+// ── COPY ───────────────────────────────────────────
+function copyText(txt) {
+  navigator.clipboard.writeText(txt).then(() => showToast('Copied to clipboard!'));
+}
 
-// ---- external intents ----
-function mxP(){ window.location.href='intent://'+FILE_URL.replace(/^https?:\/\//,'')+'#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end'; }
-function vlcP(){ window.location.href='intent://'+FILE_URL.replace(/
+// ── EXTERNAL PLAYERS ───────────────────────────────
+function mx_player() {
+  let c = "{{file_url}}".replace(/^https?:\/\//, '');
+  window.location.href = `intent://${c}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+}
+function vlc_player() {
+  let c = "{{file_url}}".replace(/^https?:\/\//, '');
+  window.location.href = `intent://${c}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
+}
+function playit_player() {
+  let c = "{{file_url}}".replace(/^https?:\/\//, '');
+  window.location.href = `intent://${c}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
+}
+
+// ── DOWNLOAD ───────────────────────────────────────
+function streamDownload() {
+  window.location.href = "{{file_url}}";
+}
+
+// ── TELEGRAM ───────────────────────────────────────
+function showLinkModal(url) {
+  if (url) window.open(url, '_blank');
+}
+
+// ── SHARE ──────────────────────────────────────────
+function shareButton() {
+  if (navigator.share) {
+    navigator.share({
+      title: '{{file_name}}',
+      text: 'Watch on GoFlix',
+      url: window.location.href
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    showToast('Link copied to clipboard!');
+  }
+}
+</script>
+
+</body>
+</html>
