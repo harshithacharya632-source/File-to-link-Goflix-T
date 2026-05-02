@@ -6,7 +6,7 @@
 <title>GoFlix | {{ file_name }}</title>
 <link rel="icon" href="https://i.ibb.co/Z6F9WZL9/1000489714.png" type="image/x-icon">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:background .3s,color .3s,border-color .3s}
 
@@ -14,27 +14,34 @@
 @media(pointer:fine){
   body{cursor:none !important}
   *{cursor:none !important}
+  /* dot with dark border — visible on white AND dark backgrounds */
   .cursor-dot{
-    position:fixed;top:0;left:0;width:10px;height:10px;
-    background:var(--accent);border-radius:50%;pointer-events:none;
-    z-index:99999;transform:translate(-50%,-50%);
-    transition:transform .08s,width .18s,height .18s,background .18s;
-    box-shadow:0 0 0 0 var(--glow);
-    animation:none;
+    position:fixed;top:0;left:0;
+    width:8px;height:8px;
+    background:#e50914;
+    border:1.5px solid rgba(0,0,0,0.35);
+    border-radius:50%;
+    pointer-events:none;z-index:99999;
+    transform:translate(-50%,-50%);
   }
   .cursor-ring{
-    position:fixed;top:0;left:0;width:36px;height:36px;
-    border:1.5px solid rgba(229,9,20,0.55);border-radius:50%;pointer-events:none;
-    z-index:99998;transform:translate(-50%,-50%);
-    transition:transform .18s cubic-bezier(.22,1,.36,1),width .22s,height .22s,border-color .22s;
+    position:fixed;top:0;left:0;
+    width:1px;height:1px;
+    pointer-events:none;z-index:99998;
+    transform:translate(-50%,-50%);
   }
-  body.cursor-hover .cursor-dot{
-    width:14px;height:14px;
-    box-shadow:0 0 18px 6px var(--glow),0 0 0 3px rgba(229,9,20,0.18);
-  }
-  body.cursor-hover .cursor-ring{
-    width:52px;height:52px;border-color:var(--accent);
-  }
+}
+/* ripple keyframe */
+@keyframes water-ripple{
+  0%  {width:6px;height:6px;opacity:.6;border-width:1.5px}
+  100%{width:52px;height:52px;opacity:0;border-width:.5px}
+}
+.ripple-el{
+  position:fixed;border-radius:50%;
+  border:1.5px solid rgba(229,9,20,0.5);
+  pointer-events:none;z-index:99997;
+  transform:translate(-50%,-50%);
+  animation:water-ripple .7s cubic-bezier(.2,.6,.4,1) forwards;
 }
 
 [data-theme="dark"]{
@@ -51,31 +58,33 @@
   --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
   --glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
 }
-body{background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
 
-/* ── NETFLIX INTRO OVERLAY ── */
+/* ── NETFLIX-STYLE INTRO OVERLAY ── */
 #intro-overlay{
   position:fixed;inset:0;background:#000;z-index:100000;
   display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
 }
-.intro-logo{
-  font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,12vw,8rem);
-  letter-spacing:-2px;color:#e50914;
-  position:relative;overflow:hidden;
-  animation:netflix-reveal 1.8s cubic-bezier(.77,0,.18,1) forwards;
-  text-shadow:0 0 80px rgba(229,9,20,0.8),0 0 200px rgba(229,9,20,0.4);
+#intro-overlay.done{display:none}
+.intro-logo-wrap{
+  display:flex;align-items:center;justify-content:center;
 }
-.intro-logo span{color:#fff}
-@keyframes netflix-reveal{
-  0%{clip-path:inset(0 100% 0 0);opacity:0;transform:scaleY(1.15)}
-  30%{opacity:1}
-  70%{clip-path:inset(0 0% 0 0);transform:scaleY(1)}
-  85%{opacity:1;transform:scale(1.04)}
-  100%{opacity:0;transform:scale(1.2)}
+.intro-n{
+  font-family:'Anton',sans-serif;
+  font-size:clamp(3.2rem,11vw,7.5rem);
+  color:#e50914;
+  letter-spacing:3px;
+  line-height:1;
+  text-shadow:none;
+  animation:nfx-zoom 2.6s cubic-bezier(.16,1,.3,1) forwards;
+  will-change:transform,opacity;
 }
-#intro-overlay{animation:overlay-fade 2.2s forwards}
-@keyframes overlay-fade{
-  0%{opacity:1}85%{opacity:1}100%{opacity:0;pointer-events:none;visibility:hidden}
+@keyframes nfx-zoom{
+  0%  {transform:scale(0.55) scaleY(0.92);opacity:0}
+  12% {opacity:1;transform:scale(1.0) scaleY(1)}
+  68% {transform:scale(1.0);opacity:1}
+  100%{transform:scale(1.22);opacity:0}
 }
 
 /* ── NAVBAR ── */
@@ -86,14 +95,15 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,sans-
 }
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .brand-logo{
-  display:flex;align-items:center;gap:2px;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1.5rem,5vw,2rem);
+  display:flex;align-items:center;gap:0px;
+  font-family:'Anton',sans-serif;
+  font-size:clamp(1.45rem,4vw,1.8rem);
+  font-weight:400;
   letter-spacing:1px;
   position:relative;
 }
-.brand-go{color:var(--text)}
-.brand-flix{color:var(--accent)}
+.brand-go{color:var(--text);text-transform:uppercase}
+.brand-flix{color:var(--accent);text-transform:uppercase}
 .brand-dot{
   width:8px;height:8px;background:var(--accent);border-radius:50%;
   margin-left:3px;margin-bottom:14px;animation:pulsedot 2s infinite
@@ -286,10 +296,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,sans-
 .disclaimer a{color:var(--accent);text-decoration:none}
 
 /* FOOTER */
-footer{background:var(--surface);border-top:1px solid var(--border);padding:14px 20px;text-align:center;color:var(--text2);font-size:12px;margin-top:20px}
-.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px}
-.footer-go{color:var(--text);font-weight:900}
-.footer-flix{color:var(--accent);font-weight:900}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:10px 20px;text-align:center;color:var(--text2);font-size:11px;margin-top:20px}
+.footer-logo{font-family:'Anton',sans-serif;font-size:inherit;letter-spacing:1px}
+.footer-go{color:var(--text)}
+.footer-flix{color:var(--accent)}
 
 /* ── TOOLTIP for full track name ── */
 .pill[title]:hover::after{
@@ -315,7 +325,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:14px
 
 <!-- NETFLIX-STYLE INTRO -->
 <div id="intro-overlay">
-  <div class="intro-logo"><span>Go</span>Flix</div>
+  <div class="intro-logo-wrap">
+    <div class="intro-n">GOFLIX</div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -471,40 +483,98 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:14px
 
 <!-- FOOTER -->
 <footer>
-  <p>&copy; 2025 <span class="footer-logo"><span class="footer-go">Go</span><span class="footer-flix">Flix</span></span>. All rights reserved.</p>
+  <p>&copy; 2026 <span class="footer-logo"><span class="footer-go">GO</span><span class="footer-flix">FLIX</span></span> &nbsp;All rights reserved.</p>
 </footer>
 
 <script>
 // ══════════════════════════════════════════
-//  CUSTOM CURSOR
+//  CUSTOM CURSOR — water ripple
 // ══════════════════════════════════════════
 const dot  = document.getElementById('cursorDot');
-const ring = document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
+const ring = document.getElementById('cursorRing'); // unused visually, kept in DOM
 
-// Only activate on fine-pointer (desktop) devices
 if(window.matchMedia('(pointer:fine)').matches){
+  let cx=0,cy=0;
+
   document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.left  = mx + 'px';
-    dot.style.top   = my + 'px';
-    // Ring follows with lerp (RAF loop)
+    cx = e.clientX; cy = e.clientY;
+    dot.style.left = cx + 'px';
+    dot.style.top  = cy + 'px';
   });
 
-  (function animCursor(){
-    rx += (mx - rx) * 0.13;
-    ry += (my - ry) * 0.13;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
-    requestAnimationFrame(animCursor);
-  })();
-
-  // Hover glow on interactive elements
-  document.querySelectorAll('button,a,input,[onclick]').forEach(el=>{
-    el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'));
+  // Spawn a ripple on every mousemove (throttled)
+  let lastRipple = 0;
+  document.addEventListener('mousemove', e => {
+    const now = Date.now();
+    if(now - lastRipple < 120) return; // one ripple per 120ms
+    lastRipple = now;
+    spawnRipple(e.clientX, e.clientY);
   });
+
+  // Extra ripple on click
+  document.addEventListener('click', e => spawnRipple(e.clientX, e.clientY, true));
+
+  function spawnRipple(x, y, big=false){
+    const el = document.createElement('div');
+    el.className = 'ripple-el';
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    if(big){
+      el.style.animationDuration = '.55s';
+      el.style.borderColor = 'rgba(255,255,255,0.75)';
+    }
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
 }
+
+// ══════════════════════════════════════════
+//  INTRO — hide overlay after animation
+// ══════════════════════════════════════════
+(function(){
+  const overlay = document.getElementById('intro-overlay');
+  // hide after nfx-zoom completes (2.6s)
+  setTimeout(()=>{ overlay.classList.add('done'); }, 2700);
+})();
+
+// ══════════════════════════════════════════
+//  NETFLIX-STYLE SOUND  (Web Audio API)
+// ══════════════════════════════════════════
+(function playNetflixSound(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+
+    function tone(freq, startT, dur, gainVal, type='sine'){
+      const osc = ctx.createOscillator();
+      const g   = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + startT);
+      g.gain.setValueAtTime(0, ctx.currentTime + startT);
+      g.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + startT + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startT + dur);
+      osc.start(ctx.currentTime + startT);
+      osc.stop(ctx.currentTime + startT + dur + 0.05);
+    }
+
+    // Netflix ta-dum: low hit → resonant chord swell
+    tone(55,   0.05, 0.55, 0.6,  'sine');
+    tone(110,  0.08, 0.50, 0.35, 'sine');
+    tone(220,  0.35, 0.75, 0.25, 'sine');
+    tone(440,  0.55, 0.70, 0.18, 'sine');
+    tone(880,  0.78, 0.55, 0.10, 'sine');
+    // punch noise burst
+    const buf = ctx.createBuffer(1, ctx.sampleRate*0.12, ctx.sampleRate);
+    const d   = buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    const src = ctx.createBufferSource();
+    const ng  = ctx.createGain();
+    src.buffer = buf; src.connect(ng); ng.connect(ctx.destination);
+    ng.gain.setValueAtTime(0.3, ctx.currentTime+0.05);
+    ng.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.18);
+    src.start(ctx.currentTime+0.05);
+  }catch(e){}
+})();
 
 // ══════════════════════════════════════════
 //  THEME
@@ -541,7 +611,16 @@ vid.addEventListener('loadedmetadata', () => {
   if(vid.videoWidth){
     document.getElementById('resLabel').textContent = vid.videoWidth+'×'+vid.videoHeight;
   }
-  // Build track UIs
+  // Build tracks immediately, then poll in case browser populates late
+  buildAudioTracks();
+  buildSubtitleTracks();
+  hookTextTrackEvents();
+  pollAudioTracks(8);
+  pollSubtitleTracks(8);
+});
+
+// Also try on canplay (some browsers expose tracks here)
+vid.addEventListener('canplay', ()=>{
   buildAudioTracks();
   buildSubtitleTracks();
 });
@@ -564,39 +643,37 @@ vid.addEventListener('ended',  ()=>document.getElementById('statusChip').textCon
 function buildAudioTracks(){
   const container = document.getElementById('audioPills');
   const countEl   = document.getElementById('audioCount');
+  const tracks    = vid.audioTracks;
 
-  // HTMLMediaElement.audioTracks API (Chrome/Edge with some formats)
-  const tracks = vid.audioTracks;
   if(!tracks || tracks.length === 0){
     countEl.textContent = '0';
     container.innerHTML = '<span class="no-tracks">No audio tracks detected</span>';
     return;
   }
-
   countEl.textContent = tracks.length;
   container.innerHTML = '';
-
   for(let i=0;i<tracks.length;i++){
     const t = tracks[i];
     const label = t.label || t.language || ('Track '+(i+1));
-    const shortLabel = truncateLabel(label, 14);
-
+    const shortLabel = truncateLabel(label,14);
     const btn = document.createElement('button');
-    btn.className = 'pill' + (t.enabled ? ' active' : '');
+    btn.className = 'pill'+(t.enabled?' active':'');
     btn.textContent = shortLabel;
-    if(label !== shortLabel) btn.title = label;  // tooltip on hover
-    btn.dataset.idx = i;
-
+    if(label!==shortLabel) btn.title = label;
     btn.onclick = function(){
-      // Enable only this track
-      for(let j=0;j<tracks.length;j++) tracks[j].enabled = (j===i);
-      container.querySelectorAll('.pill').forEach((p,j)=>{
-        p.classList.toggle('active', j===i);
-      });
+      for(let j=0;j<tracks.length;j++) tracks[j].enabled=(j===i);
+      container.querySelectorAll('.pill').forEach((p,j)=>p.classList.toggle('active',j===i));
       showToast('Audio: '+label);
     };
     container.appendChild(btn);
   }
+}
+
+// Poll — some browsers expose audioTracks after canplay, not loadedmetadata
+function pollAudioTracks(n){
+  if(n<=0) return;
+  if(vid.audioTracks && vid.audioTracks.length>0){ buildAudioTracks(); return; }
+  setTimeout(()=>pollAudioTracks(n-1), 500);
 }
 
 // ══════════════════════════════════════════
@@ -612,13 +689,11 @@ function buildSubtitleTracks(){
     container.innerHTML = '<span class="no-tracks">No subtitle tracks detected</span>';
     return;
   }
-
   countEl.textContent = tracks.length;
   container.innerHTML = '';
 
-  // OFF pill
   const offBtn = document.createElement('button');
-  offBtn.className = 'pill off active';
+  offBtn.className = 'pill active';
   offBtn.textContent = 'Off';
   offBtn.onclick = function(){
     for(let j=0;j<tracks.length;j++) tracks[j].mode='disabled';
@@ -630,22 +705,15 @@ function buildSubtitleTracks(){
 
   for(let i=0;i<tracks.length;i++){
     const t = tracks[i];
-    // Only show subtitle/caption tracks
-    if(t.kind !== 'subtitles' && t.kind !== 'captions' && t.kind !== 'metadata') {
-      // still show if kind is empty or unknown
-    }
     const label = t.label || t.language || ('Sub '+(i+1));
-    const shortLabel = truncateLabel(label, 14);
-
+    const shortLabel = truncateLabel(label,14);
     const btn = document.createElement('button');
     btn.className = 'pill';
     btn.textContent = shortLabel;
-    if(label !== shortLabel) btn.title = label;
-    btn.dataset.idx = i;
-
+    if(label!==shortLabel) btn.title = label;
     btn.onclick = function(){
       for(let j=0;j<tracks.length;j++) tracks[j].mode='disabled';
-      t.mode = 'showing';
+      t.mode='showing';
       container.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
       btn.classList.add('active');
       offBtn.classList.remove('active');
@@ -653,6 +721,21 @@ function buildSubtitleTracks(){
     };
     container.appendChild(btn);
   }
+}
+
+// Poll subtitles too
+function pollSubtitleTracks(n){
+  if(n<=0) return;
+  if(vid.textTracks && vid.textTracks.length>0){ buildSubtitleTracks(); return; }
+  setTimeout(()=>pollSubtitleTracks(n-1), 500);
+}
+
+// Hook addtrack events
+function hookTextTrackEvents(){
+  try{
+    vid.audioTracks && vid.audioTracks.addEventListener('addtrack', buildAudioTracks);
+    vid.textTracks  && vid.textTracks.addEventListener('addtrack',  buildSubtitleTracks);
+  }catch(e){}
 }
 
 // Truncate label for pill display, keep full name for tooltip
