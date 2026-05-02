@@ -6,25 +6,79 @@
 <title>GoFlix | {{ file_name }}</title>
 <link rel="icon" href="https://i.ibb.co/Z6F9WZL9/1000489714.png" type="image/x-icon">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:background .3s,color .3s,border-color .3s}
+
+/* ── CUSTOM CURSOR (desktop only) ── */
+@media(pointer:fine){
+  body{cursor:none !important}
+  *{cursor:none !important}
+  .cursor-dot{
+    position:fixed;top:0;left:0;width:10px;height:10px;
+    background:var(--accent);border-radius:50%;pointer-events:none;
+    z-index:99999;transform:translate(-50%,-50%);
+    transition:transform .08s,width .18s,height .18s,background .18s;
+    box-shadow:0 0 0 0 var(--glow);
+    animation:none;
+  }
+  .cursor-ring{
+    position:fixed;top:0;left:0;width:36px;height:36px;
+    border:1.5px solid rgba(229,9,20,0.55);border-radius:50%;pointer-events:none;
+    z-index:99998;transform:translate(-50%,-50%);
+    transition:transform .18s cubic-bezier(.22,1,.36,1),width .22s,height .22s,border-color .22s;
+  }
+  body.cursor-hover .cursor-dot{
+    width:14px;height:14px;
+    box-shadow:0 0 18px 6px var(--glow),0 0 0 3px rgba(229,9,20,0.18);
+  }
+  body.cursor-hover .cursor-ring{
+    width:52px;height:52px;border-color:var(--accent);
+  }
+}
+
 [data-theme="dark"]{
---bg:#0a0a12;--surface:#13131e;--surface2:#1a1a28;--surface3:#222235;
---text:#f0f0ff;--text2:#9090b0;
---accent:#e50914;--accent2:#ff6b35;--accent3:#ff9500;
---border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
---glow:rgba(229,9,20,0.35);--card-shadow:0 4px 28px rgba(0,0,0,0.6);
+  --bg:#0a0a12;--surface:#13131e;--surface2:#1a1a28;--surface3:#222235;
+  --text:#f0f0ff;--text2:#9090b0;
+  --accent:#e50914;--accent2:#ff6b35;--accent3:#ff9500;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --glow:rgba(229,9,20,0.35);--card-shadow:0 4px 28px rgba(0,0,0,0.6);
 }
 [data-theme="light"]{
---bg:#f4f4f8;--surface:#ffffff;--surface2:#f0f0f8;--surface3:#e8e8f4;
---text:#0e0e1a;--text2:#5a5a7a;
---accent:#cc0812;--accent2:#e55520;--accent3:#d47800;
---border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
---glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
+  --bg:#f4f4f8;--surface:#ffffff;--surface2:#f0f0f8;--surface3:#e8e8f4;
+  --text:#0e0e1a;--text2:#5a5a7a;
+  --accent:#cc0812;--accent2:#e55520;--accent3:#d47800;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
+  --glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
 }
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
 
-/* NAVBAR */
+/* ── NETFLIX INTRO OVERLAY ── */
+#intro-overlay{
+  position:fixed;inset:0;background:#000;z-index:100000;
+  display:flex;align-items:center;justify-content:center;
+}
+.intro-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,12vw,8rem);
+  letter-spacing:-2px;color:#e50914;
+  position:relative;overflow:hidden;
+  animation:netflix-reveal 1.8s cubic-bezier(.77,0,.18,1) forwards;
+  text-shadow:0 0 80px rgba(229,9,20,0.8),0 0 200px rgba(229,9,20,0.4);
+}
+.intro-logo span{color:#fff}
+@keyframes netflix-reveal{
+  0%{clip-path:inset(0 100% 0 0);opacity:0;transform:scaleY(1.15)}
+  30%{opacity:1}
+  70%{clip-path:inset(0 0% 0 0);transform:scaleY(1)}
+  85%{opacity:1;transform:scale(1.04)}
+  100%{opacity:0;transform:scale(1.2)}
+}
+#intro-overlay{animation:overlay-fade 2.2s forwards}
+@keyframes overlay-fade{
+  0%{opacity:1}85%{opacity:1}100%{opacity:0;pointer-events:none;visibility:hidden}
+}
+
+/* ── NAVBAR ── */
 .navbar{
   background:var(--surface);border-bottom:1px solid var(--border);
   padding:11px 20px;display:flex;align-items:center;justify-content:space-between;
@@ -32,13 +86,17 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 }
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .brand-logo{
-  display:flex;align-items:center;gap:2px;font-size:1.35rem;font-weight:900;letter-spacing:-1px;
+  display:flex;align-items:center;gap:2px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.5rem,5vw,2rem);
+  letter-spacing:1px;
+  position:relative;
 }
 .brand-go{color:var(--text)}
 .brand-flix{color:var(--accent)}
 .brand-dot{
   width:8px;height:8px;background:var(--accent);border-radius:50%;
-  margin-left:3px;margin-bottom:12px;animation:pulsedot 2s infinite
+  margin-left:3px;margin-bottom:14px;animation:pulsedot 2s infinite
 }
 @keyframes pulsedot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.7}}
 .nav-right{display:flex;align-items:center;gap:10px}
@@ -55,13 +113,12 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 }
 .theme-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--glow)}
 
-/* HERO BANNER */
+/* HERO BAR */
 .hero-bar{
   background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 60%,var(--accent3) 100%);
   padding:8px 20px;font-size:12px;font-weight:700;color:#fff;
   display:flex;align-items:center;gap:8px;letter-spacing:.4px
 }
-.hero-bar i{font-size:11px}
 
 /* CONTAINER */
 .container{max-width:960px;margin:0 auto;padding:20px 16px}
@@ -90,7 +147,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .progress-bar-wrap{height:3px;background:var(--border)}
 .progress-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .15s}
 
-.video-wrap{background:#000;aspect-ratio:16/9}
+.video-wrap{background:#000;aspect-ratio:16/9;position:relative}
 .video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 
 .player-controls{
@@ -107,6 +164,55 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .vol-row{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:12px}
 .vol-row input[type=range]{accent-color:var(--accent);width:80px;cursor:pointer}
 .vol-pct{min-width:32px;font-size:12px;color:var(--text2);font-weight:600}
+
+/* ── AUDIO & SUBTITLE CONTROLS ── */
+.track-controls{
+  display:flex;gap:8px;padding:10px 16px;background:var(--surface2);
+  border-top:1px solid var(--border);flex-wrap:wrap;align-items:flex-start;
+}
+.track-block{flex:1;min-width:140px;position:relative}
+.track-header{
+  display:flex;align-items:center;gap:7px;margin-bottom:6px
+}
+.track-icon{
+  width:28px;height:28px;background:var(--surface3);border:1px solid var(--border2);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--accent);flex-shrink:0;
+}
+.track-label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px}
+.track-count{
+  background:var(--accent);color:#fff;font-size:9px;font-weight:800;
+  padding:1px 6px;border-radius:20px;margin-left:auto;white-space:nowrap;
+  min-width:16px;text-align:center;letter-spacing:.3px
+}
+/* Track pills container — scrollable row, never wraps, no layout shift */
+.track-pills{
+  display:flex;gap:5px;flex-wrap:nowrap;
+  overflow-x:auto;padding-bottom:4px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  max-width:100%;
+}
+.track-pills::-webkit-scrollbar{display:none}
+/* Fixed-height pill so long names don't push layout */
+.pill{
+  background:var(--surface3);border:1px solid var(--border);border-radius:20px;
+  color:var(--text2);font-size:11px;padding:4px 11px;cursor:pointer;
+  transition:all .2s;font-weight:600;white-space:nowrap;
+  /* hard cap width + ellipsis so long names stay in pill shape */
+  max-width:130px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  flex-shrink:0;
+  height:26px;
+  line-height:16px;
+  display:inline-flex;
+  align-items:center;
+}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill.off{background:var(--surface3);color:var(--text2);border-color:var(--border)}
+.no-tracks{font-size:11px;color:var(--text2);opacity:.6;padding:4px 0;font-style:italic}
 
 /* STATS */
 .stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -181,17 +287,36 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 
 /* FOOTER */
 footer{background:var(--surface);border-top:1px solid var(--border);padding:14px 20px;text-align:center;color:var(--text2);font-size:12px;margin-top:20px}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px}
 .footer-go{color:var(--text);font-weight:900}
 .footer-flix{color:var(--accent);font-weight:900}
+
+/* ── TOOLTIP for full track name ── */
+.pill[title]:hover::after{
+  content:attr(title);
+  position:absolute;bottom:110%;left:50%;transform:translateX(-50%);
+  background:#222;color:#fff;font-size:10px;padding:3px 8px;border-radius:6px;
+  white-space:nowrap;pointer-events:none;z-index:200;
+}
 
 @media(max-width:500px){
   .cta-grid{grid-template-columns:1fr}
   .vol-row input{width:60px}
-  .brand-logo{font-size:1.15rem}
+  .track-controls{flex-direction:column}
+  .track-block{min-width:100%}
 }
 </style>
 </head>
 <body>
+
+<!-- CUSTOM CURSOR (desktop) -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NETFLIX-STYLE INTRO -->
+<div id="intro-overlay">
+  <div class="intro-logo"><span>Go</span>Flix</div>
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="fa fa-check-circle"></i><span id="toast-msg">Done!</span></div>
@@ -230,7 +355,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:14px
     </div>
     <div class="progress-bar-wrap"><div class="progress-bar" id="progBar"></div></div>
     <div class="video-wrap">
-      <video id="myVideo" src="{{file_url}}" controls preload="metadata">
+      <video id="myVideo" src="{{file_url}}" controls preload="metadata" crossorigin="anonymous">
         Your browser does not support the video tag.
       </video>
     </div>
@@ -248,6 +373,35 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:14px
         <span class="vol-pct" id="volPct">100%</span>
       </div>
     </div>
+
+    <!-- ── AUDIO & SUBTITLE TRACK CONTROLS ── -->
+    <div class="track-controls">
+
+      <!-- AUDIO -->
+      <div class="track-block">
+        <div class="track-header">
+          <div class="track-icon"><i class="fa fa-headphones"></i></div>
+          <span class="track-label">Audio</span>
+          <span class="track-count" id="audioCount">0</span>
+        </div>
+        <div class="track-pills" id="audioPills">
+          <span class="no-tracks">No audio tracks detected</span>
+        </div>
+      </div>
+
+      <!-- SUBTITLES -->
+      <div class="track-block">
+        <div class="track-header">
+          <div class="track-icon"><i class="fa fa-closed-captioning"></i></div>
+          <span class="track-label">Subtitles</span>
+          <span class="track-count" id="subCount">0</span>
+        </div>
+        <div class="track-pills" id="subPills">
+          <span class="no-tracks">No subtitle tracks detected</span>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- STATS CHIPS -->
@@ -258,7 +412,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:14px
     <div class="chip"><i class="fa fa-signal" style="font-size:11px"></i> <b id="statusChip">Ready</b></div>
   </div>
 
-  <!-- OPEN IN EXTERNAL PLAYERS -->
+  <!-- EXTERNAL PLAYERS -->
   <div class="app-row">
     <button class="btn btn-player" onclick="mx_player()"><i class="fa fa-play-circle"></i> MX Player</button>
     <button class="btn btn-player" onclick="vlc_player()"><i class="fa fa-play-circle"></i> VLC</button>
@@ -317,122 +471,271 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:14px
 
 <!-- FOOTER -->
 <footer>
-  <p>&copy; 2025 <span class="footer-go">Go</span><span class="footer-flix">Flix</span>. All rights reserved.</p>
+  <p>&copy; 2025 <span class="footer-logo"><span class="footer-go">Go</span><span class="footer-flix">Flix</span></span>. All rights reserved.</p>
 </footer>
 
-<!-- SCRIPTS -->
 <script>
-// ── THEME ──────────────────────────────────────────
-let currentTheme = 'dark';
-function setTheme(t) {
-  currentTheme = t;
-  document.documentElement.setAttribute('data-theme', t);
-  document.getElementById('darkBtn').classList.toggle('active', t === 'dark');
-  document.getElementById('lightBtn').classList.toggle('active', t === 'light');
-}
-// Auto-detect system preference on load
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-  setTheme('light');
-} else {
-  setTheme('dark');
-}
+// ══════════════════════════════════════════
+//  CUSTOM CURSOR
+// ══════════════════════════════════════════
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
 
-// ── VIDEO PLAYER ───────────────────────────────────
-const vid = document.getElementById('myVideo');
+// Only activate on fine-pointer (desktop) devices
+if(window.matchMedia('(pointer:fine)').matches){
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left  = mx + 'px';
+    dot.style.top   = my + 'px';
+    // Ring follows with lerp (RAF loop)
+  });
 
-vid.addEventListener('loadedmetadata', () => {
-  const d = vid.duration;
-  if (d && isFinite(d)) {
-    const m = Math.floor(d / 60), s = String(Math.floor(d % 60)).padStart(2, '0');
-    document.getElementById('durChip').textContent = m + 'm ' + s + 's';
-  }
-  const src = vid.currentSrc || '{{file_url}}';
-  const ext = src.split('.').pop().split('?')[0].toUpperCase();
-  document.getElementById('fmtVal').textContent = ext || 'Video';
-  document.getElementById('fmtChip').textContent = ext || 'Video';
-  if (vid.videoWidth) {
-    document.getElementById('resLabel').textContent = vid.videoWidth + '×' + vid.videoHeight;
-  }
-});
+  (function animCursor(){
+    rx += (mx - rx) * 0.13;
+    ry += (my - ry) * 0.13;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
 
-vid.addEventListener('timeupdate', () => {
-  if (vid.duration && isFinite(vid.duration)) {
-    const pct = (vid.currentTime / vid.duration) * 100;
-    document.getElementById('progBar').style.width = pct + '%';
-    document.getElementById('playedChip').textContent = Math.round(pct) + '%';
-  }
-});
-
-vid.addEventListener('playing', () => document.getElementById('statusChip').textContent = 'Playing');
-vid.addEventListener('pause',   () => document.getElementById('statusChip').textContent = 'Paused');
-vid.addEventListener('waiting', () => document.getElementById('statusChip').textContent = 'Buffering…');
-vid.addEventListener('ended',   () => document.getElementById('statusChip').textContent = 'Ended');
-
-// ── SPEED ──────────────────────────────────────────
-function setSpeed(s) {
-  vid.playbackRate = s;
-  document.querySelectorAll('.spd').forEach(b => {
-    b.classList.toggle('active', parseFloat(b.textContent) === s);
+  // Hover glow on interactive elements
+  document.querySelectorAll('button,a,input,[onclick]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'));
   });
 }
 
-// ── VOLUME ─────────────────────────────────────────
-function setVolume(v) {
-  vid.volume = v;
-  document.getElementById('volPct').textContent = Math.round(v * 100) + '%';
+// ══════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('darkBtn').classList.toggle('active',t==='dark');
+  document.getElementById('lightBtn').classList.toggle('active',t==='light');
+}
+if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches){
+  setTheme('light');
+}else{
+  setTheme('dark');
 }
 
-// ── TOAST ──────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
+// ══════════════════════════════════════════
+//  VIDEO PLAYER
+// ══════════════════════════════════════════
+const vid = document.getElementById('myVideo');
+
+vid.addEventListener('loadedmetadata', () => {
+  // Duration
+  const d = vid.duration;
+  if(d && isFinite(d)){
+    const m=Math.floor(d/60), s=String(Math.floor(d%60)).padStart(2,'0');
+    document.getElementById('durChip').textContent = m+'m '+s+'s';
+  }
+  // Format
+  const src = vid.currentSrc || '{{file_url}}';
+  const ext = src.split('.').pop().split('?')[0].toUpperCase();
+  document.getElementById('fmtVal').textContent = ext||'Video';
+  document.getElementById('fmtChip').textContent = ext||'Video';
+  // Resolution
+  if(vid.videoWidth){
+    document.getElementById('resLabel').textContent = vid.videoWidth+'×'+vid.videoHeight;
+  }
+  // Build track UIs
+  buildAudioTracks();
+  buildSubtitleTracks();
+});
+
+vid.addEventListener('timeupdate',()=>{
+  if(vid.duration&&isFinite(vid.duration)){
+    const pct=(vid.currentTime/vid.duration)*100;
+    document.getElementById('progBar').style.width=pct+'%';
+    document.getElementById('playedChip').textContent=Math.round(pct)+'%';
+  }
+});
+vid.addEventListener('playing',()=>document.getElementById('statusChip').textContent='Playing');
+vid.addEventListener('pause',  ()=>document.getElementById('statusChip').textContent='Paused');
+vid.addEventListener('waiting',()=>document.getElementById('statusChip').textContent='Buffering…');
+vid.addEventListener('ended',  ()=>document.getElementById('statusChip').textContent='Ended');
+
+// ══════════════════════════════════════════
+//  AUDIO TRACKS
+// ══════════════════════════════════════════
+function buildAudioTracks(){
+  const container = document.getElementById('audioPills');
+  const countEl   = document.getElementById('audioCount');
+
+  // HTMLMediaElement.audioTracks API (Chrome/Edge with some formats)
+  const tracks = vid.audioTracks;
+  if(!tracks || tracks.length === 0){
+    countEl.textContent = '0';
+    container.innerHTML = '<span class="no-tracks">No audio tracks detected</span>';
+    return;
+  }
+
+  countEl.textContent = tracks.length;
+  container.innerHTML = '';
+
+  for(let i=0;i<tracks.length;i++){
+    const t = tracks[i];
+    const label = t.label || t.language || ('Track '+(i+1));
+    const shortLabel = truncateLabel(label, 14);
+
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (t.enabled ? ' active' : '');
+    btn.textContent = shortLabel;
+    if(label !== shortLabel) btn.title = label;  // tooltip on hover
+    btn.dataset.idx = i;
+
+    btn.onclick = function(){
+      // Enable only this track
+      for(let j=0;j<tracks.length;j++) tracks[j].enabled = (j===i);
+      container.querySelectorAll('.pill').forEach((p,j)=>{
+        p.classList.toggle('active', j===i);
+      });
+      showToast('Audio: '+label);
+    };
+    container.appendChild(btn);
+  }
+}
+
+// ══════════════════════════════════════════
+//  SUBTITLE TRACKS
+// ══════════════════════════════════════════
+function buildSubtitleTracks(){
+  const container = document.getElementById('subPills');
+  const countEl   = document.getElementById('subCount');
+  const tracks    = vid.textTracks;
+
+  if(!tracks || tracks.length === 0){
+    countEl.textContent = '0';
+    container.innerHTML = '<span class="no-tracks">No subtitle tracks detected</span>';
+    return;
+  }
+
+  countEl.textContent = tracks.length;
+  container.innerHTML = '';
+
+  // OFF pill
+  const offBtn = document.createElement('button');
+  offBtn.className = 'pill off active';
+  offBtn.textContent = 'Off';
+  offBtn.onclick = function(){
+    for(let j=0;j<tracks.length;j++) tracks[j].mode='disabled';
+    container.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+    offBtn.classList.add('active');
+    showToast('Subtitles off');
+  };
+  container.appendChild(offBtn);
+
+  for(let i=0;i<tracks.length;i++){
+    const t = tracks[i];
+    // Only show subtitle/caption tracks
+    if(t.kind !== 'subtitles' && t.kind !== 'captions' && t.kind !== 'metadata') {
+      // still show if kind is empty or unknown
+    }
+    const label = t.label || t.language || ('Sub '+(i+1));
+    const shortLabel = truncateLabel(label, 14);
+
+    const btn = document.createElement('button');
+    btn.className = 'pill';
+    btn.textContent = shortLabel;
+    if(label !== shortLabel) btn.title = label;
+    btn.dataset.idx = i;
+
+    btn.onclick = function(){
+      for(let j=0;j<tracks.length;j++) tracks[j].mode='disabled';
+      t.mode = 'showing';
+      container.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      offBtn.classList.remove('active');
+      showToast('Subtitle: '+label);
+    };
+    container.appendChild(btn);
+  }
+}
+
+// Truncate label for pill display, keep full name for tooltip
+function truncateLabel(str, max){
+  return str.length > max ? str.slice(0, max-1)+'…' : str;
+}
+
+// ══════════════════════════════════════════
+//  SPEED
+// ══════════════════════════════════════════
+function setSpeed(s){
+  vid.playbackRate=s;
+  document.querySelectorAll('.spd').forEach(b=>{
+    b.classList.toggle('active',parseFloat(b.textContent)===s);
+  });
+}
+
+// ══════════════════════════════════════════
+//  VOLUME
+// ══════════════════════════════════════════
+function setVolume(v){
+  vid.volume=v;
+  document.getElementById('volPct').textContent=Math.round(v*100)+'%';
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2600);
+  setTimeout(()=>t.classList.remove('show'),2600);
 }
 
-// ── COPY ───────────────────────────────────────────
-function copyText(txt) {
-  navigator.clipboard.writeText(txt).then(() => showToast('Copied to clipboard!'));
+// ══════════════════════════════════════════
+//  COPY
+// ══════════════════════════════════════════
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>showToast('Copied to clipboard!'));
 }
 
-// ── EXTERNAL PLAYERS ───────────────────────────────
-function mx_player() {
-  let c = "{{file_url}}".replace(/^https?:\/\//, '');
-  window.location.href = `intent://${c}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+// ══════════════════════════════════════════
+//  EXTERNAL PLAYERS
+// ══════════════════════════════════════════
+function mx_player(){
+  let c="{{file_url}}".replace(/^https?:\/\//,'');
+  window.location.href=`intent://${c}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
 }
-function vlc_player() {
-  let c = "{{file_url}}".replace(/^https?:\/\//, '');
-  window.location.href = `intent://${c}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
+function vlc_player(){
+  let c="{{file_url}}".replace(/^https?:\/\//,'');
+  window.location.href=`intent://${c}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
 }
-function playit_player() {
-  let c = "{{file_url}}".replace(/^https?:\/\//, '');
-  window.location.href = `intent://${c}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
-}
-
-// ── DOWNLOAD ───────────────────────────────────────
-function streamDownload() {
-  window.location.href = "{{file_url}}";
+function playit_player(){
+  let c="{{file_url}}".replace(/^https?:\/\//,'');
+  window.location.href=`intent://${c}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
 }
 
-// ── TELEGRAM ───────────────────────────────────────
-function showLinkModal(url) {
-  if (url) window.open(url, '_blank');
+// ══════════════════════════════════════════
+//  DOWNLOAD
+// ══════════════════════════════════════════
+function streamDownload(){
+  window.location.href="{{file_url}}";
 }
 
-// ── SHARE ──────────────────────────────────────────
-function shareButton() {
-  if (navigator.share) {
-    navigator.share({
-      title: '{{file_name}}',
-      text: 'Watch on GoFlix',
-      url: window.location.href
-    });
-  } else {
+// ══════════════════════════════════════════
+//  TELEGRAM
+// ══════════════════════════════════════════
+function showLinkModal(url){
+  if(url) window.open(url,'_blank');
+}
+
+// ══════════════════════════════════════════
+//  SHARE
+// ══════════════════════════════════════════
+function shareButton(){
+  if(navigator.share){
+    navigator.share({title:'{{file_name}}',text:'Watch on GoFlix',url:window.location.href});
+  }else{
     navigator.clipboard.writeText(window.location.href);
     showToast('Link copied to clipboard!');
   }
 }
 </script>
-
 </body>
 </html>
