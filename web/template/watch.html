@@ -9,12 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:background .3s,color .3s,border-color .3s}
-
 /* ── CUSTOM CURSOR (desktop only) ── */
 @media(pointer:fine){
   body{cursor:none !important}
   *{cursor:none !important}
-  /* dot with dark border — visible on white AND dark backgrounds */
   .cursor-dot{
     position:fixed;top:0;left:0;
     width:8px;height:8px;
@@ -31,9 +29,13 @@
     transform:translate(-50%,-50%);
   }
 }
+@media (pointer: coarse) {
+  .cursor-dot, .cursor-ring, .ripple-el { display: none !important; }
+  body, * { cursor: default !important; }
+}
 /* ripple keyframe */
 @keyframes water-ripple{
-  0%  {width:6px;height:6px;opacity:.6;border-width:1.5px}
+  0% {width:6px;height:6px;opacity:.6;border-width:1.5px}
   100%{width:52px;height:52px;opacity:0;border-width:.5px}
 }
 .ripple-el{
@@ -43,7 +45,6 @@
   transform:translate(-50%,-50%);
   animation:water-ripple .7s cubic-bezier(.2,.6,.4,1) forwards;
 }
-
 [data-theme="dark"]{
   --bg:#0a0a12;--surface:#13131e;--surface2:#1a1a28;--surface3:#222235;
   --text:#f0f0ff;--text2:#9090b0;
@@ -59,7 +60,6 @@
   --glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
 }
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
-
 /* ── NETFLIX-STYLE INTRO OVERLAY ── */
 #intro-overlay{
   position:fixed;inset:0;background:#000;z-index:100000;
@@ -81,12 +81,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   will-change:transform,opacity;
 }
 @keyframes nfx-zoom{
-  0%  {transform:scale(0.55) scaleY(0.92);opacity:0}
+  0% {transform:scale(0.55) scaleY(0.92);opacity:0}
   12% {opacity:1;transform:scale(1.0) scaleY(1)}
   68% {transform:scale(1.0);opacity:1}
   100%{transform:scale(1.22);opacity:0}
 }
-
 /* ── NAVBAR ── */
 .navbar{
   background:var(--surface);border-bottom:1px solid var(--border);
@@ -110,7 +109,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 }
 @keyframes pulsedot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.7}}
 .nav-right{display:flex;align-items:center;gap:10px}
-
 /* THEME TOGGLE */
 .theme-toggle{
   display:flex;align-items:center;background:var(--surface2);
@@ -122,17 +120,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   background:transparent;color:var(--text2);transition:all .25s
 }
 .theme-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--glow)}
-
 /* HERO BAR */
 .hero-bar{
   background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 60%,var(--accent3) 100%);
   padding:8px 20px;font-size:12px;font-weight:700;color:#fff;
   display:flex;align-items:center;gap:8px;letter-spacing:.4px
 }
-
 /* CONTAINER */
 .container{max-width:960px;margin:0 auto;padding:20px 16px}
-
 /* PLAYER CARD */
 .player-card{
   background:var(--surface);border:1px solid var(--border);border-radius:18px;
@@ -153,13 +148,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   background:var(--accent);color:#fff;font-size:10px;font-weight:800;
   padding:3px 9px;border-radius:5px;letter-spacing:.8px
 }
-
 .progress-bar-wrap{height:3px;background:var(--border)}
 .progress-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .15s}
-
 .video-wrap{background:#000;aspect-ratio:16/9;position:relative}
 .video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
-
 .player-controls{
   display:flex;align-items:center;justify-content:space-between;
   padding:10px 16px;background:var(--surface2);flex-wrap:wrap;gap:8px
@@ -174,7 +166,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 .vol-row{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:12px}
 .vol-row input[type=range]{accent-color:var(--accent);width:80px;cursor:pointer}
 .vol-pct{min-width:32px;font-size:12px;color:var(--text2);font-weight:600}
-
 /* ── AUDIO & SUBTITLE CONTROLS ── */
 .track-controls{
   display:flex;gap:8px;padding:10px 16px;background:var(--surface2);
@@ -195,7 +186,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   padding:1px 6px;border-radius:20px;margin-left:auto;white-space:nowrap;
   min-width:16px;text-align:center;letter-spacing:.3px
 }
-/* Track pills container — scrollable row, never wraps, no layout shift */
 .track-pills{
   display:flex;gap:5px;flex-wrap:nowrap;
   overflow-x:auto;padding-bottom:4px;
@@ -204,12 +194,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   max-width:100%;
 }
 .track-pills::-webkit-scrollbar{display:none}
-/* Fixed-height pill so long names don't push layout */
 .pill{
   background:var(--surface3);border:1px solid var(--border);border-radius:20px;
   color:var(--text2);font-size:11px;padding:4px 11px;cursor:pointer;
   transition:all .2s;font-weight:600;white-space:nowrap;
-  /* hard cap width + ellipsis so long names stay in pill shape */
   max-width:130px;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -223,7 +211,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 .pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .pill.off{background:var(--surface3);color:var(--text2);border-color:var(--border)}
 .no-tracks{font-size:11px;color:var(--text2);opacity:.6;padding:4px 0;font-style:italic}
-
 /* STATS */
 .stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .chip{
@@ -231,7 +218,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   padding:5px 13px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px
 }
 .chip b{color:var(--text);font-weight:600}
-
 /* BUTTONS */
 .btn{
   border:none;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;
@@ -240,24 +226,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 }
 .btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
 .btn:active{transform:scale(.97)}
-
 .app-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn-player{
   background:var(--surface);color:var(--text);border:1px solid var(--border2);
   flex:1;min-width:90px;font-size:12px;padding:10px 10px
 }
 .btn-player:hover{border-color:var(--accent);color:var(--accent)}
-
 .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .btn-download{background:linear-gradient(135deg,#1dbf73,#16a560);color:#fff}
 .btn-telegram{background:linear-gradient(135deg,#0088cc,#229ed9);color:#fff}
-
 .btn-share{
   width:100%;background:var(--surface);color:var(--text2);
   border:1px solid var(--border2);margin-bottom:16px;font-size:12px;padding:10px
 }
 .btn-share:hover{border-color:var(--accent);color:var(--accent)}
-
 /* INFO CARD */
 .info-card{
   background:var(--surface);border:1px solid var(--border);border-radius:16px;
@@ -281,7 +263,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   transition:all .2s;white-space:nowrap;margin-left:8px;font-weight:600
 }
 .copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-
 /* TOAST */
 .toast{
   position:fixed;bottom:28px;right:18px;background:var(--accent);color:#fff;
@@ -290,25 +271,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   z-index:9999;transform:translateY(80px);opacity:0;transition:all .32s ease
 }
 .toast.show{transform:translateY(0);opacity:1}
-
 /* DISCLAIMER */
 .disclaimer{text-align:center;color:var(--text2);font-size:12px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px}
 .disclaimer a{color:var(--accent);text-decoration:none}
-
 /* FOOTER */
 footer{background:var(--surface);border-top:1px solid var(--border);padding:10px 20px;text-align:center;color:var(--text2);font-size:11px;margin-top:20px}
 .footer-logo{font-family:'Anton',sans-serif;font-size:inherit;letter-spacing:1px}
 .footer-go{color:var(--text)}
 .footer-flix{color:var(--accent)}
-
-/* ── TOOLTIP for full track name ── */
-.pill[title]:hover::after{
-  content:attr(title);
-  position:absolute;bottom:110%;left:50%;transform:translateX(-50%);
-  background:#222;color:#fff;font-size:10px;padding:3px 8px;border-radius:6px;
-  white-space:nowrap;pointer-events:none;z-index:200;
-}
-
 @media(max-width:500px){
   .cta-grid{grid-template-columns:1fr}
   .vol-row input{width:60px}
@@ -318,8 +288,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
 </style>
 </head>
 <body>
-
-<!-- CUSTOM CURSOR (desktop) -->
+<!-- CUSTOM CURSOR -->
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
@@ -342,7 +311,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
   </div>
   <div class="nav-right">
     <div class="theme-toggle">
-      <button class="theme-btn" id="darkBtn" onclick="setTheme('dark')" title="Dark"><i class="fa fa-moon"></i></button>
+      <button class="theme-btn active" id="darkBtn" onclick="setTheme('dark')" title="Dark"><i class="fa fa-moon"></i></button>
       <button class="theme-btn" id="lightBtn" onclick="setTheme('light')" title="Light"><i class="fa fa-sun"></i></button>
     </div>
   </div>
@@ -355,7 +324,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
 
 <!-- MAIN -->
 <div class="container">
-
   <!-- PLAYER CARD -->
   <div class="player-card">
     <div class="player-header">
@@ -367,7 +335,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
     </div>
     <div class="progress-bar-wrap"><div class="progress-bar" id="progBar"></div></div>
     <div class="video-wrap">
-      <video id="myVideo" src="{{file_url}}" controls preload="metadata" crossorigin="anonymous">
+      <video id="myVideo" src="{{file_url}}" controls preload="metadata" playsinline webkit-playsinline crossorigin="anonymous">
         Your browser does not support the video tag.
       </video>
     </div>
@@ -386,22 +354,18 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
       </div>
     </div>
 
-    <!-- ── AUDIO & SUBTITLE TRACK CONTROLS ── -->
+    <!-- AUDIO & SUBTITLE (Improved) -->
     <div class="track-controls">
-
-      <!-- AUDIO -->
       <div class="track-block">
         <div class="track-header">
           <div class="track-icon"><i class="fa fa-headphones"></i></div>
           <span class="track-label">Audio</span>
-          <span class="track-count" id="audioCount">0</span>
+          <span class="track-count" id="audioCount">1</span>
         </div>
         <div class="track-pills" id="audioPills">
-          <span class="no-tracks">No audio tracks detected</span>
+          <button class="pill active">Default Audio</button>
         </div>
       </div>
-
-      <!-- SUBTITLES -->
       <div class="track-block">
         <div class="track-header">
           <div class="track-icon"><i class="fa fa-closed-captioning"></i></div>
@@ -409,10 +373,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
           <span class="track-count" id="subCount">0</span>
         </div>
         <div class="track-pills" id="subPills">
-          <span class="no-tracks">No subtitle tracks detected</span>
+          <span class="no-tracks">No embedded subtitles • Use external player</span>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -452,7 +415,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
     <div class="info-row">
       <span class="info-label">Filename</span>
       <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
-        <span class="info-val" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{file_name}}</span>
+        <span class="info-val" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{file_name}}">{{file_name}}</span>
         <button class="copy-btn" onclick="copyText('{{file_name}}')">Copy</button>
       </div>
     </div>
@@ -467,7 +430,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
     <div class="info-row">
       <span class="info-label">Link</span>
       <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
-        <span class="info-val" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{file_url}}</span>
+        <span class="info-val" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{file_url}}">{{file_url}}</span>
         <button class="copy-btn" onclick="copyText('{{file_url}}')">Copy</button>
       </div>
     </div>
@@ -478,7 +441,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
     ⚠️ Some formats may not play in browser — use <b>VLC</b> for full support.<br>
     {{ disclaimer }} &nbsp;·&nbsp; <a href="{{ report_link }}">Report Issue</a>
   </div>
-
 </div>
 
 <!-- FOOTER -->
@@ -487,66 +449,46 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:10px
 </footer>
 
 <script>
-// ══════════════════════════════════════════
-//  CUSTOM CURSOR — water ripple
-// ══════════════════════════════════════════
-const dot  = document.getElementById('cursorDot');
-const ring = document.getElementById('cursorRing'); // unused visually, kept in DOM
-
+// CUSTOM CURSOR + RIPPLE
+const dot = document.getElementById('cursorDot');
 if(window.matchMedia('(pointer:fine)').matches){
-  let cx=0,cy=0;
-
-  document.addEventListener('mousemove', e => {
-    cx = e.clientX; cy = e.clientY;
-    dot.style.left = cx + 'px';
-    dot.style.top  = cy + 'px';
-  });
-
-  // Spawn a ripple on every mousemove (throttled)
   let lastRipple = 0;
   document.addEventListener('mousemove', e => {
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
     const now = Date.now();
-    if(now - lastRipple < 120) return; // one ripple per 120ms
+    if(now - lastRipple < 120) return;
     lastRipple = now;
     spawnRipple(e.clientX, e.clientY);
   });
-
-  // Extra ripple on click
   document.addEventListener('click', e => spawnRipple(e.clientX, e.clientY, true));
-
-  function spawnRipple(x, y, big=false){
-    const el = document.createElement('div');
-    el.className = 'ripple-el';
-    el.style.left = x + 'px';
-    el.style.top  = y + 'px';
-    if(big){
-      el.style.animationDuration = '.55s';
-      el.style.borderColor = 'rgba(255,255,255,0.75)';
-    }
-    document.body.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
+}
+function spawnRipple(x, y, big=false){
+  const el = document.createElement('div');
+  el.className = 'ripple-el';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  if(big){
+    el.style.animationDuration = '.55s';
+    el.style.borderColor = 'rgba(255,255,255,0.75)';
   }
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
 }
 
-// ══════════════════════════════════════════
-//  INTRO — hide overlay after animation
-// ══════════════════════════════════════════
+// INTRO OVERLAY
 (function(){
   const overlay = document.getElementById('intro-overlay');
-  // hide after nfx-zoom completes (2.6s)
   setTimeout(()=>{ overlay.classList.add('done'); }, 2700);
 })();
 
-// ══════════════════════════════════════════
-//  NETFLIX-STYLE SOUND  (Web Audio API)
-// ══════════════════════════════════════════
+// NETFLIX SOUND
 (function playNetflixSound(){
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
-
     function tone(freq, startT, dur, gainVal, type='sine'){
       const osc = ctx.createOscillator();
-      const g   = ctx.createGain();
+      const g = ctx.createGain();
       osc.connect(g); g.connect(ctx.destination);
       osc.type = type;
       osc.frequency.setValueAtTime(freq, ctx.currentTime + startT);
@@ -556,73 +498,47 @@ if(window.matchMedia('(pointer:fine)').matches){
       osc.start(ctx.currentTime + startT);
       osc.stop(ctx.currentTime + startT + dur + 0.05);
     }
-
-    // Netflix ta-dum: low hit → resonant chord swell
-    tone(55,   0.05, 0.55, 0.6,  'sine');
-    tone(110,  0.08, 0.50, 0.35, 'sine');
-    tone(220,  0.35, 0.75, 0.25, 'sine');
-    tone(440,  0.55, 0.70, 0.18, 'sine');
-    tone(880,  0.78, 0.55, 0.10, 'sine');
-    // punch noise burst
-    const buf = ctx.createBuffer(1, ctx.sampleRate*0.12, ctx.sampleRate);
-    const d   = buf.getChannelData(0);
-    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
-    const src = ctx.createBufferSource();
-    const ng  = ctx.createGain();
-    src.buffer = buf; src.connect(ng); ng.connect(ctx.destination);
-    ng.gain.setValueAtTime(0.3, ctx.currentTime+0.05);
-    ng.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.18);
-    src.start(ctx.currentTime+0.05);
+    tone(55, 0.05, 0.55, 0.6, 'sine');
+    tone(110, 0.08, 0.50, 0.35, 'sine');
+    tone(220, 0.35, 0.75, 0.25, 'sine');
+    tone(440, 0.55, 0.70, 0.18, 'sine');
+    tone(880, 0.78, 0.55, 0.10, 'sine');
   }catch(e){}
 })();
 
-// ══════════════════════════════════════════
-//  THEME
-// ══════════════════════════════════════════
+// THEME
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   document.getElementById('darkBtn').classList.toggle('active',t==='dark');
   document.getElementById('lightBtn').classList.toggle('active',t==='light');
+  localStorage.setItem('theme', t);
 }
-if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches){
+const savedTheme = localStorage.getItem('theme');
+if(savedTheme){
+  setTheme(savedTheme);
+} else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches){
   setTheme('light');
-}else{
+} else {
   setTheme('dark');
 }
 
-// ══════════════════════════════════════════
-//  VIDEO PLAYER
-// ══════════════════════════════════════════
+// VIDEO PLAYER
 const vid = document.getElementById('myVideo');
 
 vid.addEventListener('loadedmetadata', () => {
-  // Duration
   const d = vid.duration;
   if(d && isFinite(d)){
     const m=Math.floor(d/60), s=String(Math.floor(d%60)).padStart(2,'0');
     document.getElementById('durChip').textContent = m+'m '+s+'s';
   }
-  // Format
   const src = vid.currentSrc || '{{file_url}}';
   const ext = src.split('.').pop().split('?')[0].toUpperCase();
   document.getElementById('fmtVal').textContent = ext||'Video';
   document.getElementById('fmtChip').textContent = ext||'Video';
-  // Resolution
+
   if(vid.videoWidth){
     document.getElementById('resLabel').textContent = vid.videoWidth+'×'+vid.videoHeight;
   }
-  // Build tracks immediately, then poll in case browser populates late
-  buildAudioTracks();
-  buildSubtitleTracks();
-  hookTextTrackEvents();
-  pollAudioTracks(8);
-  pollSubtitleTracks(8);
-});
-
-// Also try on canplay (some browsers expose tracks here)
-vid.addEventListener('canplay', ()=>{
-  buildAudioTracks();
-  buildSubtitleTracks();
 });
 
 vid.addEventListener('timeupdate',()=>{
@@ -633,119 +549,11 @@ vid.addEventListener('timeupdate',()=>{
   }
 });
 vid.addEventListener('playing',()=>document.getElementById('statusChip').textContent='Playing');
-vid.addEventListener('pause',  ()=>document.getElementById('statusChip').textContent='Paused');
+vid.addEventListener('pause', ()=>document.getElementById('statusChip').textContent='Paused');
 vid.addEventListener('waiting',()=>document.getElementById('statusChip').textContent='Buffering…');
-vid.addEventListener('ended',  ()=>document.getElementById('statusChip').textContent='Ended');
+vid.addEventListener('ended', ()=>document.getElementById('statusChip').textContent='Ended');
 
-// ══════════════════════════════════════════
-//  AUDIO TRACKS
-// ══════════════════════════════════════════
-function buildAudioTracks(){
-  const container = document.getElementById('audioPills');
-  const countEl   = document.getElementById('audioCount');
-  const tracks    = vid.audioTracks;
-
-  if(!tracks || tracks.length === 0){
-    countEl.textContent = '0';
-    container.innerHTML = '<span class="no-tracks">No audio tracks detected</span>';
-    return;
-  }
-  countEl.textContent = tracks.length;
-  container.innerHTML = '';
-  for(let i=0;i<tracks.length;i++){
-    const t = tracks[i];
-    const label = t.label || t.language || ('Track '+(i+1));
-    const shortLabel = truncateLabel(label,14);
-    const btn = document.createElement('button');
-    btn.className = 'pill'+(t.enabled?' active':'');
-    btn.textContent = shortLabel;
-    if(label!==shortLabel) btn.title = label;
-    btn.onclick = function(){
-      for(let j=0;j<tracks.length;j++) tracks[j].enabled=(j===i);
-      container.querySelectorAll('.pill').forEach((p,j)=>p.classList.toggle('active',j===i));
-      showToast('Audio: '+label);
-    };
-    container.appendChild(btn);
-  }
-}
-
-// Poll — some browsers expose audioTracks after canplay, not loadedmetadata
-function pollAudioTracks(n){
-  if(n<=0) return;
-  if(vid.audioTracks && vid.audioTracks.length>0){ buildAudioTracks(); return; }
-  setTimeout(()=>pollAudioTracks(n-1), 500);
-}
-
-// ══════════════════════════════════════════
-//  SUBTITLE TRACKS
-// ══════════════════════════════════════════
-function buildSubtitleTracks(){
-  const container = document.getElementById('subPills');
-  const countEl   = document.getElementById('subCount');
-  const tracks    = vid.textTracks;
-
-  if(!tracks || tracks.length === 0){
-    countEl.textContent = '0';
-    container.innerHTML = '<span class="no-tracks">No subtitle tracks detected</span>';
-    return;
-  }
-  countEl.textContent = tracks.length;
-  container.innerHTML = '';
-
-  const offBtn = document.createElement('button');
-  offBtn.className = 'pill active';
-  offBtn.textContent = 'Off';
-  offBtn.onclick = function(){
-    for(let j=0;j<tracks.length;j++) tracks[j].mode='disabled';
-    container.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-    offBtn.classList.add('active');
-    showToast('Subtitles off');
-  };
-  container.appendChild(offBtn);
-
-  for(let i=0;i<tracks.length;i++){
-    const t = tracks[i];
-    const label = t.label || t.language || ('Sub '+(i+1));
-    const shortLabel = truncateLabel(label,14);
-    const btn = document.createElement('button');
-    btn.className = 'pill';
-    btn.textContent = shortLabel;
-    if(label!==shortLabel) btn.title = label;
-    btn.onclick = function(){
-      for(let j=0;j<tracks.length;j++) tracks[j].mode='disabled';
-      t.mode='showing';
-      container.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-      btn.classList.add('active');
-      offBtn.classList.remove('active');
-      showToast('Subtitle: '+label);
-    };
-    container.appendChild(btn);
-  }
-}
-
-// Poll subtitles too
-function pollSubtitleTracks(n){
-  if(n<=0) return;
-  if(vid.textTracks && vid.textTracks.length>0){ buildSubtitleTracks(); return; }
-  setTimeout(()=>pollSubtitleTracks(n-1), 500);
-}
-
-// Hook addtrack events
-function hookTextTrackEvents(){
-  try{
-    vid.audioTracks && vid.audioTracks.addEventListener('addtrack', buildAudioTracks);
-    vid.textTracks  && vid.textTracks.addEventListener('addtrack',  buildSubtitleTracks);
-  }catch(e){}
-}
-
-// Truncate label for pill display, keep full name for tooltip
-function truncateLabel(str, max){
-  return str.length > max ? str.slice(0, max-1)+'…' : str;
-}
-
-// ══════════════════════════════════════════
-//  SPEED
-// ══════════════════════════════════════════
+// SPEED
 function setSpeed(s){
   vid.playbackRate=s;
   document.querySelectorAll('.spd').forEach(b=>{
@@ -753,17 +561,13 @@ function setSpeed(s){
   });
 }
 
-// ══════════════════════════════════════════
-//  VOLUME
-// ══════════════════════════════════════════
+// VOLUME
 function setVolume(v){
   vid.volume=v;
   document.getElementById('volPct').textContent=Math.round(v*100)+'%';
 }
 
-// ══════════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════════
+// TOAST
 function showToast(msg){
   const t=document.getElementById('toast');
   document.getElementById('toast-msg').textContent=msg;
@@ -771,16 +575,12 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),2600);
 }
 
-// ══════════════════════════════════════════
-//  COPY
-// ══════════════════════════════════════════
+// COPY
 function copyText(txt){
   navigator.clipboard.writeText(txt).then(()=>showToast('Copied to clipboard!'));
 }
 
-// ══════════════════════════════════════════
-//  EXTERNAL PLAYERS
-// ══════════════════════════════════════════
+// EXTERNAL PLAYERS
 function mx_player(){
   let c="{{file_url}}".replace(/^https?:\/\//,'');
   window.location.href=`intent://${c}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
@@ -794,23 +594,17 @@ function playit_player(){
   window.location.href=`intent://${c}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
 }
 
-// ══════════════════════════════════════════
-//  DOWNLOAD
-// ══════════════════════════════════════════
+// DOWNLOAD
 function streamDownload(){
   window.location.href="{{file_url}}";
 }
 
-// ══════════════════════════════════════════
-//  TELEGRAM
-// ══════════════════════════════════════════
+// TELEGRAM
 function showLinkModal(url){
   if(url) window.open(url,'_blank');
 }
 
-// ══════════════════════════════════════════
-//  SHARE
-// ══════════════════════════════════════════
+// SHARE
 function shareButton(){
   if(navigator.share){
     navigator.share({title:'{{file_name}}',text:'Watch on GoFlix',url:window.location.href});
