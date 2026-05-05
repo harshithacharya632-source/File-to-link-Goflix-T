@@ -24,7 +24,6 @@
   --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
   --glow:rgba(204,8,18,0.2);--card-shadow:0 4px 24px rgba(0,0,0,0.09);
 }
-
 body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',system-ui,sans-serif;
@@ -32,198 +31,125 @@ body{
   transition:background .3s,color .3s;
 }
 
-/* ══════════════════════════════════════
-   NETFLIX INTRO — pure CSS, auto-hides
-══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   FIX 1 — INTRO: sound fires BEFORE overlay shows
+   Overlay is just visual — JS triggers sound immediately
+   Overlay auto-removes in 2.6s (pure CSS)
+═══════════════════════════════════════ */
 #intro-overlay{
   position:fixed;inset:0;z-index:100000;background:#000;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
-  animation:overlayOut .35s ease-in 2.5s forwards;
   pointer-events:none;
+  animation:ovOut .3s ease-in 2.3s forwards;
 }
-@keyframes overlayOut{
-  to{opacity:0;visibility:hidden;display:none}
-}
-
+@keyframes ovOut{to{opacity:0;visibility:hidden}}
 .nfx-bar-l{
   position:absolute;top:0;bottom:0;left:0;width:51%;background:#000;z-index:2;
-  animation:barSplitL .55s cubic-bezier(.7,0,.3,1) 1.15s forwards;
+  animation:bL .5s cubic-bezier(.7,0,.3,1) 1.05s forwards;
 }
 .nfx-bar-r{
   position:absolute;top:0;bottom:0;right:0;width:51%;background:#000;z-index:2;
-  animation:barSplitR .55s cubic-bezier(.7,0,.3,1) 1.15s forwards;
+  animation:bR .5s cubic-bezier(.7,0,.3,1) 1.05s forwards;
 }
-@keyframes barSplitL{to{transform:translateX(-100%)}}
-@keyframes barSplitR{to{transform:translateX(100%)}}
-
+@keyframes bL{to{transform:translateX(-100%)}}
+@keyframes bR{to{transform:translateX(100%)}}
 .nfx-logo{
   font-family:'Anton',sans-serif;
   font-size:clamp(2.8rem,13vw,8.5rem);
   color:#e50914;letter-spacing:6px;
-  position:relative;z-index:1;
-  animation:
-    nfxIn  .6s cubic-bezier(.16,1,.3,1) 0s    forwards,
-    nfxOut .9s cubic-bezier(.4,0,.2,1)  1.6s  forwards;
-  opacity:0;
+  position:relative;z-index:1;opacity:0;
+  animation:nIn .55s cubic-bezier(.16,1,.3,1) 0s forwards,
+            nOut .85s cubic-bezier(.4,0,.2,1) 1.5s forwards;
 }
-@keyframes nfxIn{
-  0%  {opacity:0;transform:scale(0.5) scaleY(0.85)}
-  100%{opacity:1;transform:scale(1)   scaleY(1)}
-}
-@keyframes nfxOut{
-  0%  {opacity:1;transform:scale(1)}
-  60% {opacity:1;transform:scale(1.18)}
-  100%{opacity:0;transform:scale(1.4)}
-}
+@keyframes nIn{0%{opacity:0;transform:scale(.5) scaleY(.85)}100%{opacity:1;transform:scale(1) scaleY(1)}}
+@keyframes nOut{0%{opacity:1;transform:scale(1)}60%{opacity:1;transform:scale(1.16)}100%{opacity:0;transform:scale(1.38)}}
 
-/* ══════════════════════════════════════
-   CUSTOM CURSOR — laptop only
-══════════════════════════════════════ */
-@media(pointer:fine){
-  html,body{cursor:none}
-}
+/* ═══════════════════════════════════════
+   FIX 4 — CURSOR: normal arrow + wave ripple only
+   No dot replacement — just ripples on move
+═══════════════════════════════════════ */
 @media(pointer:coarse){
-  #gf-cursor-dot,#gf-cursor-ring,#gf-cursor-ring2{display:none!important}
-  html,body,*{cursor:auto!important}
+  .gf-ripple{display:none!important}
+}
+@keyframes gfRipple{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:.5}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:0}
+}
+.gf-ripple{
+  position:fixed;pointer-events:none;z-index:999997;
+  width:44px;height:44px;border-radius:50%;
+  border:1.5px solid rgba(229,9,20,.55);
+  animation:gfRipple .6s cubic-bezier(.2,.6,.4,1) forwards;
 }
 
-#gf-cursor-dot{
-  position:fixed;width:8px;height:8px;
-  background:var(--accent);border-radius:50%;
-  pointer-events:none;z-index:999999;top:0;left:0;
-  box-shadow:0 0 10px var(--accent),0 0 20px rgba(229,9,20,.4);
-  transition:width .12s,height .12s,background .12s,box-shadow .12s;
-  will-change:transform;display:none;
-}
-#gf-cursor-ring{
-  position:fixed;width:34px;height:34px;
-  border:2px solid rgba(229,9,20,.7);border-radius:50%;
-  pointer-events:none;z-index:999998;top:0;left:0;
-  transition:width .2s,height .2s,opacity .2s,border-color .2s;
-  will-change:transform;display:none;opacity:.6;
-}
-#gf-cursor-ring2{
-  position:fixed;width:58px;height:58px;
-  border:1px solid rgba(229,9,20,.22);border-radius:50%;
-  pointer-events:none;z-index:999997;top:0;left:0;
-  transition:width .3s,height .3s,opacity .3s;
-  will-change:transform;display:none;opacity:.25;
-}
-/* hover — rings expand outward like radiation */
-body.cur-hover #gf-cursor-dot{width:10px;height:10px;background:#fff;box-shadow:0 0 12px #fff,0 0 24px rgba(255,255,255,.3)}
-body.cur-hover #gf-cursor-ring{width:50px;height:50px;opacity:.9;border-color:rgba(255,255,255,.8)}
-body.cur-hover #gf-cursor-ring2{width:78px;height:78px;opacity:.45;border-color:rgba(255,255,255,.35)}
-/* click — shrink + burst */
-body.cur-click #gf-cursor-dot{width:4px;height:4px}
-body.cur-click #gf-cursor-ring{width:68px;height:68px;opacity:0}
-body.cur-click #gf-cursor-ring2{width:96px;height:96px;opacity:0}
-
-/* ══════════════════════════════════════
-   NAVBAR — GOFLIX sequential wave
-   Each letter bounces up + WHITE flash → RED → back
-══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════ */
 .navbar{
   background:var(--surface);border-bottom:1px solid var(--border);
   padding:0 20px;height:58px;
   display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:500;backdrop-filter:blur(14px);
-  overflow:hidden;
 }
+
+/* ═══════════════════════════════════════
+   FIX 3 — LOGO: gentle smooth wave, subtle
+   Letters float up one by one, no color change
+   just a clean elegant lift + slight scale
+═══════════════════════════════════════ */
 .brand{display:flex;flex-direction:column;text-decoration:none;user-select:none}
 .brand-row{display:flex;align-items:flex-end;line-height:1;gap:0}
-
-/* base letter — NO transition so color changes are instant */
 .brand-letter{
   font-family:'Anton',sans-serif;
-  font-size:1.75rem;letter-spacing:1px;
+  font-size:2rem;letter-spacing:2px;
   display:inline-block;
-  transition:none !important;
+  transition:none!important;
+  animation-fill-mode:none;
+  font-weight:900;
+  -webkit-font-smoothing:antialiased;
 }
-.brand-letter.go{color:var(--text)}
-.brand-letter.fx{color:#e50914}
+.brand-letter.go{color:var(--text) !important}
+.brand-letter.fx{color:#e50914 !important}
 
-/* Each letter gets its OWN named animation so color:inherit works correctly */
-/* G */
-.bl-g{animation:wv-g 3.6s ease-in-out infinite 0s}
-/* O */
-.bl-o{animation:wv-o 3.6s ease-in-out infinite .6s}
-/* F */
-.bl-f{animation:wv-f 3.6s ease-in-out infinite 1.2s}
-/* L */
-.bl-l{animation:wv-l 3.6s ease-in-out infinite 1.8s}
-/* I */
-.bl-i{animation:wv-i 3.6s ease-in-out infinite 2.4s}
-/* X */
-.bl-x{animation:wv-x 3.6s ease-in-out infinite 3.0s}
+/* Simple gentle float — ZERO color change, only movement */
+.bl-g{animation:lw 3s ease-in-out infinite 0s}
+.bl-o{animation:lw 3s ease-in-out infinite .5s}
+.bl-f{animation:lw 3s ease-in-out infinite 1.0s}
+.bl-l{animation:lw 3s ease-in-out infinite 1.5s}
+.bl-i{animation:lw 3s ease-in-out infinite 2.0s}
+.bl-x{animation:lw 3s ease-in-out infinite 2.5s}
 
-/* GO letters: rest=white(var text), flash=white glow, settle=red, back=white */
-@keyframes wv-g{
-  0%,100%{transform:translateY(0) scale(1);color:var(--text);text-shadow:none}
-  5%     {transform:translateY(-8px) scale(1.4);color:#ffffff;text-shadow:0 0 16px #fff,0 0 32px rgba(255,255,255,.6)}
-  12%    {transform:translateY(2px) scale(1.02);color:#e50914;text-shadow:0 0 12px rgba(229,9,20,.7)}
-  20%    {transform:translateY(0) scale(1);color:var(--text);text-shadow:none}
-}
-@keyframes wv-o{
-  0%,100%{transform:translateY(0) scale(1);color:var(--text);text-shadow:none}
-  5%     {transform:translateY(-8px) scale(1.4);color:#ffffff;text-shadow:0 0 16px #fff,0 0 32px rgba(255,255,255,.6)}
-  12%    {transform:translateY(2px) scale(1.02);color:#e50914;text-shadow:0 0 12px rgba(229,9,20,.7)}
-  20%    {transform:translateY(0) scale(1);color:var(--text);text-shadow:none}
-}
-/* FLIX letters: rest=red, flash=white glow, settle=red */
-@keyframes wv-f{
-  0%,100%{transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-  5%     {transform:translateY(-8px) scale(1.4);color:#ffffff;text-shadow:0 0 16px #fff,0 0 32px rgba(255,255,255,.6)}
-  12%    {transform:translateY(2px) scale(1.02);color:#e50914;text-shadow:0 0 12px rgba(229,9,20,.7)}
-  20%    {transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-}
-@keyframes wv-l{
-  0%,100%{transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-  5%     {transform:translateY(-8px) scale(1.4);color:#ffffff;text-shadow:0 0 16px #fff,0 0 32px rgba(255,255,255,.6)}
-  12%    {transform:translateY(2px) scale(1.02);color:#e50914;text-shadow:0 0 12px rgba(229,9,20,.7)}
-  20%    {transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-}
-@keyframes wv-i{
-  0%,100%{transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-  5%     {transform:translateY(-8px) scale(1.4);color:#ffffff;text-shadow:0 0 16px #fff,0 0 32px rgba(255,255,255,.6)}
-  12%    {transform:translateY(2px) scale(1.02);color:#e50914;text-shadow:0 0 12px rgba(229,9,20,.7)}
-  20%    {transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-}
-@keyframes wv-x{
-  0%,100%{transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
-  5%     {transform:translateY(-8px) scale(1.4);color:#ffffff;text-shadow:0 0 16px #fff,0 0 32px rgba(255,255,255,.6)}
-  12%    {transform:translateY(2px) scale(1.02);color:#e50914;text-shadow:0 0 12px rgba(229,9,20,.7)}
-  20%    {transform:translateY(0) scale(1);color:#e50914;text-shadow:none}
+@keyframes lw{
+  0%,100%{transform:translateY(0) scale(1)}
+  8%     {transform:translateY(-5px) scale(1.15)}
+  16%    {transform:translateY(0) scale(1)}
 }
 
 .brand-dot{
-  width:7px;height:7px;background:var(--accent);border-radius:50%;
-  margin-left:3px;margin-bottom:14px;flex-shrink:0;
-  box-shadow:0 0 8px var(--accent);
-  animation:dotPulse 1.8s ease-in-out infinite;
+  width:6px;height:6px;background:#e50914;border-radius:50%;
+  margin-left:3px;margin-bottom:12px;flex-shrink:0;
+  animation:dp 2s ease-in-out infinite;
 }
-@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.7)}}
+@keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(1.8)}}
 .brand-bar{
-  height:2px;border-radius:2px;margin-top:3px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
-  animation:barGlow 2.5s ease-in-out infinite;
+  height:2px;border-radius:2px;margin-top:2px;
+  background:linear-gradient(90deg,transparent,#e50914,transparent);
+  animation:bg 2.5s ease-in-out infinite;
 }
-@keyframes barGlow{0%,100%{opacity:.25;transform:scaleX(.3)}50%{opacity:1;transform:scaleX(1)}}
+@keyframes bg{0%,100%{opacity:.2;transform:scaleX(.2)}50%{opacity:1;transform:scaleX(1)}}
 
 .nav-right{display:flex;align-items:center;gap:10px}
 .theme-toggle{
   display:flex;align-items:center;background:var(--surface2);
   border:1px solid var(--border2);border-radius:50px;padding:4px;gap:2px;
-  transition:background .3s,border-color .3s;
 }
 .theme-btn{
   width:30px;height:30px;border:none;border-radius:50px;
   display:flex;align-items:center;justify-content:center;font-size:13px;
-  background:transparent;color:var(--text2);
-  cursor:pointer;transition:all .25s;
+  background:transparent;color:var(--text2);cursor:pointer;transition:all .25s;
 }
 .theme-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--glow)}
 
-/* HERO BAR */
 .hero-bar{
   background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 60%,var(--accent3) 100%);
   padding:8px 20px;font-size:12px;font-weight:700;color:#fff;
@@ -236,101 +162,146 @@ body.cur-click #gf-cursor-ring2{width:96px;height:96px;opacity:0}
 .player-card{
   background:var(--surface);border:1px solid var(--border);border-radius:18px;
   overflow:hidden;box-shadow:var(--card-shadow);margin-bottom:16px;
-  transition:background .3s,border-color .3s;
 }
 .player-header{
   padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
   border-bottom:1px solid var(--border);background:var(--surface2);
-  transition:background .3s;
 }
 .live-badge{
   display:flex;align-items:center;gap:6px;background:rgba(229,9,20,.12);
   color:var(--accent);font-size:11px;font-weight:700;padding:4px 11px;
   border-radius:20px;border:1px solid rgba(229,9,20,.25);letter-spacing:.5px;
 }
-.live-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:livePulse 1.5s infinite}
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+.live-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:lp 1.5s infinite}
+@keyframes lp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
 .hd-badge{background:var(--accent);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:5px;letter-spacing:.8px}
 
 .progress-bar-wrap{height:3px;background:var(--border)}
 .progress-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .15s}
 
-.video-wrap{background:#000;aspect-ratio:16/9}
+/* VIDEO WRAP — position relative so overlay controls sit on top */
+.video-wrap{background:#000;aspect-ratio:16/9;position:relative;overflow:hidden}
 .video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px;padding:2px 7px}
+
+/* ═══════════════════════════════════════
+   FIX 5 — FULLSCREEN OVERLAY CONTROLS
+   Shows ratio, brightness, volume
+   Only visible when video is in fullscreen
+═══════════════════════════════════════ */
+.fs-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 100%);
+  padding:12px 16px 10px;
+  display:none;/* hidden normally */
+  flex-direction:column;gap:8px;
+  pointer-events:none;
+  z-index:10;
+}
+/* Show only in fullscreen */
+:fullscreen .fs-overlay,
+:-webkit-full-screen .fs-overlay,
+:-moz-full-screen .fs-overlay{display:flex;pointer-events:all}
+
+.fs-top-row{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.5px;
+}
+.fs-ratio{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  border-radius:6px;padding:3px 10px;font-size:11px;font-weight:800;
+  color:#fff;letter-spacing:.6px;
+}
+.fs-controls-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.fs-ctrl{display:flex;align-items:center;gap:7px;flex:1;min-width:120px}
+.fs-ctrl-lbl{
+  font-size:10px;font-weight:700;color:rgba(255,255,255,.7);
+  text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:68px;
+}
+.fs-ctrl-lbl i{margin-right:4px;font-size:10px}
+.fs-range{
+  flex:1;height:3px;accent-color:#e50914;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  background:rgba(255,255,255,.25);border-radius:3px;outline:none;
+}
+.fs-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;
+  background:#e50914;border-radius:50%;cursor:pointer;
+  box-shadow:0 0 6px rgba(229,9,20,.6);
+}
+.fs-val{font-size:11px;font-weight:700;color:#fff;min-width:36px;text-align:right}
 
 .player-controls{
   display:flex;align-items:center;justify-content:space-between;
   padding:10px 16px;background:var(--surface2);flex-wrap:wrap;gap:8px;
-  transition:background .3s;
 }
 .speed-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .speed-label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .spd{
   background:var(--surface3);border:1px solid var(--border);border-radius:7px;
-  color:var(--text2);font-size:12px;padding:4px 10px;
-  cursor:pointer;transition:all .2s;font-weight:600;
+  color:var(--text2);font-size:12px;padding:4px 10px;cursor:pointer;transition:all .2s;font-weight:600;
 }
 .spd:hover,.spd.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .vol-row{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:12px}
 .vol-row input[type=range]{accent-color:var(--accent);width:80px;cursor:pointer}
 .vol-pct{min-width:32px;font-size:12px;color:var(--text2);font-weight:600}
 
-/* ══════════════════════════════════════
-   AUDIO + SUBTITLE PANEL
-══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   FIX 2 — AUDIO/SUBTITLE PANEL
+   Rounded pills, no sharp edges
+═══════════════════════════════════════ */
 .media-panel-row{
   display:flex;gap:10px;flex-wrap:wrap;
   padding:10px 16px;background:var(--surface);
   border-bottom:1px solid var(--border);
-  transition:background .3s;
 }
 .panel-wrap{position:relative;flex:1;min-width:140px}
 .panel-btn{
   width:100%;display:flex;align-items:center;gap:8px;
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;padding:9px 12px;
-  font-size:13px;font-weight:600;color:var(--text2);
+  background:var(--surface2);
+  border:1.5px solid var(--border2);
+  border-radius:50px;/* pill shape */
+  padding:8px 14px;
+  font-size:12px;font-weight:600;color:var(--text2);
   cursor:pointer;font-family:inherit;transition:all .2s;
 }
 .panel-btn:hover,.panel-btn.open{
   background:rgba(229,9,20,.08);border-color:var(--accent);color:var(--accent);
 }
-.panel-btn-icon{font-size:14px;flex-shrink:0}
+.panel-btn-icon{font-size:13px;flex-shrink:0}
 .panel-btn-label{flex:1;text-align:left;font-size:12px}
 .panel-count{
-  background:var(--accent);color:#fff;font-size:10px;font-weight:800;
-  padding:2px 7px;border-radius:10px;flex-shrink:0;
+  background:var(--accent);color:#fff;font-size:9px;font-weight:800;
+  padding:2px 7px;border-radius:50px;flex-shrink:0;
 }
 .panel-active{
   font-size:10px;color:var(--accent);font-weight:700;
-  max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;
+  max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;
 }
-.panel-chevron{font-size:9px;opacity:.5;flex-shrink:0}
-
+.panel-chevron{font-size:9px;opacity:.4;flex-shrink:0}
 .panel-dropdown{
-  position:absolute;bottom:calc(100% + 8px);left:0;right:0;
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
   background:var(--surface);border:1px solid var(--border2);
   border-radius:14px;overflow:hidden;
-  box-shadow:0 -8px 40px rgba(0,0,0,.7);
-  display:none;z-index:600;min-width:220px;
-  animation:panelUp .18s ease;
+  box-shadow:0 8px 40px rgba(0,0,0,.55);
+  display:none;z-index:600;min-width:210px;
+  animation:pDn .16s ease;
 }
 .panel-dropdown.show{display:block}
-@keyframes panelUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
+@keyframes pDn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .pd-header{
-  padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);
   font-size:11px;font-weight:800;color:var(--accent);
   text-transform:uppercase;letter-spacing:.7px;
   display:flex;align-items:center;gap:7px;
 }
-.pd-list{max-height:240px;overflow-y:auto;padding:3px 0}
+.pd-list{max-height:240px;overflow-y:auto;padding:4px 0}
 .pd-list::-webkit-scrollbar{width:3px}
 .pd-list::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
 .pd-item{
   display:flex;align-items:center;gap:10px;
-  padding:10px 14px;cursor:pointer;
+  padding:10px 16px;/* equal padding left & right, not edge-flush */
+  cursor:pointer;
   transition:background .15s;border-left:3px solid transparent;
 }
 .pd-item:hover{background:var(--surface2)}
@@ -342,7 +313,7 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
 .pd-check{color:var(--accent);font-size:12px;opacity:0;flex-shrink:0;transition:opacity .15s}
 .pd-item.active .pd-check{opacity:1}
 .pd-upload{
-  display:flex;align-items:center;gap:7px;padding:9px 14px;
+  display:flex;align-items:center;gap:7px;padding:10px 16px;
   border-top:1px solid var(--border);font-size:12px;color:var(--text2);
   background:transparent;border-left:none;border-right:none;border-bottom:none;
   width:100%;text-align:left;font-family:inherit;font-weight:600;
@@ -384,11 +355,10 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
   background:var(--surface);border:1px solid var(--border);border-radius:50px;
   padding:5px 13px;font-size:12px;color:var(--text2);
   display:flex;align-items:center;gap:6px;
-  transition:background .3s,border-color .3s;
 }
 .chip b{color:var(--text);font-weight:600}
 
-/* ALL BUTTONS */
+/* BUTTONS */
 .btn{
   border:none;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;
   cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
@@ -400,7 +370,6 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
 .btn-player{
   background:var(--surface);color:var(--text);border:1px solid var(--border2);
   flex:1;min-width:90px;font-size:12px;padding:10px;
-  transition:background .3s,border-color .3s,color .3s;
 }
 .btn-player:hover{border-color:var(--accent);color:var(--accent)}
 .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
@@ -409,7 +378,6 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
 .btn-share{
   width:100%;background:var(--surface);color:var(--text2);
   border:1px solid var(--border2);margin-bottom:16px;font-size:12px;padding:10px;
-  transition:background .3s,border-color .3s,color .3s;
 }
 .btn-share:hover{border-color:var(--accent);color:var(--accent)}
 
@@ -417,26 +385,23 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
 .info-card{
   background:var(--surface);border:1px solid var(--border);border-radius:16px;
   overflow:hidden;margin-bottom:14px;box-shadow:var(--card-shadow);
-  transition:background .3s,border-color .3s;
 }
 .info-head{
   padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);
   font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
   color:var(--accent);display:flex;align-items:center;gap:8px;
-  transition:background .3s;
 }
 .info-row{
   display:flex;justify-content:space-between;align-items:center;
   padding:10px 16px;border-bottom:1px solid var(--border);gap:10px;
-  transition:border-color .3s;
 }
 .info-row:last-child{border-bottom:none}
 .info-label{color:var(--text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;min-width:70px}
 .info-val{color:var(--text);font-size:13px;word-break:break-all;text-align:right;font-family:monospace}
 .copy-btn{
   background:var(--surface3);border:1px solid var(--border);border-radius:7px;
-  color:var(--text2);font-size:11px;padding:3px 9px;
-  cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:8px;font-weight:600;
+  color:var(--text2);font-size:11px;padding:3px 9px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;margin-left:8px;font-weight:600;
 }
 .copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 
@@ -455,7 +420,6 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
 footer{
   background:var(--surface);border-top:1px solid var(--border);
   padding:10px 20px;text-align:center;color:var(--text2);font-size:11px;margin-top:20px;
-  transition:background .3s,border-color .3s;
 }
 .fl{font-family:'Anton',sans-serif;letter-spacing:2px}
 .fg{color:var(--text)}.ff{color:var(--accent)}
@@ -465,18 +429,13 @@ footer{
   .vol-row input{width:55px}
   .media-panel-row{flex-direction:column}
   .panel-wrap{min-width:unset}
-  .brand-letter{font-size:1.4rem}
+  .brand-letter{font-size:1.55rem}
 }
 </style>
 </head>
 <body>
 
-<!-- CURSOR ELEMENTS -->
-<div id="gf-cursor-dot"></div>
-<div id="gf-cursor-ring"></div>
-<div id="gf-cursor-ring2"></div>
-
-<!-- NETFLIX INTRO — pure CSS no JS needed -->
+<!-- INTRO OVERLAY -->
 <div id="intro-overlay" aria-hidden="true">
   <div class="nfx-bar-l"></div>
   <div class="nfx-bar-r"></div>
@@ -486,7 +445,7 @@ footer{
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="fa fa-check-circle"></i><span id="toast-msg">Done!</span></div>
 
-<!-- POPUP OVERLAY -->
+<!-- POPUP -->
 <div class="popup-ov" id="gfPopup" onclick="if(event.target===this)closePopup()">
   <div class="popup-box" id="gfPopupBox"></div>
 </div>
@@ -525,10 +484,29 @@ footer{
       </div>
     </div>
     <div class="progress-bar-wrap"><div class="progress-bar" id="progBar"></div></div>
-    <div class="video-wrap">
-      <video id="myVideo" src="{{file_url}}" controls preload="metadata" crossorigin="anonymous">
-        Your browser does not support the video tag.
-      </video>
+
+    <div class="video-wrap" id="videoWrap">
+      <video id="myVideo" src="{{file_url}}" controls preload="auto" crossorigin="anonymous"></video>
+
+      <!-- FULLSCREEN OVERLAY: ratio + brightness + volume -->
+      <div class="fs-overlay" id="fsOverlay">
+        <div class="fs-top-row">
+          <span class="fs-ratio" id="fsRatio">16:9</span>
+          <span style="font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.4px">GOFLIX PLAYER</span>
+        </div>
+        <div class="fs-controls-row">
+          <div class="fs-ctrl">
+            <span class="fs-ctrl-lbl"><i class="fa fa-sun"></i>Brightness</span>
+            <input type="range" class="fs-range" id="fsBright" min="0.2" max="2" step="0.05" value="1" oninput="setBrightness(this.value)"/>
+            <span class="fs-val" id="fsBrightVal">100%</span>
+          </div>
+          <div class="fs-ctrl">
+            <span class="fs-ctrl-lbl"><i class="fa fa-volume-high"></i>Volume</span>
+            <input type="range" class="fs-range" id="fsVol" min="0" max="1" step="0.05" value="1" oninput="setFsVolume(this.value)"/>
+            <span class="fs-val" id="fsVolVal">100%</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Speed + Volume -->
@@ -547,30 +525,16 @@ footer{
       </div>
     </div>
 
-    <!-- Audio + Subtitle Panel -->
+    <!-- Audio RIGHT, Subtitles LEFT — side by side always -->
     <div class="media-panel-row">
-      <!-- AUDIO -->
-      <div class="panel-wrap">
-        <button class="panel-btn" id="audioPanelBtn" onclick="togglePanel('audioDropdown','audioPanelBtn',event)">
-          <i class="fa fa-headphones panel-btn-icon"></i>
-          <span class="panel-btn-label">Audio</span>
-          <span class="panel-count" id="audioCnt">1</span>
-          <span class="panel-active" id="audioActiveName">Default</span>
-          <i class="fa fa-chevron-up panel-chevron"></i>
-        </button>
-        <div class="panel-dropdown" id="audioDropdown">
-          <div class="pd-header"><i class="fa fa-headphones"></i> Select Audio Language</div>
-          <div class="pd-list" id="audioItemList">{{ audio_items_html }}</div>
-        </div>
-      </div>
-      <!-- SUBTITLE -->
+      <!-- SUBTITLES — left -->
       <div class="panel-wrap">
         <button class="panel-btn" id="subPanelBtn" onclick="togglePanel('subDropdown','subPanelBtn',event)">
           <i class="fa fa-closed-captioning panel-btn-icon"></i>
           <span class="panel-btn-label">Subtitles</span>
           <span class="panel-count" id="subCnt">0</span>
           <span class="panel-active" id="subActiveName">Off</span>
-          <i class="fa fa-chevron-up panel-chevron"></i>
+          <i class="fa fa-chevron-down panel-chevron"></i>
         </button>
         <div class="panel-dropdown" id="subDropdown">
           <div class="pd-header"><i class="fa fa-closed-captioning"></i> Select Subtitle</div>
@@ -588,6 +552,20 @@ footer{
           </button>
         </div>
       </div>
+      <!-- AUDIO — right -->
+      <div class="panel-wrap">
+        <button class="panel-btn" id="audioPanelBtn" onclick="togglePanel('audioDropdown','audioPanelBtn',event)">
+          <i class="fa fa-headphones panel-btn-icon"></i>
+          <span class="panel-btn-label">Audio</span>
+          <span class="panel-count" id="audioCnt">1</span>
+          <span class="panel-active" id="audioActiveName">Default</span>
+          <i class="fa fa-chevron-down panel-chevron"></i>
+        </button>
+        <div class="panel-dropdown" id="audioDropdown">
+          <div class="pd-header"><i class="fa fa-headphones"></i> Select Audio Language</div>
+          <div class="pd-list" id="audioItemList">{{ audio_items_html }}</div>
+        </div>
+      </div>
     </div>
   </div><!-- /player-card -->
 
@@ -599,21 +577,18 @@ footer{
     <div class="chip"><i class="fa fa-signal" style="font-size:11px"></i> <b id="statusChip">Ready</b></div>
   </div>
 
-  <!-- EXTERNAL PLAYERS -->
   <div class="app-row">
     <button class="btn btn-player" onclick="mx_player()"><i class="fa fa-play-circle"></i> MX Player</button>
     <button class="btn btn-player" onclick="vlc_player()"><i class="fa fa-play-circle"></i> VLC</button>
     <button class="btn btn-player" onclick="playit_player()"><i class="fa fa-play-circle"></i> PlayIt</button>
   </div>
 
-  <!-- DOWNLOAD + TELEGRAM -->
   <div class="cta-grid">
     <button class="btn btn-download" onclick="streamDownload()"><i class="fa fa-cloud-arrow-down"></i> Download</button>
     <button class="btn btn-telegram" onclick="showLinkModal('{{tg_button}}')"><i class="fa-brands fa-telegram"></i> Telegram</button>
   </div>
   <button class="btn btn-share" onclick="shareButton()"><i class="fa fa-share-nodes"></i> &nbsp;Share with Friends</button>
 
-  <!-- FILE INFO -->
   <div class="info-card">
     <div class="info-head"><i class="fa fa-circle-info"></i> File Details</div>
     <div class="info-row">
@@ -625,6 +600,14 @@ footer{
     </div>
     <div class="info-row"><span class="info-label">Size</span><span class="info-val">{{file_size}}</span></div>
     <div class="info-row"><span class="info-label">Format</span><span class="info-val" id="fmtVal">Detecting…</span></div>
+    <div class="info-row">
+      <span class="info-label">Audio</span>
+      <span class="info-val" id="infoAudio">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Subtitles</span>
+      <span class="info-val" id="infoSub">—</span>
+    </div>
     <div class="info-row">
       <span class="info-label">Link</span>
       <div style="display:flex;align-items:center;flex:1;justify-content:flex-end">
@@ -640,96 +623,84 @@ footer{
   </div>
 </div>
 
-<footer>
-  <p>&copy; 2026 <span class="fl"><span class="fg">GO</span><span class="ff">FLIX</span></span> &nbsp;All rights reserved.</p>
-</footer>
+<footer><p>&copy; 2026 <span class="fl"><span class="fg">GO</span><span class="ff">FLIX</span></span> &nbsp;All rights reserved.</p></footer>
 
 <script>
-var FILE_URL     = "{{file_url}}";
-var TG_BUTTON    = "{{tg_button}}";
-var AUDIO_TRACKS = (function(){try{return JSON.parse('{{ audio_tracks_json }}'||'[]');}catch(e){return[];}})();
-var SUB_TRACKS   = (function(){try{return JSON.parse('{{ subtitle_tracks_json }}'||'[]');}catch(e){return[];}})();
-
-const vid = document.getElementById('myVideo');
-let uploadedSubURL = null;
-
-// ══ REMOVE INTRO OVERLAY COMPLETELY after animation ══
-(function(){
-  const ov = document.getElementById('intro-overlay');
-  if(ov){
-    // Remove after CSS animation finishes (2.5s fade + 0.35s = ~2.9s)
-    setTimeout(function(){ ov.parentNode && ov.parentNode.removeChild(ov); }, 3000);
-  }
+// ═══════════════════════════════════════
+//  FIX 1 — SOUND fires IMMEDIATELY on script load
+//  Don't wait for any event or timeout
+// ═══════════════════════════════════════
+(function playNfxSound(){
+  try{
+    var ac=new(window.AudioContext||window.webkitAudioContext)();
+    function tone(f,s,d,v){
+      var o=ac.createOscillator(),g=ac.createGain();
+      o.connect(g);g.connect(ac.destination);o.type='sine';
+      o.frequency.setValueAtTime(f,ac.currentTime+s);
+      g.gain.setValueAtTime(0,ac.currentTime+s);
+      g.gain.linearRampToValueAtTime(v,ac.currentTime+s+0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+s+d);
+      o.start(ac.currentTime+s);o.stop(ac.currentTime+s+d+0.06);
+    }
+    tone(55,0,.65,.7);tone(110,.02,.55,.4);
+    tone(220,.28,.72,.28);tone(440,.48,.65,.18);tone(880,.70,.50,.09);
+    // punch noise
+    var buf=ac.createBuffer(1,Math.floor(ac.sampleRate*.13),ac.sampleRate);
+    var bd=buf.getChannelData(0);
+    for(var i=0;i<bd.length;i++) bd[i]=(Math.random()*2-1)*Math.pow(1-i/bd.length,2.5);
+    var src=ac.createBufferSource(),ng=ac.createGain();
+    src.buffer=buf;src.connect(ng);ng.connect(ac.destination);
+    ng.gain.setValueAtTime(0.35,ac.currentTime);
+    ng.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+0.14);
+    src.start(ac.currentTime);
+  }catch(e){}
 })();
+// Mobile: replay on first touch (autoplay policy)
+document.addEventListener('touchstart',function h(){
+  (function(){try{var ac=new(window.AudioContext||window.webkitAudioContext)();ac.resume();}catch(e){}})();
+  document.removeEventListener('touchstart',h);
+},{once:true,passive:true});
 
-// ══ NETFLIX SOUND ══
-(function(){
-  function playSound(){
-    try{
-      const ac = new(window.AudioContext||window.webkitAudioContext)();
-      if(ac.state==='suspended') ac.resume();
-      function tone(f,s,d,v){
-        const o=ac.createOscillator(),g=ac.createGain();
-        o.connect(g);g.connect(ac.destination);o.type='sine';
-        o.frequency.setValueAtTime(f,ac.currentTime+s);
-        g.gain.setValueAtTime(0,ac.currentTime+s);
-        g.gain.linearRampToValueAtTime(v,ac.currentTime+s+0.04);
-        g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+s+d);
-        o.start(ac.currentTime+s);o.stop(ac.currentTime+s+d+0.06);
-      }
-      tone(55,0,.65,.7);tone(110,.02,.55,.4);
-      tone(220,.28,.72,.28);tone(440,.48,.65,.18);tone(880,.70,.50,.09);
-      const buf=ac.createBuffer(1,Math.floor(ac.sampleRate*.13),ac.sampleRate);
-      const bd=buf.getChannelData(0);
-      for(let i=0;i<bd.length;i++) bd[i]=(Math.random()*2-1)*Math.pow(1-i/bd.length,2.5);
-      const s=ac.createBufferSource(),ng=ac.createGain();
-      s.buffer=buf;s.connect(ng);ng.connect(ac.destination);
-      ng.gain.setValueAtTime(0.35,ac.currentTime);
-      ng.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+0.15);
-      s.start(ac.currentTime);
-    }catch(e){}
-  }
-  playSound();
-  ['touchstart','click'].forEach(ev=>{
-    document.addEventListener(ev,function h(){playSound();document.removeEventListener(ev,h);},{once:true,passive:true});
-  });
-})();
+// Remove intro overlay from DOM after it finishes
+setTimeout(function(){
+  var ov=document.getElementById('intro-overlay');
+  if(ov&&ov.parentNode) ov.parentNode.removeChild(ov);
+},2700);
 
-// ══ CURSOR — radiation rings (mouse only) ══
+// ═══════════════════════════════════════
+//  FIX 4 — CURSOR: normal arrow, wave ripple on move
+// ═══════════════════════════════════════
 (function(){
   if(!window.matchMedia('(pointer:fine)').matches) return;
-  const dot=document.getElementById('gf-cursor-dot');
-  const r1=document.getElementById('gf-cursor-ring');
-  const r2=document.getElementById('gf-cursor-ring2');
-  let mx=0,my=0,x1=0,y1=0,x2=0,y2=0,on=false;
-
-  window.addEventListener('mousemove',function(e){
-    if(!on){on=true;dot.style.display=r1.style.display=r2.style.display='block';}
-    mx=e.clientX;my=e.clientY;
-    dot.style.transform='translate(calc('+mx+'px - 50%),calc('+my+'px - 50%))';
+  var last=0;
+  document.addEventListener('mousemove',function(e){
+    var now=Date.now();
+    if(now-last<90) return;
+    last=now;
+    var el=document.createElement('div');
+    el.className='gf-ripple';
+    el.style.left=e.clientX+'px';
+    el.style.top=e.clientY+'px';
+    document.body.appendChild(el);
+    el.addEventListener('animationend',function(){el.parentNode&&el.parentNode.removeChild(el);});
   },{passive:true});
-
-  (function loop(){
-    x1+=(mx-x1)*.15; y1+=(my-y1)*.15;
-    x2+=(mx-x2)*.08; y2+=(my-y2)*.08;
-    r1.style.transform='translate(calc('+x1+'px - 50%),calc('+y1+'px - 50%))';
-    r2.style.transform='translate(calc('+x2+'px - 50%),calc('+y2+'px - 50%))';
-    requestAnimationFrame(loop);
-  })();
-
-  document.addEventListener('mouseover',function(e){
-    if(e.target.closest('button,a,input,label,[onclick],.pd-item,.spd,.theme-btn,.copy-btn,.panel-btn,.pd-upload'))
-      document.body.classList.add('cur-hover');
+  // bigger ripple on click
+  document.addEventListener('click',function(e){
+    var el=document.createElement('div');
+    el.className='gf-ripple';
+    el.style.left=e.clientX+'px';
+    el.style.top=e.clientY+'px';
+    el.style.width='70px';el.style.height='70px';
+    el.style.borderColor='rgba(229,9,20,.8)';
+    el.style.animationDuration='.45s';
+    document.body.appendChild(el);
+    el.addEventListener('animationend',function(){el.parentNode&&el.parentNode.removeChild(el);});
   });
-  document.addEventListener('mouseout',function(e){
-    if(e.target.closest('button,a,input,label,[onclick],.pd-item,.spd,.theme-btn,.copy-btn,.panel-btn,.pd-upload'))
-      document.body.classList.remove('cur-hover');
-  });
-  document.addEventListener('mousedown',()=>document.body.classList.add('cur-click'));
-  document.addEventListener('mouseup',  ()=>document.body.classList.remove('cur-click'));
 })();
 
-// ══ THEME ══
+// ═══════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   document.getElementById('darkBtn').classList.toggle('active',t==='dark');
@@ -737,74 +708,129 @@ function setTheme(t){
   localStorage.setItem('gf-theme',t);
 }
 (function(){
-  const s=localStorage.getItem('gf-theme');
+  var s=localStorage.getItem('gf-theme');
   if(s) setTheme(s);
   else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches) setTheme('light');
   else setTheme('dark');
 })();
 
-// ══ VIDEO EVENTS ══
+// ═══════════════════════════════════════
+//  VIDEO
+// ═══════════════════════════════════════
+var vid=document.getElementById('myVideo');
+
 vid.addEventListener('loadedmetadata',function(){
-  const d=vid.duration;
+  var d=vid.duration;
   if(d&&isFinite(d)){
-    const m=Math.floor(d/60),s=String(Math.floor(d%60)).padStart(2,'0');
+    var m=Math.floor(d/60),s=String(Math.floor(d%60)).padStart(2,'0');
     document.getElementById('durChip').textContent=m+'m '+s+'s';
   }
-  const src=vid.currentSrc||FILE_URL;
-  const ext=src.split('.').pop().split('?')[0].toUpperCase();
+  var src=vid.currentSrc||'{{file_url}}';
+  var ext=src.split('.').pop().split('?')[0].toUpperCase();
   document.getElementById('fmtVal').textContent=ext||'Video';
   document.getElementById('fmtChip').textContent=ext||'Video';
-  if(vid.videoWidth) document.getElementById('resLabel').textContent=vid.videoWidth+'×'+vid.videoHeight;
-  for(const t of vid.textTracks) t.mode='hidden';
+  // Ratio
+  if(vid.videoWidth&&vid.videoHeight){
+    document.getElementById('resLabel').textContent=vid.videoWidth+'×'+vid.videoHeight;
+    var r=calcRatio(vid.videoWidth,vid.videoHeight);
+    document.getElementById('fsRatio').textContent=r;
+  }
+  var tt=vid.textTracks;
+  for(var i=0;i<tt.length;i++) tt[i].mode='hidden';
 });
 vid.addEventListener('timeupdate',function(){
   if(vid.duration&&isFinite(vid.duration)){
-    const p=(vid.currentTime/vid.duration)*100;
+    var p=(vid.currentTime/vid.duration)*100;
     document.getElementById('progBar').style.width=p+'%';
     document.getElementById('playedChip').textContent=Math.round(p)+'%';
   }
 });
-vid.addEventListener('playing',()=>document.getElementById('statusChip').textContent='Playing');
-vid.addEventListener('pause',  ()=>document.getElementById('statusChip').textContent='Paused');
-vid.addEventListener('waiting',()=>document.getElementById('statusChip').textContent='Buffering…');
-vid.addEventListener('ended',  ()=>document.getElementById('statusChip').textContent='Ended');
+vid.addEventListener('playing',function(){document.getElementById('statusChip').textContent='Playing';});
+vid.addEventListener('pause',  function(){document.getElementById('statusChip').textContent='Paused';});
+vid.addEventListener('waiting',function(){document.getElementById('statusChip').textContent='Buffering…';});
+vid.addEventListener('ended',  function(){document.getElementById('statusChip').textContent='Ended';});
 
-// ══ SPEED + VOLUME ══
-function setSpeed(s){
-  vid.playbackRate=s;
-  document.querySelectorAll('.spd').forEach(b=>b.classList.toggle('active',parseFloat(b.textContent)===s));
+function calcRatio(w,h){
+  function gcd(a,b){return b===0?a:gcd(b,a%b);}
+  var g=gcd(w,h);
+  var rw=w/g,rh=h/g;
+  // common ratios
+  var common={
+    '16:9':[16,9],'4:3':[4,3],'21:9':[21,9],
+    '1:1':[1,1],'9:16':[9,16],'2.35:1':[2350,1000]
+  };
+  for(var k in common){
+    var c=common[k];
+    if(Math.abs(rw/rh - c[0]/c[1]) < 0.02) return k;
+  }
+  return rw+':'+rh;
 }
-function setVolume(v){
-  vid.volume=v;
+
+// ═══════════════════════════════════════
+//  FIX 5 — FULLSCREEN controls: brightness + volume
+// ═══════════════════════════════════════
+function setBrightness(v){
+  vid.style.filter='brightness('+v+')';
+  document.getElementById('fsBrightVal').textContent=Math.round(v*100)+'%';
+}
+function setFsVolume(v){
+  vid.volume=parseFloat(v);
+  document.getElementById('fsVolVal').textContent=Math.round(v*100)+'%';
+  // sync main slider
+  var sl=document.getElementById('volSlider');
+  if(sl) sl.value=v;
   document.getElementById('volPct').textContent=Math.round(v*100)+'%';
 }
 
-// ══ TOAST ══
-function showToast(msg){
-  const t=document.getElementById('toast');
-  document.getElementById('toast-msg').textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
+// SPEED + VOLUME
+function setSpeed(s){
+  vid.playbackRate=s;
+  document.querySelectorAll('.spd').forEach(function(b){
+    b.classList.toggle('active',parseFloat(b.textContent)===s);
+  });
 }
-function copyText(txt){
-  navigator.clipboard.writeText(txt).then(()=>showToast('Copied to clipboard!'));
+function setVolume(v){
+  vid.volume=parseFloat(v);
+  document.getElementById('volPct').textContent=Math.round(v*100)+'%';
+  // sync fullscreen slider
+  var fv=document.getElementById('fsVol');
+  if(fv) fv.value=v;
+  document.getElementById('fsVolVal').textContent=Math.round(v*100)+'%';
 }
 
-// ══ EXTERNAL PLAYERS ══
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+function showToast(msg){
+  var t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(function(){showToast('Copied to clipboard!');});
+}
+
+// ═══════════════════════════════════════
+//  EXTERNAL PLAYERS + DOWNLOAD + SHARE
+// ═══════════════════════════════════════
+var FILE_URL='{{file_url}}';
+var TG_BUTTON='{{tg_button}}';
+
 function mx_player(){
-  const c=FILE_URL.replace(/^https?:\/\//,'');
+  var c=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href='intent://'+c+'#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end';
 }
 function vlc_player(){
-  const c=FILE_URL.replace(/^https?:\/\//,'');
+  var c=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href='intent://'+c+'#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end';
 }
 function playit_player(){
-  const c=FILE_URL.replace(/^https?:\/\//,'');
+  var c=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href='intent://'+c+'#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end';
 }
 function streamDownload(){
-  const a=document.createElement('a');
+  var a=document.createElement('a');
   a.href=FILE_URL;a.download='{{file_name}}';
   a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);
   showToast('⬇️ Download started!');
@@ -815,176 +841,189 @@ function shareButton(){
   else{navigator.clipboard.writeText(window.location.href);showToast('Link copied!');}
 }
 
-// ══ PANEL TOGGLE ══
+// ═══════════════════════════════════════
+//  PANEL TOGGLE
+// ═══════════════════════════════════════
 function togglePanel(dropId,btnId,e){
   if(e) e.stopPropagation();
-  const drop=document.getElementById(dropId);
-  const btn=document.getElementById(btnId);
-  const open=drop.classList.contains('show');
+  var drop=document.getElementById(dropId);
+  var btn=document.getElementById(btnId);
+  var open=drop.classList.contains('show');
   closeAllPanels();
   if(!open){drop.classList.add('show');btn.classList.add('open');}
 }
 function closeAllPanels(){
-  document.querySelectorAll('.panel-dropdown').forEach(d=>d.classList.remove('show'));
-  document.querySelectorAll('.panel-btn').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.panel-dropdown').forEach(function(d){d.classList.remove('show');});
+  document.querySelectorAll('.panel-btn').forEach(function(b){b.classList.remove('open');});
 }
 document.addEventListener('click',function(e){
   if(!e.target.closest('.panel-wrap')) closeAllPanels();
 });
 
-// ══ AUDIO + SUBTITLE INIT ══
+// ═══════════════════════════════════════
+//  AUDIO + SUBTITLE INIT
+// ═══════════════════════════════════════
+var AUDIO_TRACKS=(function(){try{return JSON.parse('{{ audio_tracks_json }}'||'[]');}catch(e){return[];}})();
+var SUB_TRACKS  =(function(){try{return JSON.parse('{{ subtitle_tracks_json }}'||'[]');}catch(e){return[];}})();
+
 document.addEventListener('DOMContentLoaded',function(){
-  // AUDIO
-  const audioItems=document.querySelectorAll('#audioItemList .pd-item');
-  const aCnt=(AUDIO_TRACKS&&AUDIO_TRACKS.length>0)?AUDIO_TRACKS.length:Math.max(audioItems.length,1);
+  var audioItems=document.querySelectorAll('#audioItemList .pd-item');
+  var aCnt=(AUDIO_TRACKS&&AUDIO_TRACKS.length>0)?AUDIO_TRACKS.length:Math.max(audioItems.length,1);
   document.getElementById('audioCnt').textContent=aCnt;
+  // File details
+  document.getElementById('infoAudio').textContent=aCnt+' track'+(aCnt!==1?'s':'');
   if(audioItems.length>0){
     audioItems[0].classList.add('active');
-    document.getElementById('audioActiveName').textContent=
-      audioItems[0].querySelector('.pd-name')?.textContent||'Default';
+    var n=audioItems[0].querySelector('.pd-name');
+    document.getElementById('audioActiveName').textContent=n?n.textContent:'Default';
   }
   audioItems.forEach(function(el,i){
     el.onclick=function(e){
       e.stopPropagation();
-      audioItems.forEach(x=>x.classList.remove('active'));
+      audioItems.forEach(function(x){x.classList.remove('active');});
       el.classList.add('active');
-      const lbl=el.querySelector('.pd-name')?.textContent||('Track '+(i+1));
+      var lbl=el.querySelector('.pd-name');lbl=lbl?lbl.textContent:'Track '+(i+1);
       document.getElementById('audioActiveName').textContent=lbl;
-      const idx=AUDIO_TRACKS[i]?AUDIO_TRACKS[i].index:i;
-      closeAllPanels();
-      showAudioPopup(lbl,idx);
+      var idx=AUDIO_TRACKS[i]?AUDIO_TRACKS[i].index:i;
+      closeAllPanels();showAudioPopup(lbl,idx);
     };
   });
-
-  // SUBTITLE
   document.getElementById('subOffItem').onclick=function(e){e.stopPropagation();subOff();};
-  const subItems=document.querySelectorAll('#subItemList .pd-item:not(#subOffItem):not([data-upl])');
-  const sCnt=(SUB_TRACKS&&SUB_TRACKS.length>0)?SUB_TRACKS.length:subItems.length;
+  var subItems=document.querySelectorAll('#subItemList .pd-item:not(#subOffItem):not([data-upl])');
+  var sCnt=(SUB_TRACKS&&SUB_TRACKS.length>0)?SUB_TRACKS.length:subItems.length;
   document.getElementById('subCnt').textContent=sCnt;
+  // File details
+  document.getElementById('infoSub').textContent=sCnt>0?sCnt+' track'+(sCnt!==1?'s':''):'None';
   subItems.forEach(function(el,i){
     el.onclick=function(e){
       e.stopPropagation();
-      const lbl=el.querySelector('.pd-name')?.textContent||'Subtitle';
-      const idx=SUB_TRACKS[i]?SUB_TRACKS[i].index:i;
-      closeAllPanels();
-      showSubPopup(lbl,idx);
+      var lbl=el.querySelector('.pd-name');lbl=lbl?lbl.textContent:'Subtitle';
+      var idx=SUB_TRACKS[i]?SUB_TRACKS[i].index:i;
+      closeAllPanels();showSubPopup(lbl,idx);
     };
   });
 });
 
-// ══ AUDIO POPUP ══
+// AUDIO POPUP — shows open options for both PC and mobile
 function showAudioPopup(label,trackIdx){
-  const mob=/Android|iPhone|iPad/i.test(navigator.userAgent);
+  var mob=/Android|iPhone|iPad/i.test(navigator.userAgent);
   showPopup(
     '<div style="text-align:center;margin-bottom:18px">'+
-    '<div style="font-size:32px;margin-bottom:8px">🎵</div>'+
-    '<div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px">'+label+'</div>'+
-    '<div style="font-size:12px;color:var(--text2);line-height:1.65;background:var(--surface2);border-radius:10px;padding:10px 12px;border:1px solid var(--border)">'+
-    '⚠️ Browser cannot switch embedded audio tracks.<br>Open in an external player to hear <b style="color:var(--accent)">'+label+'</b>.'+
+    '<div style="font-size:30px;margin-bottom:8px">🎵</div>'+
+    '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px">'+label+'</div>'+
+    '<div style="font-size:12px;color:var(--text2);line-height:1.7;background:var(--surface2);border-radius:10px;padding:10px 14px;border:1px solid var(--border);margin-bottom:14px">'+
+    'Web player does not support switching audio tracks.<br>Choose an option below to play <b style="color:var(--accent)">'+label+'</b>:'+
     '</div></div>'+
     (mob
-      ?mkPPBtn('fa-play-circle','Open in VLC Player','linear-gradient(135deg,#e50914,#aa0000)','extAudio("vlc",'+trackIdx+')')
-       +mkPPBtn('fa-play-circle','Open in MX Player','linear-gradient(135deg,#333,#111)','extAudio("mx",'+trackIdx+')')
-      :mkPPBtn('fa-copy','Copy Link — Paste in VLC','linear-gradient(135deg,#e50914,#aa0000)','cpVLC()')
-       +'<p style="font-size:11px;color:var(--text2);text-align:center;margin:-4px 0 10px">VLC → Media → Open Network Stream → Paste</p>'
+      ? mkPPBtn('fa-play','Open in VLC Player','linear-gradient(135deg,#e50914,#b00)','extAudio("vlc",'+trackIdx+')')
+        +mkPPBtn('fa-play','Open in MX Player','linear-gradient(135deg,#444,#222)','extAudio("mx",'+trackIdx+')')
+      : mkPPBtn('fa-play','Open in VLC (Desktop)','linear-gradient(135deg,#e50914,#b00)','openVLCDesktop()')
+        +mkPPBtn('fa-copy','Copy Link — Paste in VLC','linear-gradient(135deg,#555,#333)','cpVLC()')
+        +'<p style="font-size:11px;color:var(--text2);text-align:center;margin:-4px 0 12px">VLC → Media → Open Network Stream → paste</p>'
     )+
     '<button class="pp-can" onclick="closePopup()">✕ Cancel</button>'
   );
 }
+function openVLCDesktop(){
+  var u=FILE_URL.replace(/^https?:\/\//,'');
+  window.location.href='vlc://'+u;
+}
 function extAudio(p,idx){
   closePopup();
-  const u=FILE_URL.replace(/^https?:\/\//,'');
+  var u=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href=p==='vlc'
     ?'intent://'+u+'#Intent;package=org.videolan.vlc;type=video/*;scheme=https;S.audio_track='+idx+';end'
     :'intent://'+u+'#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;i.subs_idx='+idx+';end';
 }
 function cpVLC(){
-  navigator.clipboard.writeText(FILE_URL).then(()=>{closePopup();showToast('🔗 Link copied! Paste in VLC');});
+  navigator.clipboard.writeText(FILE_URL).then(function(){closePopup();showToast('🔗 Link copied! Paste in VLC');});
 }
 
-// ══ SUBTITLE POPUP ══
+// SUBTITLE POPUP
 function showSubPopup(label,trackIdx){
-  const mob=/Android|iPhone|iPad/i.test(navigator.userAgent);
+  var mob=/Android|iPhone|iPad/i.test(navigator.userAgent);
   showPopup(
     '<div style="text-align:center;margin-bottom:18px">'+
-    '<div style="font-size:32px;margin-bottom:8px">💬</div>'+
-    '<div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px">'+label+'</div>'+
-    '<div style="font-size:12px;color:var(--text2);line-height:1.65;background:var(--surface2);border-radius:10px;padding:10px 12px;border:1px solid var(--border)">'+
-    '⚠️ Embedded subtitles from MKV cannot display in browser.<br>Upload a <b style="color:var(--accent)">.srt file</b> to show in web player.'+
+    '<div style="font-size:30px;margin-bottom:8px">💬</div>'+
+    '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px">'+label+'</div>'+
+    '<div style="font-size:12px;color:var(--text2);line-height:1.7;background:var(--surface2);border-radius:10px;padding:10px 14px;border:1px solid var(--border);margin-bottom:14px">'+
+    'Web player cannot display embedded subtitles from MKV files.<br>Upload a <b style="color:var(--accent)">.srt / .vtt file</b> to show in browser, or open in external player.'+
     '</div></div>'+
     '<button class="pp-btn" style="background:linear-gradient(135deg,#1dbf73,#16a560)" onclick="closePopup();document.getElementById(\'subFileInput\').click()">'+
-    '<i class="fa fa-upload"></i> Upload .srt / .vtt (shows in browser)</button>'+
+    '<i class="fa fa-upload"></i> Upload .srt / .vtt (Browser)</button>'+
     (mob
-      ?mkPPBtn('fa-play-circle','Open in VLC Player','linear-gradient(135deg,#e50914,#aa0000)','extAudio("vlc",'+trackIdx+')')
-       +mkPPBtn('fa-play-circle','Open in MX Player','linear-gradient(135deg,#333,#111)','extAudio("mx",'+trackIdx+')')
-      :mkPPBtn('fa-copy','Copy Link — Open in VLC','linear-gradient(135deg,#e50914,#aa0000)','cpVLC()')
+      ? mkPPBtn('fa-play','Open in VLC Player','linear-gradient(135deg,#e50914,#b00)','extAudio("vlc",'+trackIdx+')')
+        +mkPPBtn('fa-play','Open in MX Player','linear-gradient(135deg,#444,#222)','extAudio("mx",'+trackIdx+')')
+      : mkPPBtn('fa-play','Open in VLC (Desktop)','linear-gradient(135deg,#e50914,#b00)','openVLCDesktop()')
+        +mkPPBtn('fa-copy','Copy Link — Paste in VLC','linear-gradient(135deg,#555,#333)','cpVLC()')
     )+
     '<button class="pp-can" onclick="closePopup()">✕ Cancel</button>'
   );
 }
 function subOff(){
-  document.querySelectorAll('#subItemList .pd-item').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#subItemList .pd-item').forEach(function(x){x.classList.remove('active');});
   document.getElementById('subOffItem').classList.add('active');
   document.getElementById('subActiveName').textContent='Off';
-  for(const t of vid.textTracks) t.mode='hidden';
-  showToast('💬 Subtitles Off'); closeAllPanels();
+  var tt=vid.textTracks;for(var i=0;i<tt.length;i++) tt[i].mode='hidden';
+  showToast('💬 Subtitles Off');closeAllPanels();
 }
 
-// ══ SRT/VTT UPLOAD ══
+// SRT UPLOAD
+var uploadedSubURL=null;
 function uploadSubtitle(input){
-  const file=input.files[0]; if(!file) return;
-  const name=file.name,ext=name.split('.').pop().toLowerCase();
-  const reader=new FileReader();
-  reader.onload=function(e){
-    let c=e.target.result;
+  var file=input.files[0];if(!file) return;
+  var name=file.name,ext=name.split('.').pop().toLowerCase();
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var c=ev.target.result;
     if(ext==='srt')
       c='WEBVTT\n\n'+c.replace(/\r\n/g,'\n').replace(/\r/g,'\n')
           .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g,'$1.$2');
     if(uploadedSubURL) URL.revokeObjectURL(uploadedSubURL);
-    const blob=new Blob([c],{type:'text/vtt'});
+    var blob=new Blob([c],{type:'text/vtt'});
     uploadedSubURL=URL.createObjectURL(blob);
-    const label=name.replace(/\.(srt|vtt)$/i,'');
-    document.querySelector('[data-upl]')?.remove();
-    document.querySelectorAll('#myVideo track[data-upl]').forEach(t=>t.remove());
-    for(const t of vid.textTracks) t.mode='hidden';
-    const trackEl=document.createElement('track');
+    var label=name.replace(/\.(srt|vtt)$/i,'');
+    var upl=document.querySelector('#subItemList [data-upl]');if(upl) upl.remove();
+    document.querySelectorAll('#myVideo track[data-upl]').forEach(function(t){t.remove();});
+    var tt=vid.textTracks;for(var i=0;i<tt.length;i++) tt[i].mode='hidden';
+    var trackEl=document.createElement('track');
     trackEl.kind='subtitles';trackEl.label=label;
     trackEl.src=uploadedSubURL;trackEl.default=false;
     trackEl.setAttribute('data-upl','1');
     vid.appendChild(trackEl);
-    const tIdx=vid.textTracks.length-1;
-    const el=mkPdItem('📤',label,'Uploaded subtitle',false);
+    var tIdx=vid.textTracks.length-1;
+    var el=mkPdItem('📤',label,'Uploaded subtitle',false);
     el.setAttribute('data-upl','1');
-    el.onclick=function(ev){
-      ev.stopPropagation();
-      document.querySelectorAll('#subItemList .pd-item').forEach(x=>x.classList.remove('active'));
+    el.onclick=function(ev2){
+      ev2.stopPropagation();
+      document.querySelectorAll('#subItemList .pd-item').forEach(function(x){x.classList.remove('active');});
       el.classList.add('active');
-      for(const t of vid.textTracks) t.mode='hidden';
+      var tt2=vid.textTracks;for(var j=0;j<tt2.length;j++) tt2[j].mode='hidden';
       if(vid.textTracks[tIdx]) vid.textTracks[tIdx].mode='showing';
       document.getElementById('subActiveName').textContent=label;
-      showToast('💬 '+label); closeAllPanels();
+      showToast('💬 '+label);closeAllPanels();
     };
     document.getElementById('subItemList').appendChild(el);
     trackEl.addEventListener('load',function(){
-      document.querySelectorAll('#subItemList .pd-item').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('#subItemList .pd-item').forEach(function(x){x.classList.remove('active');});
       el.classList.add('active');
-      for(const t of vid.textTracks) t.mode='hidden';
+      var tt3=vid.textTracks;for(var k=0;k<tt3.length;k++) tt3[k].mode='hidden';
       if(vid.textTracks[tIdx]) vid.textTracks[tIdx].mode='showing';
       document.getElementById('subActiveName').textContent=label;
     });
-    const b=document.getElementById('subCnt');
+    var b=document.getElementById('subCnt');
     b.textContent=parseInt(b.textContent||0)+1;
-    showToast('✅ Subtitle loaded: '+label);
+    showToast('✅ '+label+' loaded');
   };
-  reader.readAsText(file); input.value='';
+  reader.readAsText(file);input.value='';
 }
 
-// ══ POPUP HELPERS ══
+// POPUP HELPERS
 function showPopup(html){document.getElementById('gfPopupBox').innerHTML=html;document.getElementById('gfPopup').classList.add('show');}
 function closePopup(){document.getElementById('gfPopup').classList.remove('show');}
 function mkPPBtn(ico,lbl,bg,fn){return '<button class="pp-btn" style="background:'+bg+'" onclick="'+fn+'"><i class="fa '+ico+'"></i> '+lbl+'</button>';}
 function mkPdItem(flag,name,sub,active){
-  const el=document.createElement('div');
+  var el=document.createElement('div');
   el.className='pd-item'+(active?' active':'');
   el.innerHTML='<div class="pd-flag">'+flag+'</div><div class="pd-info"><div class="pd-name">'+name+'</div><div class="pd-sub">'+sub+'</div></div><i class="fa fa-check pd-check"></i>';
   return el;
