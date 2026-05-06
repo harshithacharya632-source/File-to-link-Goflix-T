@@ -884,35 +884,80 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('infoSub').textContent=sCnt>0?sCnt+' track'+(sCnt!==1?'s':''):'None';
 });
 
+// openAudioPopup and openSubsPopup are defined below after LANG_MAP
+
+// ── Language code → flag + name map ──
+var LANG_MAP={
+  'eng':'🇬🇧 English','en':'🇬🇧 English',
+  'hin':'🇮🇳 Hindi','hi':'🇮🇳 Hindi',
+  'kan':'🇮🇳 Kannada','kn':'🇮🇳 Kannada',
+  'tam':'🇮🇳 Tamil','ta':'🇮🇳 Tamil',
+  'tel':'🇮🇳 Telugu','te':'🇮🇳 Telugu',
+  'mal':'🇮🇳 Malayalam','ml':'🇮🇳 Malayalam',
+  'mar':'🇮🇳 Marathi','mr':'🇮🇳 Marathi',
+  'ben':'🇮🇳 Bengali','bn':'🇮🇳 Bengali',
+  'pan':'🇮🇳 Punjabi','pa':'🇮🇳 Punjabi',
+  'guj':'🇮🇳 Gujarati','gu':'🇮🇳 Gujarati',
+  'ori':'🇮🇳 Odia',
+  'urd':'🇵🇰 Urdu','ur':'🇵🇰 Urdu',
+  'ara':'🇸🇦 Arabic','ar':'🇸🇦 Arabic',
+  'fra':'🇫🇷 French','fr':'🇫🇷 French',
+  'deu':'🇩🇪 German','de':'🇩🇪 German',
+  'spa':'🇪🇸 Spanish','es':'🇪🇸 Spanish',
+  'ita':'🇮🇹 Italian','it':'🇮🇹 Italian',
+  'por':'🇧🇷 Portuguese','pt':'🇧🇷 Portuguese',
+  'rus':'🇷🇺 Russian','ru':'🇷🇺 Russian',
+  'jpn':'🇯🇵 Japanese','ja':'🇯🇵 Japanese',
+  'kor':'🇰🇷 Korean','ko':'🇰🇷 Korean',
+  'zho':'🇨🇳 Chinese','zh':'🇨🇳 Chinese',
+  'tha':'🇹🇭 Thai','th':'🇹🇭 Thai',
+  'tur':'🇹🇷 Turkish','tr':'🇹🇷 Turkish',
+  'und':'🌐 Unknown'
+};
+function resolveLang(t,i,defaultFlag){
+  var code=(t.language||'').toLowerCase().trim();
+  var lbl=(t.label||'').trim();
+  var match=LANG_MAP[code]||LANG_MAP[code.slice(0,3)]||LANG_MAP[code.slice(0,2)];
+  if(match){
+    var parts=match.split(' ');
+    return {flag:parts[0],name:parts.slice(1).join(' ')};
+  }
+  if(lbl) return {flag:defaultFlag,name:lbl};
+  return {flag:defaultFlag,name:'Track '+(i+1)};
+}
+
+// ── Device detection ──
+var IS_IOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+var IS_ANDROID=/Android/i.test(navigator.userAgent);
+
 // ═══════════════════════════════════════
-//  AUDIO MAIN POPUP
-//  Step 1: list all tracks
-//  Step 2: user picks one → show VLC options
+//  AUDIO MAIN POPUP — lists all tracks with flag+language
 // ═══════════════════════════════════════
 function openAudioPopup(){
-  var mob=/Android|iPhone|iPad/i.test(navigator.userAgent);
-  var items=document.querySelectorAll('#audioItemList .pd-item');
-  var cnt=(AUDIO_TRACKS&&AUDIO_TRACKS.length>0)?AUDIO_TRACKS.length:Math.max(items.length,1);
-  var rows='';
-  if(items.length===0){
-    // No track HTML from server — show single default track
-    rows=buildTrackRow('🎵','Default Audio','Track 1',0,mob,'audio');
-  } else {
-    items.forEach(function(el,i){
-      var name=el.querySelector('.pd-name');  name=name?name.textContent:'Track '+(i+1);
-      var sub=el.querySelector('.pd-sub');    sub=sub?sub.textContent:'';
-      var flag=el.querySelector('.pd-flag');  flag=flag?flag.textContent:'🎵';
-      var idx=AUDIO_TRACKS[i]?AUDIO_TRACKS[i].index:i;
-      rows+=buildTrackRow(flag,name,sub,idx,mob,'audio');
+  var tracks=[];
+  if(AUDIO_TRACKS&&AUDIO_TRACKS.length>0){
+    AUDIO_TRACKS.forEach(function(t,i){
+      var r=resolveLang(t,i,'🎵');
+      tracks.push({flag:r.flag,name:r.name,idx:t.index!==undefined?t.index:i});
     });
+  } else {
+    var items=document.querySelectorAll('#audioItemList .pd-item');
+    if(items.length>0){
+      items.forEach(function(el,i){
+        var n=el.querySelector('.pd-name'),f=el.querySelector('.pd-flag');
+        tracks.push({flag:f?f.textContent:'🎵',name:n?n.textContent:'Track '+(i+1),idx:i});
+      });
+    } else {
+      tracks.push({flag:'🎵',name:'Default Audio',idx:0});
+    }
   }
+  var rows='';
+  tracks.forEach(function(t){ rows+=buildTrackRow(t.flag,t.name,t.idx,'audio'); });
   showPopup(
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
       '<span style="font-size:26px">🎵</span>'+
-      '<div>'+
-        '<div style="font-size:16px;font-weight:800;color:var(--text)">Audio Tracks</div>'+
-        '<div style="font-size:12px;color:var(--text2)">'+cnt+' track'+(cnt!==1?'s':'')+' in this file</div>'+
-      '</div>'+
+      '<div><div style="font-size:16px;font-weight:800;color:var(--text)">Audio Tracks</div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+tracks.length+' track'+(tracks.length!==1?'s':'')+' available</div></div>'+
     '</div>'+
     '<div style="height:1px;background:var(--border);margin-bottom:10px"></div>'+
     rows+
@@ -921,31 +966,29 @@ function openAudioPopup(){
 }
 
 // ═══════════════════════════════════════
-//  SUBTITLE MAIN POPUP
+//  SUBTITLE MAIN POPUP — lists all tracks with flag+language
 // ═══════════════════════════════════════
 function openSubsPopup(){
-  var mob=/Android|iPhone|iPad/i.test(navigator.userAgent);
-  var items=document.querySelectorAll('#subItemList .pd-item:not(#subOffItem):not([data-upl])');
-  var cnt=(SUB_TRACKS&&SUB_TRACKS.length>0)?SUB_TRACKS.length:items.length;
-  var rows='';
-  if(cnt===0){
-    rows='<div style="font-size:13px;color:var(--text2);padding:8px 0 12px">No embedded subtitles in this file.</div>';
+  var tracks=[];
+  if(SUB_TRACKS&&SUB_TRACKS.length>0){
+    SUB_TRACKS.forEach(function(t,i){
+      var r=resolveLang(t,i,'💬');
+      tracks.push({flag:r.flag,name:r.name,idx:t.index!==undefined?t.index:i});
+    });
   } else {
+    var items=document.querySelectorAll('#subItemList .pd-item:not(#subOffItem):not([data-upl])');
     items.forEach(function(el,i){
-      var name=el.querySelector('.pd-name');  name=name?name.textContent:'Sub '+(i+1);
-      var sub=el.querySelector('.pd-sub');    sub=sub?sub.textContent:'';
-      var flag=el.querySelector('.pd-flag');  flag=flag?flag.textContent:'💬';
-      var idx=SUB_TRACKS[i]?SUB_TRACKS[i].index:i;
-      rows+=buildTrackRow(flag,name,sub,idx,mob,'sub');
+      var n=el.querySelector('.pd-name'),f=el.querySelector('.pd-flag');
+      tracks.push({flag:f?f.textContent:'💬',name:n?n.textContent:'Sub '+(i+1),idx:i});
     });
   }
+  var rows='';
+  tracks.forEach(function(t){ rows+=buildTrackRow(t.flag,t.name,t.idx,'sub'); });
   showPopup(
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
       '<span style="font-size:26px">💬</span>'+
-      '<div>'+
-        '<div style="font-size:16px;font-weight:800;color:var(--text)">Subtitles</div>'+
-        '<div style="font-size:12px;color:var(--text2)">'+cnt+' track'+(cnt!==1?'s':'')+' in this file</div>'+
-      '</div>'+
+      '<div><div style="font-size:16px;font-weight:800;color:var(--text)">Subtitles</div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+tracks.length+' track'+(tracks.length!==1?'s':'')+' in this file</div></div>'+
     '</div>'+
     '<div style="height:1px;background:var(--border);margin-bottom:10px"></div>'+
     rows+
@@ -956,26 +999,51 @@ function openSubsPopup(){
   );
 }
 
-// Build a clickable track row for the list
-function buildTrackRow(flag,name,sub,idx,mob,type){
+// Build a clickable track row
+function buildTrackRow(flag,name,idx,type){
   var fn=type==='audio'?'pickAudio':'pickSub';
-  return '<div onclick="'+fn+'(\''+name.replace(/'/g,"\\'")+ '\','+idx+','+mob+')" style="'+
-    'display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;'+
+  var safe=name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  return '<div onclick="'+fn+'(\''+safe+'\','+idx+')" style="'+
+    'display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;'+
     'border-radius:10px;margin:4px 0;background:var(--surface2);'+
     'border:1.5px solid var(--border);transition:border-color .15s" '+
     'onmouseover="this.style.borderColor=\'#e50914\'" '+
     'onmouseout="this.style.borderColor=\'var(--border)\'">'+
-    '<span style="font-size:20px;flex-shrink:0">'+flag+'</span>'+
+    '<span style="font-size:22px;flex-shrink:0;line-height:1">'+flag+'</span>'+
     '<div style="flex:1;min-width:0">'+
       '<div style="font-size:13px;font-weight:700;color:var(--text)">'+name+'</div>'+
-      (sub?'<div style="font-size:11px;color:var(--text2)">'+sub+'</div>':'')+
     '</div>'+
     '<i class="fa fa-chevron-right" style="color:var(--accent);font-size:11px;opacity:.6;flex-shrink:0"></i>'+
   '</div>';
 }
 
-// User picks an audio track — show VLC options
-function pickAudio(label,idx,mob){
+// ── VLC buttons — smart per device (Android / iOS / Desktop) ──
+function vlcBtns(idx){
+  if(IS_IOS){
+    var url='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(FILE_URL);
+    return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="window.location.href=\''+url+'\'">'+
+      '<i class="fa fa-play"></i> Open in VLC (iPhone / iPad)</button>';
+  }
+  if(IS_ANDROID){
+    return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="extAudio(\'vlc\','+idx+')">'+
+        '<i class="fa fa-play"></i> Open in VLC Player</button>'+
+      '<button class="pp-btn" style="background:linear-gradient(135deg,#444,#222);margin-top:6px" onclick="extAudio(\'mx\','+idx+')">'+
+        '<i class="fa fa-play"></i> Open in MX Player</button>';
+  }
+  // Desktop
+  return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="openVLCDesktop()">'+
+      '<i class="fa fa-play"></i> Open in VLC (Desktop)</button>'+
+    '<div style="font-size:11px;color:var(--text2);background:var(--surface2);border-radius:8px;'+
+      'padding:9px 12px;margin:6px 0;border:1px solid var(--border);line-height:1.6">'+
+      '<b>Or:</b> VLC → Media → Open Network Stream → paste<br>'+
+      '<span style="font-family:monospace;font-size:10px;color:var(--accent);word-break:break-all">'+FILE_URL+'</span>'+
+    '</div>'+
+    '<button class="pp-btn" style="background:linear-gradient(135deg,#555,#333)" onclick="cpVLC()">'+
+      '<i class="fa fa-copy"></i> Copy Link for VLC</button>';
+}
+
+// User picks audio track
+function pickAudio(label,idx){
   closePopup();
   setTimeout(function(){
     showPopup(
@@ -984,33 +1052,16 @@ function pickAudio(label,idx,mob){
         '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px">'+label+'</div>'+
         '<div style="font-size:12px;color:var(--text2);line-height:1.65;background:var(--surface2);'+
           'border-radius:10px;padding:10px 14px;border:1px solid var(--border);margin-bottom:14px">'+
-          'Web player cannot switch audio tracks.<br>Open in <b style="color:var(--accent)">VLC Player</b> to hear <b style="color:var(--accent)">'+label+'</b>.'+
-        '</div>'+
-      '</div>'+
-      (mob
-        // MOBILE — intent links open VLC/MX directly
-        ?'<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="extAudio(\'vlc\','+idx+')">'+
-            '<i class="fa fa-play"></i> Open in VLC Player</button>'+
-          '<button class="pp-btn" style="background:linear-gradient(135deg,#444,#222)" onclick="extAudio(\'mx\','+idx+')">'+
-            '<i class="fa fa-play"></i> Open in MX Player</button>'
-        // LAPTOP/PC — vlc:// protocol + copy link
-        :'<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="openVLCDesktop()">'+
-            '<i class="fa fa-play"></i> Open in VLC (Desktop)</button>'+
-          '<div style="font-size:11px;color:var(--text2);background:var(--surface2);border-radius:8px;'+
-            'padding:9px 12px;margin:6px 0;border:1px solid var(--border);line-height:1.6">'+
-            '<b>Or:</b> VLC → Media → Open Network Stream → paste link<br>'+
-            '<span style="font-family:monospace;font-size:10px;color:var(--accent);word-break:break-all">'+FILE_URL+'</span>'+
-          '</div>'+
-          '<button class="pp-btn" style="background:linear-gradient(135deg,#555,#333)" onclick="cpVLC()">'+
-            '<i class="fa fa-copy"></i> Copy Link for VLC</button>'
-      )+
-      '<button class="pp-can" onclick="closePopup()">✕ Cancel</button>'
+          'Web player cannot switch audio tracks.<br>Open in <b style="color:var(--accent)">VLC</b> to hear <b style="color:var(--accent)">'+label+'</b>.'+
+        '</div></div>'+
+      vlcBtns(idx)+
+      '<button class="pp-can" style="margin-top:6px" onclick="closePopup()">✕ Cancel</button>'
     );
   },60);
 }
 
-// User picks a subtitle track — show VLC options
-function pickSub(label,idx,mob){
+// User picks subtitle track
+function pickSub(label,idx){
   closePopup();
   setTimeout(function(){
     showPopup(
@@ -1019,31 +1070,18 @@ function pickSub(label,idx,mob){
         '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px">'+label+'</div>'+
         '<div style="font-size:12px;color:var(--text2);line-height:1.65;background:var(--surface2);'+
           'border-radius:10px;padding:10px 14px;border:1px solid var(--border);margin-bottom:14px">'+
-          'Embedded subtitles cannot display in browser.<br>Upload an <b style="color:var(--accent)">.srt / .vtt</b> file, or open in VLC.'+
-        '</div>'+
-      '</div>'+
+          'Embedded subtitles cannot show in browser.<br>Upload an <b style="color:var(--accent)">.srt/.vtt</b> or open in VLC.'+
+        '</div></div>'+
       '<button class="pp-btn" style="background:linear-gradient(135deg,#1dbf73,#16a560);margin-bottom:6px" '+
         'onclick="closePopup();document.getElementById(\'subFileInput\').click()">'+
         '<i class="fa fa-upload"></i> Upload .srt / .vtt (Browser)</button>'+
-      (mob
-        ?'<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="extAudio(\'vlc\','+idx+')">'+
-            '<i class="fa fa-play"></i> Open in VLC Player</button>'+
-          '<button class="pp-btn" style="background:linear-gradient(135deg,#444,#222)" onclick="extAudio(\'mx\','+idx+')">'+
-            '<i class="fa fa-play"></i> Open in MX Player</button>'
-        :'<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="openVLCDesktop()">'+
-            '<i class="fa fa-play"></i> Open in VLC (Desktop)</button>'+
-          '<button class="pp-btn" style="background:linear-gradient(135deg,#555,#333)" onclick="cpVLC()">'+
-            '<i class="fa fa-copy"></i> Copy Link for VLC</button>'
-      )+
-      '<button class="pp-can" onclick="closePopup()">✕ Cancel</button>'
+      vlcBtns(idx)+
+      '<button class="pp-can" style="margin-top:6px" onclick="closePopup()">✕ Cancel</button>'
     );
   },60);
 }
 
-function openVLCDesktop(){
-  // vlc:// protocol opens VLC desktop directly
-  window.location.href='vlc://'+FILE_URL;
-}
+function openVLCDesktop(){ window.location.href='vlc://'+FILE_URL; }
 function extAudio(p,idx){
   closePopup();
   var u=FILE_URL.replace(/^https?:\/\//,'');
