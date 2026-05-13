@@ -1,4 +1,4 @@
-# <div align="center">🚀 CantarellaBots - Advanced File to Link Bot</div>
+# <div align="center">🚀 Goflix - Advanced File to Link Bot</div>
 
 <div align="center">
 
@@ -6,10 +6,10 @@
 
 Features a beautiful web interface, premium video player, and robust admin controls.
 
-<a href="https://t.me/cantarellabots">
+<a href="">
   <img src="https://img.shields.io/badge/Join-Telegram%20Channel-blue.svg?style=for-the-badge&logo=telegram" alt="Join Telegram">
 </a>
-<a href="https://github.com/abhinai2244/FILE-TO-LINK-BOT.git">
+<a href="">
   <img src="https://img.shields.io/badge/Repo-GitHub-black.svg?style=for-the-badge&logo=github" alt="GitHub Repo">
 </a>
 
