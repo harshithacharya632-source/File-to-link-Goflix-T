@@ -108,8 +108,9 @@ body{
   font-weight:900;
   -webkit-font-smoothing:antialiased;
 }
-.brand-letter.go{color:var(--text) !important}
+.brand-letter.go{color:#ffffff !important}
 .brand-letter.fx{color:#e50914 !important}
+[data-theme="light"] .brand-letter.go{color:#0e0e1a !important}
 
 /* Simple gentle float — ZERO color change, only movement */
 .bl-g{animation:lw 3s ease-in-out infinite 0s}
@@ -330,9 +331,10 @@ video::cue{background:rgba(0,0,0,.82);color:#fff;font-size:1em;border-radius:3px
 .popup-ov.show{display:flex}
 .popup-box{
   background:var(--surface);border:1px solid var(--border2);
-  border-radius:20px;padding:26px 22px;max-width:340px;width:100%;
+  border-radius:20px;padding:22px 18px;max-width:340px;width:100%;
   box-shadow:0 20px 80px rgba(0,0,0,.9);
   animation:popIn .2s ease;
+  max-height:90vh;overflow-y:auto;
 }
 @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 .pp-btn{
@@ -486,7 +488,13 @@ footer{
     <div class="progress-bar-wrap"><div class="progress-bar" id="progBar"></div></div>
 
     <div class="video-wrap" id="videoWrap">
-      <video id="myVideo" src="{{file_url}}" controls preload="auto" crossorigin="anonymous"></video>
+      <video id="myVideo" src="{{file_url}}" controls preload="auto"
+        playsinline
+        webkit-playsinline
+        x-webkit-airplay="allow"
+        controlsList="nodownload"
+        style="width:100%;height:100%;object-fit:contain;display:block;background:#000">
+      </video>
 
       <!-- FULLSCREEN OVERLAY: ratio + brightness + volume -->
       <div class="fs-overlay" id="fsOverlay">
@@ -817,15 +825,67 @@ function copyText(txt){
 var FILE_URL='{{file_url}}';
 var TG_BUTTON='{{tg_button}}';
 
+// ═══════════════════════════════════════
+//  IPHONE / SAFARI VIDEO FIX
+//  Load HLS.js for m3u8 streams
+//  For direct files, Safari plays natively
+// ═══════════════════════════════════════
+(function(){
+  var vid=document.getElementById('myVideo');
+  var url=FILE_URL;
+  var isHLS=url.indexOf('.m3u8')!==-1;
+
+  if(isHLS){
+    if(vid.canPlayType('application/vnd.apple.mpegurl')){
+      // Safari/iPhone — native HLS support
+      vid.src=url;
+    } else {
+      // Chrome/Firefox — load HLS.js
+      var s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js';
+      s.onload=function(){
+        if(window.Hls&&Hls.isSupported()){
+          var hls=new Hls({maxBufferLength:30,maxMaxBufferLength:60});
+          hls.loadSource(url);
+          hls.attachMedia(vid);
+        }
+      };
+      document.head.appendChild(s);
+    }
+  } else {
+    // Direct file — just set src
+    vid.src=url;
+  }
+
+  // iPhone: force load on first touch if stalled
+  document.addEventListener('touchstart',function h(){
+    if(vid.readyState===0){ vid.load(); }
+    document.removeEventListener('touchstart',h);
+  },{once:true,passive:true});
+})();
+
 function mx_player(){
+  if(IS_IOS){
+    // iOS has no MX Player — copy link instead
+    cpVLC(); return;
+  }
   var c=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href='intent://'+c+'#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end';
 }
 function vlc_player(){
+  if(IS_IOS){
+    window.location.href='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(FILE_URL);
+    return;
+  }
   var c=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href='intent://'+c+'#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end';
 }
 function playit_player(){
+  if(IS_IOS){
+    // Outplayer is the iOS equivalent
+    window.location.href='outplayer://'+FILE_URL.replace(/^https?:\/\//,'');
+    return;
+  }
   var c=FILE_URL.replace(/^https?:\/\//,'');
   window.location.href='intent://'+c+'#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end';
 }
@@ -888,41 +948,81 @@ document.addEventListener('DOMContentLoaded',function(){
 
 // ── Language code → flag + name map ──
 var LANG_MAP={
-  'eng':'🇬🇧 English','en':'🇬🇧 English',
-  'hin':'🇮🇳 Hindi','hi':'🇮🇳 Hindi',
-  'kan':'🇮🇳 Kannada','kn':'🇮🇳 Kannada',
-  'tam':'🇮🇳 Tamil','ta':'🇮🇳 Tamil',
-  'tel':'🇮🇳 Telugu','te':'🇮🇳 Telugu',
-  'mal':'🇮🇳 Malayalam','ml':'🇮🇳 Malayalam',
-  'mar':'🇮🇳 Marathi','mr':'🇮🇳 Marathi',
-  'ben':'🇮🇳 Bengali','bn':'🇮🇳 Bengali',
-  'pan':'🇮🇳 Punjabi','pa':'🇮🇳 Punjabi',
-  'guj':'🇮🇳 Gujarati','gu':'🇮🇳 Gujarati',
-  'ori':'🇮🇳 Odia',
-  'urd':'🇵🇰 Urdu','ur':'🇵🇰 Urdu',
-  'ara':'🇸🇦 Arabic','ar':'🇸🇦 Arabic',
-  'fra':'🇫🇷 French','fr':'🇫🇷 French',
-  'deu':'🇩🇪 German','de':'🇩🇪 German',
-  'spa':'🇪🇸 Spanish','es':'🇪🇸 Spanish',
-  'ita':'🇮🇹 Italian','it':'🇮🇹 Italian',
-  'por':'🇧🇷 Portuguese','pt':'🇧🇷 Portuguese',
-  'rus':'🇷🇺 Russian','ru':'🇷🇺 Russian',
-  'jpn':'🇯🇵 Japanese','ja':'🇯🇵 Japanese',
-  'kor':'🇰🇷 Korean','ko':'🇰🇷 Korean',
-  'zho':'🇨🇳 Chinese','zh':'🇨🇳 Chinese',
-  'tha':'🇹🇭 Thai','th':'🇹🇭 Thai',
-  'tur':'🇹🇷 Turkish','tr':'🇹🇷 Turkish',
-  'und':'🌐 Unknown'
+  // 3-letter codes
+  'eng':'🇬🇧 English','hin':'🇮🇳 Hindi','kan':'🇮🇳 Kannada',
+  'tam':'🇮🇳 Tamil','tel':'🇮🇳 Telugu','mal':'🇮🇳 Malayalam',
+  'mar':'🇮🇳 Marathi','ben':'🇮🇳 Bengali','pan':'🇮🇳 Punjabi',
+  'guj':'🇮🇳 Gujarati','ori':'🇮🇳 Odia','urd':'🇵🇰 Urdu',
+  'ara':'🇸🇦 Arabic','fra':'🇫🇷 French','deu':'🇩🇪 German',
+  'spa':'🇪🇸 Spanish','ita':'🇮🇹 Italian','por':'🇧🇷 Portuguese',
+  'rus':'🇷🇺 Russian','jpn':'🇯🇵 Japanese','kor':'🇰🇷 Korean',
+  'zho':'🇨🇳 Chinese','tha':'🇹🇭 Thai','tur':'🇹🇷 Turkish',
+  'und':'🌐 Unknown',
+  // 2-letter codes
+  'en':'🇬🇧 English','hi':'🇮🇳 Hindi','kn':'🇮🇳 Kannada',
+  'ta':'🇮🇳 Tamil','te':'🇮🇳 Telugu','ml':'🇮🇳 Malayalam',
+  'mr':'🇮🇳 Marathi','bn':'🇮🇳 Bengali','pa':'🇮🇳 Punjabi',
+  'gu':'🇮🇳 Gujarati','ur':'🇵🇰 Urdu','ar':'🇸🇦 Arabic',
+  'fr':'🇫🇷 French','de':'🇩🇪 German','es':'🇪🇸 Spanish',
+  'it':'🇮🇹 Italian','pt':'🇧🇷 Portuguese','ru':'🇷🇺 Russian',
+  'ja':'🇯🇵 Japanese','ko':'🇰🇷 Korean','zh':'🇨🇳 Chinese',
+  'th':'🇹🇭 Thai','tr':'🇹🇷 Turkish',
+  // Full language names as keys (for label matching)
+  'english':'🇬🇧 English','hindi':'🇮🇳 Hindi','kannada':'🇮🇳 Kannada',
+  'tamil':'🇮🇳 Tamil','telugu':'🇮🇳 Telugu','malayalam':'🇮🇳 Malayalam',
+  'marathi':'🇮🇳 Marathi','bengali':'🇮🇳 Bengali','punjabi':'🇮🇳 Punjabi',
+  'gujarati':'🇮🇳 Gujarati','odia':'🇮🇳 Odia','urdu':'🇵🇰 Urdu',
+  'arabic':'🇸🇦 Arabic','french':'🇫🇷 French','german':'🇩🇪 German',
+  'spanish':'🇪🇸 Spanish','italian':'🇮🇹 Italian','portuguese':'🇧🇷 Portuguese',
+  'russian':'🇷🇺 Russian','japanese':'🇯🇵 Japanese','korean':'🇰🇷 Korean',
+  'chinese':'🇨🇳 Chinese','thai':'🇹🇭 Thai','turkish':'🇹🇷 Turkish'
 };
 function resolveLang(t,i,defaultFlag){
   var code=(t.language||'').toLowerCase().trim();
   var lbl=(t.label||'').trim();
+
+  // 1. Try language code first
   var match=LANG_MAP[code]||LANG_MAP[code.slice(0,3)]||LANG_MAP[code.slice(0,2)];
   if(match){
     var parts=match.split(' ');
     return {flag:parts[0],name:parts.slice(1).join(' ')};
   }
-  if(lbl) return {flag:defaultFlag,name:lbl};
+
+  // 2. Try matching label text against known language names
+  if(lbl){
+    var lblLow=lbl.toLowerCase();
+    for(var k in LANG_MAP){
+      var entry=LANG_MAP[k];
+      var langName=entry.split(' ').slice(1).join(' ').toLowerCase();
+      if(lblLow.indexOf(langName)!==-1||langName.indexOf(lblLow)!==-1){
+        var p=entry.split(' ');
+        return {flag:p[0],name:p.slice(1).join(' ')};
+      }
+    }
+    // 3. Label exists but no match — use label as name, strip filename junk
+    // Remove common filename prefixes like "Goflix", "GoFlix", movie name etc.
+    // Keep only the last word if it looks like a language
+    var words=lbl.split(/[\s_\-\.]+/);
+    var lastWord=words[words.length-1];
+    var lastLow=lastWord.toLowerCase();
+    var match2=LANG_MAP[lastLow]||LANG_MAP[lastLow.slice(0,3)]||LANG_MAP[lastLow.slice(0,2)];
+    if(match2){
+      var p2=match2.split(' ');
+      return {flag:p2[0],name:p2.slice(1).join(' ')};
+    }
+    // 4. Try each word
+    for(var w=0;w<words.length;w++){
+      var wl=words[w].toLowerCase();
+      var wm=LANG_MAP[wl]||LANG_MAP[wl.slice(0,3)];
+      if(wm){
+        var wp=wm.split(' ');
+        return {flag:wp[0],name:wp.slice(1).join(' ')};
+      }
+    }
+    // 5. Return label as-is
+    return {flag:defaultFlag,name:lbl};
+  }
+
   return {flag:defaultFlag,name:'Track '+(i+1)};
 }
 
@@ -960,8 +1060,10 @@ function openAudioPopup(){
       '<div style="font-size:12px;color:var(--text2)">'+tracks.length+' track'+(tracks.length!==1?'s':'')+' available</div></div>'+
     '</div>'+
     '<div style="height:1px;background:var(--border);margin-bottom:10px"></div>'+
+    '<div style="max-height:295px;overflow-y:auto;padding-right:2px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent">'+
     rows+
-    '<button class="pp-can" style="margin-top:6px" onclick="closePopup()">✕ Close</button>'
+    '</div>'+
+    '<button class="pp-can" style="margin-top:10px" onclick="closePopup()">✕ Close</button>'
   );
 }
 
@@ -991,8 +1093,10 @@ function openSubsPopup(){
       '<div style="font-size:12px;color:var(--text2)">'+tracks.length+' track'+(tracks.length!==1?'s':'')+' in this file</div></div>'+
     '</div>'+
     '<div style="height:1px;background:var(--border);margin-bottom:10px"></div>'+
+    '<div style="max-height:295px;overflow-y:auto;padding-right:2px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent">'+
     rows+
-    '<button class="pp-btn" style="background:linear-gradient(135deg,#1dbf73,#16a560);margin-top:4px" '+
+    '</div>'+
+    '<button class="pp-btn" style="background:linear-gradient(135deg,#1dbf73,#16a560);margin-top:10px" '+
       'onclick="closePopup();document.getElementById(\'subFileInput\').click()">'+
       '<i class="fa fa-upload"></i> Upload .srt / .vtt (shows in browser)</button>'+
     '<button class="pp-can" style="margin-top:6px" onclick="closePopup()">✕ Close</button>'
@@ -1017,21 +1121,26 @@ function buildTrackRow(flag,name,idx,type){
   '</div>';
 }
 
-// ── VLC buttons — smart per device (Android / iOS / Desktop) ──
 function vlcBtns(idx){
   if(IS_IOS){
-    var url='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(FILE_URL);
-    return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="window.location.href=\''+url+'\'">'+
-      '<i class="fa fa-play"></i> Open in VLC (iPhone / iPad)</button>';
+    // iOS: try vlc-x-callback first, fallback to copying link
+    var vlcUrl='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(FILE_URL);
+    var outUrl='outplayer://'+FILE_URL.replace(/^https?:\/\//,'');
+    return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900);margin-bottom:6px" onclick="window.location.href=\''+vlcUrl+'\'">'+
+        '<i class="fa fa-play"></i> Open in VLC (iPhone/iPad)</button>'+
+      '<button class="pp-btn" style="background:linear-gradient(135deg,#0088cc,#006aaa);margin-bottom:6px" onclick="window.location.href=\''+outUrl+'\'">'+
+        '<i class="fa fa-play"></i> Open in Outplayer</button>'+
+      '<button class="pp-btn" style="background:linear-gradient(135deg,#555,#333)" onclick="cpVLC()">'+
+        '<i class="fa fa-copy"></i> Copy Link (paste in VLC → Network)</button>';
   }
   if(IS_ANDROID){
-    return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="extAudio(\'vlc\','+idx+')">'+
+    return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900);margin-bottom:6px" onclick="extAudio(\'vlc\','+idx+')">'+
         '<i class="fa fa-play"></i> Open in VLC Player</button>'+
-      '<button class="pp-btn" style="background:linear-gradient(135deg,#444,#222);margin-top:6px" onclick="extAudio(\'mx\','+idx+')">'+
+      '<button class="pp-btn" style="background:linear-gradient(135deg,#444,#222)" onclick="extAudio(\'mx\','+idx+')">'+
         '<i class="fa fa-play"></i> Open in MX Player</button>';
   }
   // Desktop
-  return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900)" onclick="openVLCDesktop()">'+
+  return '<button class="pp-btn" style="background:linear-gradient(135deg,#e50914,#900);margin-bottom:6px" onclick="openVLCDesktop()">'+
       '<i class="fa fa-play"></i> Open in VLC (Desktop)</button>'+
     '<div style="font-size:11px;color:var(--text2);background:var(--surface2);border-radius:8px;'+
       'padding:9px 12px;margin:6px 0;border:1px solid var(--border);line-height:1.6">'+
