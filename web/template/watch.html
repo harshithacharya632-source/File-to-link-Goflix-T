@@ -1035,22 +1035,38 @@ var IS_ANDROID=/Android/i.test(navigator.userAgent);
 // ═══════════════════════════════════════
 function openAudioPopup(){
   var tracks=[];
-  if(AUDIO_TRACKS&&AUDIO_TRACKS.length>0){
+
+  // 1. Try real browser audioTracks API first
+  var vt=document.getElementById('myVideo');
+  if(vt.audioTracks&&vt.audioTracks.length>0){
+    for(var i=0;i<vt.audioTracks.length;i++){
+      var at=vt.audioTracks[i];
+      var r=resolveLang({language:at.language||'',label:at.label||''},i,'🎵');
+      tracks.push({flag:r.flag,name:r.name,idx:i});
+    }
+  }
+  // 2. Try server AUDIO_TRACKS data
+  else if(AUDIO_TRACKS&&AUDIO_TRACKS.length>0){
     AUDIO_TRACKS.forEach(function(t,i){
       var r=resolveLang(t,i,'🎵');
       tracks.push({flag:r.flag,name:r.name,idx:t.index!==undefined?t.index:i});
     });
-  } else {
+  }
+  // 3. Try DOM items
+  else{
     var items=document.querySelectorAll('#audioItemList .pd-item');
     if(items.length>0){
       items.forEach(function(el,i){
-        var n=el.querySelector('.pd-name'),f=el.querySelector('.pd-flag');
-        tracks.push({flag:f?f.textContent:'🎵',name:n?n.textContent:'Track '+(i+1),idx:i});
+        var n=el.querySelector('.pd-name');
+        var raw=n?n.textContent.trim():'';
+        var r=resolveLang({language:'',label:raw},i,'🎵');
+        tracks.push({flag:r.flag,name:r.name,idx:i});
       });
     } else {
-      tracks.push({flag:'🎵',name:'Default Audio',idx:0});
+      tracks.push({flag:'🎵',name:'Track 1',idx:0});
     }
   }
+
   var rows='';
   tracks.forEach(function(t){ rows+=buildTrackRow(t.flag,t.name,t.idx,'audio'); });
   showPopup(
@@ -1072,18 +1088,34 @@ function openAudioPopup(){
 // ═══════════════════════════════════════
 function openSubsPopup(){
   var tracks=[];
-  if(SUB_TRACKS&&SUB_TRACKS.length>0){
+  var vt=document.getElementById('myVideo');
+
+  // 1. Try real browser textTracks API
+  if(vt.textTracks&&vt.textTracks.length>0){
+    for(var i=0;i<vt.textTracks.length;i++){
+      var st=vt.textTracks[i];
+      var r=resolveLang({language:st.language||'',label:st.label||''},i,'💬');
+      tracks.push({flag:r.flag,name:r.name,idx:i});
+    }
+  }
+  // 2. Try server SUB_TRACKS
+  else if(SUB_TRACKS&&SUB_TRACKS.length>0){
     SUB_TRACKS.forEach(function(t,i){
       var r=resolveLang(t,i,'💬');
       tracks.push({flag:r.flag,name:r.name,idx:t.index!==undefined?t.index:i});
     });
-  } else {
+  }
+  // 3. DOM fallback
+  else{
     var items=document.querySelectorAll('#subItemList .pd-item:not(#subOffItem):not([data-upl])');
     items.forEach(function(el,i){
-      var n=el.querySelector('.pd-name'),f=el.querySelector('.pd-flag');
-      tracks.push({flag:f?f.textContent:'💬',name:n?n.textContent:'Sub '+(i+1),idx:i});
+      var n=el.querySelector('.pd-name');
+      var raw=n?n.textContent.trim():'';
+      var r=resolveLang({language:'',label:raw},i,'💬');
+      tracks.push({flag:r.flag,name:r.name,idx:i});
     });
   }
+
   var rows='';
   tracks.forEach(function(t){ rows+=buildTrackRow(t.flag,t.name,t.idx,'sub'); });
   showPopup(
